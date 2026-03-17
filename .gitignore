@@ -1,0 +1,55 @@
+# =========================
+# NODE
+# =========================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ENV
+.env
+.env.*
+!.env.example
+
+# Build
+dist/
+build/
+
+# Logs
+logs/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# =========================
+# .NET
+# =========================
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Rider / VS
+*.DotSettings.user
+
+# =========================
+# TEST / COVERAGE
+# =========================
+coverage/
+
+# =========================
+# MISC
+# =========================
+.tmp/
+.cache/
