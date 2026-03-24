@@ -1,0 +1,41 @@
+extends ../layouts/main
+
+block content
+  .auth-shell.container
+    .auth-grid
+      include ../partials/auth-aside
+
+      section.auth-card.card-soft
+        .section-heading.auth-card__heading
+          h2 Crear cuenta
+          p Formulario visual inicial para la siguiente etapa del proyecto.
+
+        form.auth-form(action='#', method='post')
+          .auth-form__row
+            label.auth-field
+              span Nombre visible
+              input(type='text', name='displayName', placeholder='Como quieres que se vea tu nombre')
+
+            label.auth-field
+              span Usuario
+              input(type='text', name='username', placeholder='Elige tu nombre de usuario')
+
+          label.auth-field
+            span Correo electronico
+            input(type='email', name='email', placeholder='correo@ejemplo.com')
+
+          .auth-form__row
+            label.auth-field
+              span Contrasena
+              input(type='password', name='password', placeholder='Crea una contrasena')
+
+            label.auth-field
+              span Confirmar contraseña
+              input(type='password', name='confirmPassword', placeholder='Repite la contrasena')
+
+          .auth-form__actions
+            button.button(type='submit') Crear cuenta
+            a.auth-link(href='/login') Ya tengo cuenta
+
+          p.auth-note
+            | En el proximo paso sumamos validaciones, hash de contrasena y persistencia real.

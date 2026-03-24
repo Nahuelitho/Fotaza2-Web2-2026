@@ -8,6 +8,7 @@ const dotenv = require('dotenv');
 dotenv.config({ quiet: true });
 
 const indexRouter = require('./routes');
+const authRouter = require('./routes/auth.routes');
 
 const app = express();
 const port = Number(process.env.PORT || 3000);
@@ -41,6 +42,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/', indexRouter);
+app.use('/', authRouter);
 
 app.use((req, res) => {
   res.status(404).render('pages/home', {

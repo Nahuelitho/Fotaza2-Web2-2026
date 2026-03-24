@@ -1,0 +1,27 @@
+extends ../layouts/main
+
+block content
+  .auth-shell.container
+    .auth-grid
+      include ../partials/auth-aside
+
+      section.auth-card.card-soft
+        .section-heading.auth-card__heading
+          h2 Iniciar sesion
+          p Vista inicial sin logica de autenticacion todavia.
+
+        form.auth-form(action='#', method='post')
+          label.auth-field
+            span Correo o usuario
+            input(type='text', name='identifier', placeholder='tuusuario o correo@ejemplo.com')
+
+          label.auth-field
+            span Contrasena
+            input(type='password', name='password', placeholder='Ingresa tu contrasena')
+
+          .auth-form__actions
+            button.button(type='submit') Iniciar sesion
+            a.auth-link(href='/forgot-password') Olvide mi contrasena
+
+          p.auth-note
+            | Esta pantalla queda lista para conectar sesiones reales con MySQL y validaciones.

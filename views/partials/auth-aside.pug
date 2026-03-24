@@ -1,0 +1,31 @@
+aside.auth-aside.card-soft
+  p.eyebrow= authEyebrow
+  h1.auth-title= authTitle
+  p.auth-text= authText
+
+  .auth-visual
+    span.auth-visual__badge Comunidad visual
+    .auth-visual__stack
+      .auth-tile
+        strong Publica
+        span Imagenes y colecciones con una identidad calida.
+      .auth-tile
+        strong Conecta
+        span Comentarios, follows y notificaciones en un mismo lugar.
+      .auth-tile
+        strong Descubre
+        span Tendencias, perfiles y favoritos desde un home claro.
+
+  if authMode === 'login'
+    p.auth-switch
+      | Todavia no tienes cuenta?
+      br
+      a(href='/register') Crear cuenta
+  else if authMode === 'register'
+    p.auth-switch
+      | Ya tienes cuenta?
+      a(href='/login') Iniciar sesion
+  else
+    p.auth-switch
+      | Volver al acceso principal?
+      a(href='/login') Iniciar sesion
