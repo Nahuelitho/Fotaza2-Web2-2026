@@ -1,0 +1,25 @@
+extends ../layouts/main
+
+block content
+  section.hero
+    .container
+      p.eyebrow Proyecto Programacion Web II
+      h1= pageTitle
+      p.lead
+        | Base inicial del proyecto con Node, Express, Pug y MySQL lista para empezar a construir
+        |  autenticacion, publicaciones, comentarios y seguimiento de usuarios.
+      .actions
+        a.button(href='#') Ver roadmap
+        a.button.button-secondary(href='#') Preparar modulos
+
+  section.info
+    .container.cards
+      article.card
+        h2 Stack elegido
+        p Node + Express con vistas Pug renderizadas del lado del servidor.
+      article.card
+        h2 Base de datos
+        p MySQL con script `npm run db:init` para crear estructura y datos iniciales.
+      article.card
+        h2 Proximo paso
+        p Empezar por autenticacion, layout general y modulo de publicaciones.

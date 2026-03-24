@@ -1,0 +1,21 @@
+doctype html
+html(lang='es')
+  head
+    meta(charset='UTF-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    title #{title}
+    link(rel='stylesheet', href='/css/app.css')
+  body
+    header.site-header
+      .container
+        a.brand(href='/') Fotaza 2
+        nav
+          ul.nav-list
+            li
+              a(href='/') Inicio
+            li
+              a(href='#') Explorar
+            li
+              a(href='#') Ingresar
+    main
+      block content

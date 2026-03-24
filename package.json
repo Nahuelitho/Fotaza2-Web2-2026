@@ -1,10 +1,13 @@
 {
   "name": "fotaza2-git",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Aplicacion web SSR para el proyecto Fotaza 2",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "db:init": "node db/init.js",
+    "test": "echo \"No tests configured yet\""
   },
   "repository": {
     "type": "git",
@@ -18,8 +21,18 @@
   },
   "homepage": "https://github.com/Nahuelitho/Fotaza2-Web2-2026#readme",
   "dependencies": {
-    "cors": "^2.8.6",
+    "bcryptjs": "^3.0.2",
+    "cookie-parser": "^1.4.7",
     "dotenv": "^17.3.1",
-    "express": "^5.2.1"
+    "express": "^5.1.0",
+    "express-session": "^1.18.2",
+    "express-validator": "^7.3.0",
+    "method-override": "^3.0.0",
+    "multer": "^2.0.2",
+    "mysql2": "^3.15.3",
+    "pug": "^3.0.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
   }
 }
