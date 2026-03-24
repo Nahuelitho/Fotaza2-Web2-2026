@@ -1,0 +1,25 @@
+article.post-card.card-soft
+  .post-card__header
+    .post-card__identity
+      .post-card__avatar= post.author.charAt(0)
+      .post-card__meta
+        h3= post.author
+        p #{post.handle} · #{post.location}
+    button.post-card__menu(type='button', aria-label='Opciones de la publicacion') ...
+
+  .post-card__media
+    span.post-card__label= post.imageLabel
+
+  .post-card__body
+    h4= post.title
+    p= post.description
+    .tag-row
+      each tag in post.tags
+        span.tag-pill.tag-pill--soft= tag
+
+  .post-card__footer
+    span.post-card__stats= post.stats
+    .post-card__actions
+      a(href='#') Valorar
+      a(href='#') Comentar
+      a(href='#') Guardar

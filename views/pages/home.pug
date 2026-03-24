@@ -1,25 +1,30 @@
 extends ../layouts/main
 
 block content
-  section.hero
-    .container
-      p.eyebrow Proyecto Programacion Web II
-      h1= pageTitle
-      p.lead
-        | Base inicial del proyecto con Node, Express, Pug y MySQL lista para empezar a construir
-        |  autenticacion, publicaciones, comentarios y seguimiento de usuarios.
-      .actions
-        a.button(href='#') Ver roadmap
-        a.button.button-secondary(href='#') Preparar modulos
+  .home-shell.container
+    .home-grid
+      include ../partials/home-sidebar
 
-  section.info
-    .container.cards
-      article.card
-        h2 Stack elegido
-        p Node + Express con vistas Pug renderizadas del lado del servidor.
-      article.card
-        h2 Base de datos
-        p MySQL con script `npm run db:init` para crear estructura y datos iniciales.
-      article.card
-        h2 Proximo paso
-        p Empezar por autenticacion, layout general y modulo de publicaciones.
+      section.feed-column
+        include ../partials/home-hero
+
+        section.feed-toolbar.card-soft
+          .section-heading
+            h2 Publicaciones destacadas
+            p Mockups visuales para definir el look del home antes del CRUD real.
+          .feed-toolbar__actions
+            a.button.button-soft(href='#') Crear cuenta
+            a.button.button-ghost(href='#') Ver mas
+
+        .post-feed
+          each post in posts
+            include ../partials/post-card
+
+      aside.right-rail
+        section.card-soft
+          .section-heading
+            h3 Descubrir
+          p.rail-note Una columna simple para destacar etiquetas, autores o sugerencias sin recargar el home.
+          .tag-cloud
+            each tag in featuredTags
+              a.tag-pill(href='#')= tag

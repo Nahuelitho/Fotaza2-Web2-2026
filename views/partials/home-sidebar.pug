@@ -1,0 +1,22 @@
+aside.sidebar-column
+  section.card-soft.profile-brief
+    .profile-brief__avatar NV
+    .profile-brief__content
+      p.profile-brief__eyebrow Perfil invitado
+      h2 Nahuel Vargas
+      p.profile-brief__text Base visual inicial de Fotaza 2 con foco en fotografia, comunidad y exploracion.
+
+  section.card-soft
+    .section-heading
+      h3 Accesos rapidos
+    ul.link-stack
+      each link in quickLinks
+        li
+          a(href='#')= link
+
+  section.card-soft
+    .section-heading
+      h3 Etiquetas en tendencia
+    .tag-cloud
+      each tag in featuredTags
+        a.tag-pill(href='#')= tag
