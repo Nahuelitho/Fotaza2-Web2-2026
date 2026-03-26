@@ -20,8 +20,13 @@ header.topbar
         span.icon-link__label Tendencias
 
     .topbar-actions
-      a.button.button-soft(href='/register') Crear cuenta
-      a.button(href='/login') Iniciar sesion
+      if currentUser
+        span.user-chip Hola, #{currentUser.displayName}
+        form(action='/logout', method='post')
+          button.button.button-soft(type='submit') Cerrar sesion
+      else
+        a.button.button-soft(href='/register') Crear cuenta
+        a.button(href='/login') Iniciar sesion
       button.menu-toggle(type='button', aria-label='Abrir menu')
         span.menu-toggle__line
         span.menu-toggle__line

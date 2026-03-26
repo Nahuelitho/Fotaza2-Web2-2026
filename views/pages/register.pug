@@ -10,19 +10,22 @@ block content
           h2 Crear cuenta
           p Formulario visual inicial para la siguiente etapa del proyecto.
 
-        form.auth-form(action='#', method='post')
+        if errorMessage
+          p.form-message.form-message--error= errorMessage
+
+        form.auth-form(action='/register', method='post')
           .auth-form__row
             label.auth-field
               span Nombre visible
-              input(type='text', name='displayName', placeholder='Como quieres que se vea tu nombre')
+              input(type='text', name='displayName', placeholder='Como quieres que se vea tu nombre', value=(formData && formData.displayName) || '')
 
             label.auth-field
               span Usuario
-              input(type='text', name='username', placeholder='Elige tu nombre de usuario')
+              input(type='text', name='username', placeholder='Elige tu nombre de usuario', value=(formData && formData.username) || '')
 
           label.auth-field
             span Correo electronico
-            input(type='email', name='email', placeholder='correo@ejemplo.com')
+            input(type='email', name='email', placeholder='correo@ejemplo.com', value=(formData && formData.email) || '')
 
           .auth-form__row
             label.auth-field

@@ -152,6 +152,18 @@ input {
   gap: 0.75rem;
 }
 
+.user-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.8rem 1rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-weight: 600;
+}
+
 .button {
   display: inline-flex;
   align-items: center;
@@ -498,6 +510,18 @@ input {
 .auth-form {
   display: grid;
   gap: 1rem;
+}
+
+.form-message {
+  margin: 0 0 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: 1rem;
+}
+
+.form-message--error {
+  background: rgba(216, 131, 86, 0.12);
+  border: 1px solid rgba(216, 131, 86, 0.28);
+  color: #9f4f26;
 }
 
 .auth-form__row {

@@ -1,4 +1,6 @@
 aside.sidebar-column
+  - var safeQuickLinks = quickLinks || []
+  - var safeFeaturedTags = featuredTags || []
   section.card-soft.profile-brief
     .profile-brief__avatar NV
     .profile-brief__content
@@ -10,7 +12,7 @@ aside.sidebar-column
     .section-heading
       h3 Accesos rapidos
     ul.link-stack
-      each link in quickLinks
+      each link in safeQuickLinks
         li
           a(href='#')= link
 
@@ -18,5 +20,5 @@ aside.sidebar-column
     .section-heading
       h3 Etiquetas en tendencia
     .tag-cloud
-      each tag in featuredTags
+      each tag in safeFeaturedTags
         a.tag-pill(href='#')= tag

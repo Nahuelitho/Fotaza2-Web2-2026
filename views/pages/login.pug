@@ -10,10 +10,13 @@ block content
           h2 Iniciar sesion
           p Vista inicial sin logica de autenticacion todavia.
 
-        form.auth-form(action='#', method='post')
+        if errorMessage
+          p.form-message.form-message--error= errorMessage
+
+        form.auth-form(action='/login', method='post')
           label.auth-field
             span Correo o usuario
-            input(type='text', name='identifier', placeholder='tuusuario o correo@ejemplo.com')
+            input(type='text', name='identifier', placeholder='tuusuario o correo@ejemplo.com', value=(formData && formData.identifier) || '')
 
           label.auth-field
             span Contrasena

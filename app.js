@@ -38,6 +38,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use((req, res, next) => {
   res.locals.appName = 'Fotaza 2';
   res.locals.currentUser = req.session.user || null;
+  res.locals.quickLinks = ['Explorar', 'Tendencias', 'Colecciones', 'Fotografos', 'Favoritos'];
+  res.locals.featuredTags = ['Paisajes', 'Retratos', 'Ciudad', 'Viajes', 'Naturaleza'];
   next();
 });
 
@@ -47,7 +49,7 @@ app.use('/', authRouter);
 app.use((req, res) => {
   res.status(404).render('pages/home', {
     title: 'Pagina no encontrada',
-    pageTitle: '404',
+    posts: [],
   });
 });
 

@@ -1,6 +1,8 @@
 extends ../layouts/main
 
 block content
+  - var safePosts = posts || []
+  - var safeFeaturedTags = featuredTags || []
   .home-shell.container
     .home-grid
       include ../partials/home-sidebar
@@ -17,7 +19,7 @@ block content
             a.button.button-ghost(href='#') Ver mas
 
         .post-feed
-          each post in posts
+          each post in safePosts
             include ../partials/post-card
 
       aside.right-rail
@@ -26,5 +28,5 @@ block content
             h3 Descubrir
           p.rail-note Una columna simple para destacar etiquetas, autores o sugerencias sin recargar el home.
           .tag-cloud
-            each tag in featuredTags
+            each tag in safeFeaturedTags
               a.tag-pill(href='#')= tag
