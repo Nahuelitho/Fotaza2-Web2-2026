@@ -8,7 +8,6 @@ block content
       section.auth-card.card-soft
         .section-heading.auth-card__heading
           h2 Crear cuenta
-          p Formulario visual inicial para la siguiente etapa del proyecto.
 
         if errorMessage
           p.form-message.form-message--error= errorMessage
@@ -39,6 +38,3 @@ block content
           .auth-form__actions
             button.button(type='submit') Crear cuenta
             a.auth-link(href='/login') Ya tengo cuenta
-
-          p.auth-note
-            | En el proximo paso sumamos validaciones, hash de contrasena y persistencia real.

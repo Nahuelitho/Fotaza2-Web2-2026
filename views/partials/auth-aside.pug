@@ -1,20 +1,9 @@
 aside.auth-aside.card-soft
-  p.eyebrow= authEyebrow
+  if authEyebrow
+    p.eyebrow= authEyebrow
   h1.auth-title= authTitle
-  p.auth-text= authText
-
-  .auth-visual
-    span.auth-visual__badge Comunidad visual
-    .auth-visual__stack
-      .auth-tile
-        strong Publica
-        span Imagenes y colecciones con una identidad calida.
-      .auth-tile
-        strong Conecta
-        span Comentarios, follows y notificaciones en un mismo lugar.
-      .auth-tile
-        strong Descubre
-        span Tendencias, perfiles y favoritos desde un home claro.
+  if authText
+    p.auth-text= authText
 
   if authMode === 'login'
     p.auth-switch

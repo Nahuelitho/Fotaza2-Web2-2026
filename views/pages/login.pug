@@ -8,7 +8,6 @@ block content
       section.auth-card.card-soft
         .section-heading.auth-card__heading
           h2 Iniciar sesion
-          p Vista inicial sin logica de autenticacion todavia.
 
         if errorMessage
           p.form-message.form-message--error= errorMessage
@@ -25,6 +24,3 @@ block content
           .auth-form__actions
             button.button(type='submit') Iniciar sesion
             a.auth-link(href='/forgot-password') Olvide mi contrasena
-
-          p.auth-note
-            | Esta pantalla queda lista para conectar sesiones reales con MySQL y validaciones.

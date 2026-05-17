@@ -4,6 +4,7 @@ const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const methodOverride = require('method-override');
 const dotenv = require('dotenv');
+const { checkDbConnection } = require('./config/db');
 
 dotenv.config({ quiet: true });
 
@@ -55,4 +56,12 @@ app.use((req, res) => {
 
 app.listen(port, () => {
   console.log(`Servidor corriendo en http://localhost:${port}`);
+
+  checkDbConnection()
+    .then(() => {
+      console.log('Base de datos conectada correctamente.');
+    })
+    .catch((error) => {
+      console.error(`No se pudo conectar a la base de datos: ${error.code || error.message}`);
+    });
 });

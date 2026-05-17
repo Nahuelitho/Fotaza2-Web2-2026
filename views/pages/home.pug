@@ -1,7 +1,6 @@
 extends ../layouts/main
 
 block content
-  - var safePosts = posts || []
   - var safeFeaturedTags = featuredTags || []
   .home-shell.container
     .home-grid
@@ -10,23 +9,19 @@ block content
       section.feed-column
         include ../partials/home-hero
 
-        section.feed-toolbar.card-soft
+        section.card-soft
           .section-heading
-            h2 Publicaciones destacadas
-            p Mockups visuales para definir el look del home antes del CRUD real.
-          .feed-toolbar__actions
-            a.button.button-soft(href='/register') Crear cuenta
-            a.button.button-ghost(href='#') Ver mas
-
-        .post-feed
-          each post in safePosts
-            include ../partials/post-card
+            h2 Inicio
+            p Proyecto en desarrollo.
 
       aside.right-rail
         section.card-soft
           .section-heading
-            h3 Descubrir
-          p.rail-note Una columna simple para destacar etiquetas, autores o sugerencias sin recargar el home.
+            h3 Desarrollo
+          p.rail-note Modulos en construccion.
+        section.card-soft
+          .section-heading
+            h3 Etiquetas previstas
           .tag-cloud
             each tag in safeFeaturedTags
               a.tag-pill(href='#')= tag

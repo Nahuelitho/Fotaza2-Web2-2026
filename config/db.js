@@ -22,7 +22,18 @@ function createPool() {
   return mysql.createPool(getDbConfig(true));
 }
 
+async function checkDbConnection() {
+  const connection = await mysql.createConnection(getDbConfig(true));
+
+  try {
+    await connection.query('SELECT 1');
+  } finally {
+    await connection.end();
+  }
+}
+
 module.exports = {
   createPool,
   getDbConfig,
+  checkDbConnection,
 };
