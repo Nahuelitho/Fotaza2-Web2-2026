@@ -1,7 +1,6 @@
-const fs = require('fs');
-const path = require('path');
-const mysql = require('mysql2/promise');
 const dotenv = require('dotenv');
+const bcrypt = require('bcryptjs');
+const { sequelize, Role, User, Tag } = require('../models/sequelize');
 
 dotenv.config({ quiet: true });
 
@@ -14,45 +13,63 @@ if (missingEnv.length > 0) {
   process.exit(1);
 }
 
-function loadSqlStatements(fileName) {
-  const filePath = path.join(__dirname, fileName);
-  const content = fs.readFileSync(filePath, 'utf8');
-
-  return content
-    .split(/;\s*(?:\r?\n|$)/)
-    .map((statement) => statement.trim())
-    .filter(Boolean);
-}
+const DEMO_PASSWORD = process.env.SEED_DEMO_PASSWORD || '123456';
 
 async function run() {
-  const connection = await mysql.createConnection({
-    host: process.env.DB_HOST,
-    port: Number(process.env.DB_PORT),
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD || '',
-    multipleStatements: true,
-  });
+  await sequelize.authenticate();
+  await sequelize.sync({ alter: true });
 
-  try {
-    const dbName = process.env.DB_NAME;
-
-    await connection.query(`CREATE DATABASE IF NOT EXISTS \`${dbName}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`);
-    await connection.query(`USE \`${dbName}\``);
-
-    const schemaStatements = loadSqlStatements('schema.sql');
-    for (const statement of schemaStatements) {
-      await connection.query(statement);
-    }
-
-    const seedStatements = loadSqlStatements('seed.sql');
-    for (const statement of seedStatements) {
-      await connection.query(statement);
-    }
-
-    console.log(`Base de datos '${dbName}' inicializada correctamente.`);
-  } finally {
-    await connection.end();
+  const roles = ['admin', 'validator', 'user'];
+  for (const name of roles) {
+    await Role.findOrCreate({ where: { name }, defaults: { name } });
   }
+
+  const userRole = await Role.findOne({ where: { name: 'user' } });
+  const adminRole = await Role.findOne({ where: { name: 'admin' } });
+  const validatorRole = await Role.findOne({ where: { name: 'validator' } });
+
+  const passwordHash = await bcrypt.hash(DEMO_PASSWORD, 10);
+
+  const seedUsers = [
+    {
+      username: 'admin',
+      email: 'admin@fotaza.local',
+      displayName: 'Admin Fotaza',
+      roleId: adminRole.id,
+    },
+    {
+      username: 'validator',
+      email: 'validator@fotaza.local',
+      displayName: 'Validador Fotaza',
+      roleId: validatorRole.id,
+    },
+    {
+      username: 'demo',
+      email: 'demo@fotaza.local',
+      displayName: 'Usuario Demo',
+      roleId: userRole.id,
+    },
+  ];
+
+  for (const seedUser of seedUsers) {
+    await User.findOrCreate({
+      where: { username: seedUser.username },
+      defaults: {
+        roleId: seedUser.roleId,
+        username: seedUser.username,
+        email: seedUser.email,
+        passwordHash,
+        displayName: seedUser.displayName,
+      },
+    });
+  }
+
+  const tags = ['paisaje', 'retrato', 'urbano', 'naturaleza', 'viajes'];
+  for (const name of tags) {
+    await Tag.findOrCreate({ where: { name }, defaults: { name } });
+  }
+
+  console.log(`Base de datos '${process.env.DB_NAME}' inicializada correctamente en PostgreSQL.`);
 }
 
 run().catch((error) => {

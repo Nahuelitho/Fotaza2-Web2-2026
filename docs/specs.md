@@ -8,7 +8,7 @@
 ## 2. Stack y restricciones tecnicas
 - Backend principal: Node.js + Express
 - Renderizado: Pug del lado del servidor
-- Base de datos: MySQL
+- Base de datos: PostgreSQL
 - Frontend: HTML, CSS, JS, Pug
 - Se pueden usar librerias auxiliares del lado del servidor
 - Se pueden usar frameworks CSS o plantillas visuales
@@ -162,7 +162,7 @@ Tablas base del proyecto:
 - No usar JWT en esta etapa
 - No usar Passport en esta etapa
 - Imagenes guardadas en servidor/localmente y rutas en BD
-- No guardar blobs en MySQL como estrategia principal
+- No guardar blobs en PostgreSQL como estrategia principal
 
 ## 8. Requisitos de regularizacion
 La version regularizable debe cumplir como minimo:
