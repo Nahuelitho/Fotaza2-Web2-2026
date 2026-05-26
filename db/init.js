@@ -1,5 +1,6 @@
 const dotenv = require('dotenv');
 const bcrypt = require('bcryptjs');
+const { Client } = require('pg');
 const { sequelize, Role, User, Tag } = require('../models/sequelize');
 
 dotenv.config({ quiet: true });
@@ -15,9 +16,37 @@ if (missingEnv.length > 0) {
 
 const DEMO_PASSWORD = process.env.SEED_DEMO_PASSWORD || '123456';
 
+async function ensureDatabaseExists() {
+  const adminClient = new Client({
+    host: process.env.DB_HOST,
+    port: Number(process.env.DB_PORT),
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD || '',
+    database: 'postgres',
+  });
+
+  await adminClient.connect();
+
+  try {
+    const dbName = process.env.DB_NAME;
+    if (!/^[a-zA-Z0-9_]+$/.test(dbName)) {
+      throw new Error('DB_NAME invalido. Usa solo letras, numeros y guion bajo.');
+    }
+    const existing = await adminClient.query('SELECT 1 FROM pg_database WHERE datname = $1', [dbName]);
+
+    if (existing.rowCount === 0) {
+      await adminClient.query(`CREATE DATABASE "${dbName}"`);
+      console.log(`Base de datos '${dbName}' creada.`);
+    }
+  } finally {
+    await adminClient.end();
+  }
+}
+
 async function run() {
+  await ensureDatabaseExists();
   await sequelize.authenticate();
-  await sequelize.sync({ alter: true });
+  await sequelize.sync();
 
   const roles = ['admin', 'validator', 'user'];
   for (const name of roles) {
