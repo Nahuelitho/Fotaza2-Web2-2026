@@ -383,6 +383,47 @@ input {
   gap: 1rem;
 }
 
+.post-item {
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.post-item__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.post-item__header h4 {
+  margin: 0;
+}
+
+.post-item__author,
+.post-item__meta {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.post-item__description {
+  margin: 0.65rem 0;
+}
+
+.post-item__image {
+  display: block;
+  width: 100%;
+  max-height: 340px;
+  object-fit: cover;
+  border-radius: 0.8rem;
+  border: 1px solid var(--line);
+}
+
+.post-item__meta {
+  margin: 0.65rem 0;
+}
+
 .post-card__identity {
   display: flex;
   align-items: center;
@@ -524,6 +565,12 @@ input {
   color: #9f4f26;
 }
 
+.form-message--success {
+  background: rgba(99, 168, 118, 0.16);
+  border: 1px solid rgba(99, 168, 118, 0.35);
+  color: #2d6b3f;
+}
+
 .auth-form__row {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -541,6 +588,65 @@ input {
   border: 1px solid var(--border);
   border-radius: 1rem;
   background: rgba(255, 255, 255, 0.88);
+  color: var(--text);
+}
+
+.auth-field select {
+  width: 100%;
+  padding: 0.95rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.88);
+  color: var(--text);
+}
+
+.add-post-banner {
+  margin-bottom: 1rem;
+}
+
+.add-post-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1rem 1.2rem;
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--text);
+  font-weight: 700;
+}
+
+.add-post-trigger__plus {
+  font-size: 1.7rem;
+  line-height: 1;
+  color: var(--accent-strong);
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(27, 20, 15, 0.45);
+}
+
+.modal-card {
+  width: min(680px, 100%);
+  max-height: 92vh;
+  overflow-y: auto;
+}
+
+.modal-close {
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.72);
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
   color: var(--text);
 }
 

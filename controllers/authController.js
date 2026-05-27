@@ -1,187 +1,187 @@
 const bcrypt = require('bcryptjs');
 const {
-  findByEmail,
-  findByUsername,
-  findByEmailOrUsername,
-  createUser,
+  buscarPorCorreo,
+  buscarPorUsuario,
+  buscarPorCorreoOUsuario,
+  crearUsuario,
 } = require('../models/userModel');
 
-function renderLoginView(res, options = {}) {
+function renderizarVistaInicioSesion(res, opciones = {}) {
   return res.render('pages/login', {
     title: 'Iniciar sesion | Fotaza 2',
-    authTitle: 'Iniciar sesion',
-    authEyebrow: '',
-    authText: '',
-    authMode: 'login',
-    errorMessage: '',
-    formData: {},
-    ...options,
+    tituloAuth: 'Iniciar sesion',
+    cejaAuth: '',
+    textoAuth: '',
+    modoAuth: 'inicio-sesion',
+    mensajeError: '',
+    datosFormulario: {},
+    ...opciones,
   });
 }
 
-function renderRegisterView(res, options = {}) {
+function renderizarVistaRegistro(res, opciones = {}) {
   return res.render('pages/register', {
     title: 'Crear cuenta | Fotaza 2',
-    authTitle: 'Crear cuenta',
-    authEyebrow: '',
-    authText: '',
-    authMode: 'register',
-    errorMessage: '',
-    formData: {},
-    ...options,
+    tituloAuth: 'Crear cuenta',
+    cejaAuth: '',
+    textoAuth: '',
+    modoAuth: 'registro',
+    mensajeError: '',
+    datosFormulario: {},
+    ...opciones,
   });
 }
 
-function renderForgotPassword(req, res) {
-  res.render('pages/forgot-password', {
+function mostrarRecuperarContrasena(req, res) {
+  res.render('pages/recuperar-contrasena', {
     title: 'Recuperar contrasena | Fotaza 2',
-    authTitle: 'Recuperar contrasena',
-    authEyebrow: '',
-    authText: '',
-    authMode: 'forgot-password',
+    tituloAuth: 'Recuperar contrasena',
+    cejaAuth: '',
+    textoAuth: '',
+    modoAuth: 'recuperar-contrasena',
   });
 }
 
-function renderLogin(req, res) {
-  return renderLoginView(res);
+function mostrarInicioSesion(req, res) {
+  return renderizarVistaInicioSesion(res);
 }
 
-function renderRegister(req, res) {
-  return renderRegisterView(res);
+function mostrarRegistro(req, res) {
+  return renderizarVistaRegistro(res);
 }
 
-async function registerUser(req, res) {
-  const { displayName, username, email, password, confirmPassword } = req.body;
-  const normalizedEmail = email?.trim().toLowerCase();
-  const normalizedUsername = username?.trim();
-  const normalizedDisplayName = displayName?.trim();
+async function registrarUsuario(req, res) {
+  const { nombreVisible, usuario, correo, contrasena, confirmarContrasena } = req.body;
+  const correoNormalizado = correo?.trim().toLowerCase();
+  const usuarioNormalizado = usuario?.trim();
+  const nombreVisibleNormalizado = nombreVisible?.trim();
 
-  if (!normalizedDisplayName || !normalizedUsername || !normalizedEmail || !password || !confirmPassword) {
-    return renderRegisterView(res, {
-      errorMessage: 'Completa todos los campos para crear la cuenta.',
-      formData: { displayName: normalizedDisplayName, username: normalizedUsername, email: normalizedEmail },
+  if (!nombreVisibleNormalizado || !usuarioNormalizado || !correoNormalizado || !contrasena || !confirmarContrasena) {
+    return renderizarVistaRegistro(res, {
+      mensajeError: 'Completa todos los campos para crear la cuenta.',
+      datosFormulario: { nombreVisible: nombreVisibleNormalizado, usuario: usuarioNormalizado, correo: correoNormalizado },
     });
   }
 
-  if (password.length < 6) {
-    return renderRegisterView(res, {
-      errorMessage: 'La contrasena debe tener al menos 6 caracteres.',
-      formData: { displayName: normalizedDisplayName, username: normalizedUsername, email: normalizedEmail },
+  if (contrasena.length < 6) {
+    return renderizarVistaRegistro(res, {
+      mensajeError: 'La contrasena debe tener al menos 6 caracteres.',
+      datosFormulario: { nombreVisible: nombreVisibleNormalizado, usuario: usuarioNormalizado, correo: correoNormalizado },
     });
   }
 
-  if (password !== confirmPassword) {
-    return renderRegisterView(res, {
-      errorMessage: 'La confirmacion de la contrasena no coincide.',
-      formData: { displayName: normalizedDisplayName, username: normalizedUsername, email: normalizedEmail },
+  if (contrasena !== confirmarContrasena) {
+    return renderizarVistaRegistro(res, {
+      mensajeError: 'La confirmacion de la contrasena no coincide.',
+      datosFormulario: { nombreVisible: nombreVisibleNormalizado, usuario: usuarioNormalizado, correo: correoNormalizado },
     });
   }
 
   try {
-    const existingEmail = await findByEmail(normalizedEmail);
-    if (existingEmail) {
-      return renderRegisterView(res, {
-        errorMessage: 'Ese correo ya esta registrado.',
-        formData: { displayName: normalizedDisplayName, username: normalizedUsername, email: normalizedEmail },
+    const correoExistente = await buscarPorCorreo(correoNormalizado);
+    if (correoExistente) {
+      return renderizarVistaRegistro(res, {
+        mensajeError: 'Ese correo ya esta registrado.',
+        datosFormulario: { nombreVisible: nombreVisibleNormalizado, usuario: usuarioNormalizado, correo: correoNormalizado },
       });
     }
 
-    const existingUsername = await findByUsername(normalizedUsername);
-    if (existingUsername) {
-      return renderRegisterView(res, {
-        errorMessage: 'Ese nombre de usuario ya esta en uso.',
-        formData: { displayName: normalizedDisplayName, username: normalizedUsername, email: normalizedEmail },
+    const usuarioExistente = await buscarPorUsuario(usuarioNormalizado);
+    if (usuarioExistente) {
+      return renderizarVistaRegistro(res, {
+        mensajeError: 'Ese nombre de usuario ya esta en uso.',
+        datosFormulario: { nombreVisible: nombreVisibleNormalizado, usuario: usuarioNormalizado, correo: correoNormalizado },
       });
     }
 
-    const passwordHash = await bcrypt.hash(password, 10);
-    const user = await createUser({
-      username: normalizedUsername,
-      email: normalizedEmail,
-      passwordHash,
-      displayName: normalizedDisplayName,
+    const hashContrasena = await bcrypt.hash(contrasena, 10);
+    const usuarioCreado = await crearUsuario({
+      usuario: usuarioNormalizado,
+      correo: correoNormalizado,
+      hashContrasena,
+      nombreVisible: nombreVisibleNormalizado,
     });
 
     req.session.user = {
-      id: user.id,
-      username: user.username,
-      email: user.email,
-      displayName: user.display_name,
+      id: usuarioCreado.id,
+      usuario: usuarioCreado.usuario,
+      correo: usuarioCreado.correo,
+      nombreVisible: usuarioCreado.nombre_visible,
     };
 
     return res.redirect('/');
-  } catch (error) {
-    return renderRegisterView(res, {
-      errorMessage: error.message || 'No se pudo crear la cuenta en este momento.',
-      formData: { displayName: normalizedDisplayName, username: normalizedUsername, email: normalizedEmail },
+  } catch (errorDeRegistro) {
+    return renderizarVistaRegistro(res, {
+      mensajeError: errorDeRegistro.message || 'No se pudo crear la cuenta en este momento.',
+      datosFormulario: { nombreVisible: nombreVisibleNormalizado, usuario: usuarioNormalizado, correo: correoNormalizado },
     });
   }
 }
 
-async function loginUser(req, res) {
-  const { identifier, password } = req.body;
-  const normalizedIdentifier = identifier?.trim();
+async function iniciarSesionUsuario(req, res) {
+  const { identificador, contrasena } = req.body;
+  const identificadorNormalizado = identificador?.trim();
 
-  if (!normalizedIdentifier || !password) {
-    return renderLoginView(res, {
-      errorMessage: 'Ingresa tu usuario o correo y la contrasena.',
-      formData: { identifier: normalizedIdentifier },
+  if (!identificadorNormalizado || !contrasena) {
+    return renderizarVistaInicioSesion(res, {
+      mensajeError: 'Ingresa tu usuario o correo y la contrasena.',
+      datosFormulario: { identificador: identificadorNormalizado },
     });
   }
 
   try {
-    const user = await findByEmailOrUsername(normalizedIdentifier);
+    const usuario = await buscarPorCorreoOUsuario(identificadorNormalizado);
 
-    if (!user) {
-      return renderLoginView(res, {
-        errorMessage: 'No encontramos un usuario con esas credenciales.',
-        formData: { identifier: normalizedIdentifier },
+    if (!usuario) {
+      return renderizarVistaInicioSesion(res, {
+        mensajeError: 'No encontramos un usuario con esas credenciales.',
+        datosFormulario: { identificador: identificadorNormalizado },
       });
     }
 
-    const isValidPassword = await bcrypt.compare(password, user.password_hash);
+    const contrasenaValida = await bcrypt.compare(contrasena, usuario.password_hash);
 
-    if (!isValidPassword) {
-      return renderLoginView(res, {
-        errorMessage: 'La contrasena es incorrecta.',
-        formData: { identifier: normalizedIdentifier },
+    if (!contrasenaValida) {
+      return renderizarVistaInicioSesion(res, {
+        mensajeError: 'La contrasena es incorrecta.',
+        datosFormulario: { identificador: identificadorNormalizado },
       });
     }
 
-    if (!user.is_active) {
-      return renderLoginView(res, {
-        errorMessage: 'Tu cuenta esta inactiva. Contacta al administrador.',
-        formData: { identifier: normalizedIdentifier },
+    if (!usuario.is_active) {
+      return renderizarVistaInicioSesion(res, {
+        mensajeError: 'Tu cuenta esta inactiva. Contacta al administrador.',
+        datosFormulario: { identificador: identificadorNormalizado },
       });
     }
 
     req.session.user = {
-      id: user.id,
-      username: user.username,
-      email: user.email,
-      displayName: user.display_name,
+      id: usuario.id,
+      usuario: usuario.username,
+      correo: usuario.email,
+      nombreVisible: usuario.display_name,
     };
 
     return res.redirect('/');
-  } catch (error) {
-    return renderLoginView(res, {
-      errorMessage: error.message || 'No se pudo iniciar sesion en este momento.',
-      formData: { identifier: normalizedIdentifier },
+  } catch (errorDeInicioSesion) {
+    return renderizarVistaInicioSesion(res, {
+      mensajeError: errorDeInicioSesion.message || 'No se pudo iniciar sesion en este momento.',
+      datosFormulario: { identificador: identificadorNormalizado },
     });
   }
 }
 
-function logoutUser(req, res) {
+function cerrarSesionUsuario(req, res) {
   req.session.destroy(() => {
     res.redirect('/');
   });
 }
 
 module.exports = {
-  renderLogin,
-  renderRegister,
-  renderForgotPassword,
-  registerUser,
-  loginUser,
-  logoutUser,
+  mostrarInicioSesion,
+  mostrarRegistro,
+  mostrarRecuperarContrasena,
+  registrarUsuario,
+  iniciarSesionUsuario,
+  cerrarSesionUsuario,
 };

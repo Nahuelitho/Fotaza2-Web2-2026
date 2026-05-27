@@ -1,7 +1,8 @@
 extends ../layouts/main
 
 block content
-  - var safeFeaturedTags = featuredTags || []
+  - var safeFeaturedTags = etiquetasDestacadas || []
+  - var safePosts = posts || []
   .home-shell.container
     .home-grid
       include ../partials/home-sidebar
@@ -10,9 +11,49 @@ block content
         include ../partials/home-hero
 
         section.card-soft
+          if mensajeEstado
+            p.form-message.form-message--success= mensajeEstado
+          if mensajeError
+            p.form-message.form-message--error= mensajeError
+          .add-post-banner
+            if usuarioActual
+              button.add-post-trigger(type='button', data-open-post-modal='true', aria-haspopup='dialog')
+                span.add-post-trigger__plus +
+                span Agregar publicacion
+            else
+              a.add-post-trigger(href='/iniciar-sesion')
+                span.add-post-trigger__plus +
+                span Agregar publicacion
+
+
+        section.card-soft
           .section-heading
-            h2 Inicio
-            p Proyecto en desarrollo.
+            h3 Publicaciones
+          if safePosts.length === 0
+            p.rail-note Todavia no hay publicaciones.
+          else
+            br
+            .post-feed
+              each post in safePosts
+                - var image = (post.PostImages && post.PostImages[0]) || null
+                - var tags = post.Tags || []
+                article.post-item
+                  .post-item__header
+                    h4= post.title
+                    if post.User
+                      span.post-item__author= '@' + post.User.username
+                  if post.description
+                    p.post-item__description= post.description
+                  if image
+                    img.post-item__image(src=`data:${image.mimeType};base64,${image.imageBase64}`, alt=post.title)
+                    p.post-item__meta
+                      | Licencia: #{image.licenseType === 'creative_commons' ? 'Sin copyright (Creative Commons)' : 'Con copyright'}
+                      if image.watermarkText
+                        |  · Marca de agua: #{image.watermarkText}
+                  if tags.length > 0
+                    .tag-row
+                      each tag in tags
+                        span.tag-pill.tag-pill--soft= tag.name
 
       aside.right-rail
         section.card-soft
@@ -24,3 +65,104 @@ block content
           .tag-cloud
             each tag in safeFeaturedTags
               a.tag-pill(href='#')= tag
+
+  if usuarioActual
+    .modal-overlay#post-modal(hidden)
+      .modal-card.card-soft(role='dialog', aria-modal='true', aria-labelledby='post-modal-title')
+        .section-heading
+          h3#post-modal-title Nueva publicacion
+          button.modal-close(type='button', data-close-post-modal='true', aria-label='Cerrar') x
+
+        form.auth-form(action='/publicaciones', method='post', enctype='multipart/form-data')
+          label.auth-field
+            span Titulo
+            input(type='text', name='titulo', required, maxlength='150')
+
+          label.auth-field
+            span Descripcion (opcional)
+            input(type='text', name='descripcion', maxlength='500')
+
+          label.auth-field
+            span Imagen
+            input(type='file', name='imagen', accept='image/jpeg,image/png,image/webp', required)
+
+          .auth-form__row
+            label.auth-field
+              span Licencia
+              select(name='tipoLicencia', required, data-license-type='true')
+                option(value='') Seleccionar
+                option(value='con_copyright') Con copyright
+                option(value='creative_commons') Sin copyright (Creative Commons)
+
+            label.auth-field
+              span Marca de agua
+              input(type='text', name='textoMarcaAgua', maxlength='100', data-watermark='true')
+
+          p.rail-note Imagen maxima: 2MB. Formatos: JPG, PNG o WEBP.
+
+          label.auth-field
+            span Tags (separados por coma)
+            input(type='text', name='etiquetas', required, placeholder='paisaje, viaje')
+
+          .auth-form__actions
+            button.button(type='submit') Publicar
+            button.button.button-ghost(type='button', data-close-post-modal='true') Cancelar
+
+    script.
+      (function () {
+        var openButton = document.querySelector('[data-open-post-modal="true"]');
+        var modal = document.getElementById('post-modal');
+        var closeButtons = document.querySelectorAll('[data-close-post-modal="true"]');
+        var licenseSelect = document.querySelector('[data-license-type="true"]');
+        var watermarkInput = document.querySelector('[data-watermark="true"]');
+        var form = modal.querySelector('form');
+        var imageInput = modal.querySelector('input[name="imagen"]');
+
+        if (!modal || !openButton) return;
+
+        function updateWatermarkState() {
+          if (!licenseSelect || !watermarkInput) return;
+          var requiresWatermark = licenseSelect.value === 'con_copyright';
+          watermarkInput.required = requiresWatermark;
+          watermarkInput.disabled = !requiresWatermark;
+          if (!requiresWatermark) {
+            watermarkInput.value = '';
+          }
+        }
+
+        openButton.addEventListener('click', function () {
+          modal.hidden = false;
+        });
+
+        closeButtons.forEach(function (button) {
+          button.addEventListener('click', function () {
+            modal.hidden = true;
+          });
+        });
+
+        modal.addEventListener('click', function (event) {
+          if (event.target === modal) {
+            modal.hidden = true;
+          }
+        });
+
+        if (licenseSelect) {
+          licenseSelect.addEventListener('change', updateWatermarkState);
+          updateWatermarkState();
+        }
+
+        if (form && imageInput) {
+          form.addEventListener('submit', function (event) {
+            var file = imageInput.files && imageInput.files[0];
+            if (!file) return;
+            if (file.size > 2 * 1024 * 1024) {
+              event.preventDefault();
+              alert('La imagen supera el tamano maximo permitido (2MB).');
+            }
+          });
+        }
+
+        if (window.location.search.indexOf('estado=creada') >= 0 || window.location.search.indexOf('error=') >= 0) {
+          window.history.replaceState({}, document.title, '/');
+        }
+      })();

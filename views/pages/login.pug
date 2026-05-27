@@ -9,18 +9,18 @@ block content
         .section-heading.auth-card__heading
           h2 Iniciar sesion
 
-        if errorMessage
-          p.form-message.form-message--error= errorMessage
+        if mensajeError
+          p.form-message.form-message--error= mensajeError
 
-        form.auth-form(action='/login', method='post')
+        form.auth-form(action='/iniciar-sesion', method='post')
           label.auth-field
             span Correo o usuario
-            input(type='text', name='identifier', placeholder='tuusuario o correo@ejemplo.com', value=(formData && formData.identifier) || '')
+            input(type='text', name='identificador', placeholder='tuusuario o correo@ejemplo.com', value=(datosFormulario && datosFormulario.identificador) || '')
 
           label.auth-field
             span Contrasena
-            input(type='password', name='password', placeholder='Ingresa tu contrasena')
+            input(type='password', name='contrasena', placeholder='Ingresa tu contrasena')
 
           .auth-form__actions
             button.button(type='submit') Iniciar sesion
-            a.auth-link(href='/forgot-password') Olvide mi contrasena
+            a.auth-link(href='/recuperar-contrasena') Olvide mi contrasena

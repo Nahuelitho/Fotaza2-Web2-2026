@@ -1,21 +1,21 @@
 const express = require('express');
 const {
-  renderLogin,
-  renderRegister,
-  renderForgotPassword,
-  registerUser,
-  loginUser,
-  logoutUser,
+  mostrarInicioSesion,
+  mostrarRegistro,
+  mostrarRecuperarContrasena,
+  registrarUsuario,
+  iniciarSesionUsuario,
+  cerrarSesionUsuario,
 } = require('../controllers/authController');
-const { requireGuest, requireAuth } = require('../middlewares/authMiddleware');
+const { requerirInvitado, requerirAutenticacion } = require('../middlewares/authMiddleware');
 
 const router = express.Router();
 
-router.get('/login', requireGuest, renderLogin);
-router.get('/register', requireGuest, renderRegister);
-router.get('/forgot-password', renderForgotPassword);
-router.post('/login', requireGuest, loginUser);
-router.post('/register', requireGuest, registerUser);
-router.post('/logout', requireAuth, logoutUser);
+router.get('/iniciar-sesion', requerirInvitado, mostrarInicioSesion);
+router.get('/registro', requerirInvitado, mostrarRegistro);
+router.get('/recuperar-contrasena', mostrarRecuperarContrasena);
+router.post('/iniciar-sesion', requerirInvitado, iniciarSesionUsuario);
+router.post('/registro', requerirInvitado, registrarUsuario);
+router.post('/cerrar-sesion', requerirAutenticacion, cerrarSesionUsuario);
 
 module.exports = router;

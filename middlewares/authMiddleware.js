@@ -1,12 +1,12 @@
-function requireAuth(req, res, next) {
+function requerirAutenticacion(req, res, next) {
   if (req.session.user) {
     return next();
   }
 
-  return res.redirect('/login');
+  return res.redirect('/iniciar-sesion');
 }
 
-function requireGuest(req, res, next) {
+function requerirInvitado(req, res, next) {
   if (!req.session.user) {
     return next();
   }
@@ -15,6 +15,6 @@ function requireGuest(req, res, next) {
 }
 
 module.exports = {
-  requireAuth,
-  requireGuest,
+  requerirAutenticacion,
+  requerirInvitado,
 };

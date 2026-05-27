@@ -9,32 +9,32 @@ block content
         .section-heading.auth-card__heading
           h2 Crear cuenta
 
-        if errorMessage
-          p.form-message.form-message--error= errorMessage
+        if mensajeError
+          p.form-message.form-message--error= mensajeError
 
-        form.auth-form(action='/register', method='post')
+        form.auth-form(action='/registro', method='post')
           .auth-form__row
             label.auth-field
               span Nombre visible
-              input(type='text', name='displayName', placeholder='Como quieres que se vea tu nombre', value=(formData && formData.displayName) || '')
+              input(type='text', name='nombreVisible', placeholder='Como quieres que se vea tu nombre', value=(datosFormulario && datosFormulario.nombreVisible) || '')
 
             label.auth-field
               span Usuario
-              input(type='text', name='username', placeholder='Elige tu nombre de usuario', value=(formData && formData.username) || '')
+              input(type='text', name='usuario', placeholder='Elige tu nombre de usuario', value=(datosFormulario && datosFormulario.usuario) || '')
 
           label.auth-field
             span Correo electronico
-            input(type='email', name='email', placeholder='correo@ejemplo.com', value=(formData && formData.email) || '')
+            input(type='email', name='correo', placeholder='correo@ejemplo.com', value=(datosFormulario && datosFormulario.correo) || '')
 
           .auth-form__row
             label.auth-field
               span Contrasena
-              input(type='password', name='password', placeholder='Crea una contrasena')
+              input(type='password', name='contrasena', placeholder='Crea una contrasena')
 
             label.auth-field
               span Confirmar contraseña
-              input(type='password', name='confirmPassword', placeholder='Repite la contrasena')
+              input(type='password', name='confirmarContrasena', placeholder='Repite la contrasena')
 
           .auth-form__actions
             button.button(type='submit') Crear cuenta
-            a.auth-link(href='/login') Ya tengo cuenta
+            a.auth-link(href='/iniciar-sesion') Ya tengo cuenta

@@ -1,30 +1,30 @@
 const { Op } = require('sequelize');
 const { User, Role } = require('./sequelize');
 
-async function findByEmail(email) {
-  return User.findOne({ where: { email }, raw: true });
+async function buscarPorCorreo(correo) {
+  return User.findOne({ where: { email: correo }, raw: true });
 }
 
-async function findByUsername(username) {
-  return User.findOne({ where: { username }, raw: true });
+async function buscarPorUsuario(usuario) {
+  return User.findOne({ where: { username: usuario }, raw: true });
 }
 
-async function findByEmailOrUsername(identifier) {
+async function buscarPorCorreoOUsuario(identificador) {
   return User.findOne({
     where: {
-      [Op.or]: [{ email: identifier }, { username: identifier }],
+      [Op.or]: [{ email: identificador }, { username: identificador }],
     },
     raw: true,
   });
 }
 
-async function findDefaultRoleId() {
+async function buscarIdRolPredeterminado() {
   const role = await Role.findOne({ where: { name: 'user' }, raw: true });
   return role?.id || null;
 }
 
-async function createUser({ username, email, passwordHash, displayName }) {
-  const roleId = await findDefaultRoleId();
+async function crearUsuario({ usuario, correo, hashContrasena, nombreVisible }) {
+  const roleId = await buscarIdRolPredeterminado();
 
   if (!roleId) {
     throw new Error('No existe el rol base de usuario. Ejecuta npm run db:init.');
@@ -32,25 +32,25 @@ async function createUser({ username, email, passwordHash, displayName }) {
 
   const user = await User.create({
     roleId,
-    username,
-    email,
-    passwordHash,
-    displayName,
+    username: usuario,
+    email: correo,
+    passwordHash: hashContrasena,
+    displayName: nombreVisible,
   });
 
   return {
     id: user.id,
     role_id: roleId,
-    username,
-    email,
-    display_name: displayName,
+    usuario,
+    correo,
+    nombre_visible: nombreVisible,
     is_active: 1,
   };
 }
 
 module.exports = {
-  findByEmail,
-  findByUsername,
-  findByEmailOrUsername,
-  createUser,
+  buscarPorCorreo,
+  buscarPorUsuario,
+  buscarPorCorreoOUsuario,
+  crearUsuario,
 };
