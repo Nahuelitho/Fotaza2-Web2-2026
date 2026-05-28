@@ -1,0 +1,26 @@
+extends ../layouts/main
+
+block content
+  .aut-lienzo.ly-cont
+    .aut-grilla
+      include ../partials/autenticacion-lateral
+
+      section.aut-tar.comp-tarjeta
+        .comp-cabecera.aut-tar__cab
+          h2 Iniciar sesion
+
+        if mensajeError
+          p.comp-msg.comp-msg--error= mensajeError
+
+        form.aut-form(action='/iniciar-sesion', method='post')
+          label.aut-campo
+            span Correo o usuario
+            input(type='text', name='identificador', placeholder='tuusuario o correo@ejemplo.com', value=(datosFormulario && datosFormulario.identificador) || '')
+
+          label.aut-campo
+            span Contrasena
+            input(type='password', name='contrasena', placeholder='Ingresa tu contrasena')
+
+          .aut-form__acciones
+            button.comp-btn(type='submit') Iniciar sesion
+            a.aut-link(href='/recuperar-contrasena') Olvide mi contrasena

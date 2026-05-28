@@ -1,40 +1,40 @@
 extends ../layouts/main
 
 block content
-  .auth-shell.container
-    .auth-grid
-      include ../partials/auth-aside
+  .aut-lienzo.ly-cont
+    .aut-grilla
+      include ../partials/autenticacion-lateral
 
-      section.auth-card.card-soft
-        .section-heading.auth-card__heading
+      section.aut-tar.comp-tarjeta
+        .comp-cabecera.aut-tar__cab
           h2 Crear cuenta
 
         if mensajeError
-          p.form-message.form-message--error= mensajeError
+          p.comp-msg.comp-msg--error= mensajeError
 
-        form.auth-form(action='/registro', method='post')
-          .auth-form__row
-            label.auth-field
+        form.aut-form(action='/registro', method='post')
+          .aut-form__fila
+            label.aut-campo
               span Nombre visible
               input(type='text', name='nombreVisible', placeholder='Como quieres que se vea tu nombre', value=(datosFormulario && datosFormulario.nombreVisible) || '')
 
-            label.auth-field
+            label.aut-campo
               span Usuario
               input(type='text', name='usuario', placeholder='Elige tu nombre de usuario', value=(datosFormulario && datosFormulario.usuario) || '')
 
-          label.auth-field
+          label.aut-campo
             span Correo electronico
             input(type='email', name='correo', placeholder='correo@ejemplo.com', value=(datosFormulario && datosFormulario.correo) || '')
 
-          .auth-form__row
-            label.auth-field
+          .aut-form__fila
+            label.aut-campo
               span Contrasena
               input(type='password', name='contrasena', placeholder='Crea una contrasena')
 
-            label.auth-field
+            label.aut-campo
               span Confirmar contraseña
               input(type='password', name='confirmarContrasena', placeholder='Repite la contrasena')
 
-          .auth-form__actions
-            button.button(type='submit') Crear cuenta
-            a.auth-link(href='/iniciar-sesion') Ya tengo cuenta
+          .aut-form__acciones
+            button.comp-btn(type='submit') Crear cuenta
+            a.aut-link(href='/iniciar-sesion') Ya tengo cuenta

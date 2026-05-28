@@ -1,20 +1,20 @@
-aside.auth-aside.card-soft
+aside.aut-lateral.comp-tarjeta
   if cejaAuth
-    p.eyebrow= cejaAuth
-  h1.auth-title= tituloAuth
+    p.aut-ceja= cejaAuth
+  h1.aut-titulo= tituloAuth
   if textoAuth
-    p.auth-text= textoAuth
+    p.aut-texto= textoAuth
 
   if modoAuth === 'inicio-sesion'
-    p.auth-switch
+    p.aut-cambio
       | Todavia no tienes cuenta?
       br
       a(href='/registro') Crear cuenta
   else if modoAuth === 'registro'
-    p.auth-switch
+    p.aut-cambio
       | Ya tienes cuenta?
       a(href='/iniciar-sesion') Iniciar sesion
   else
-    p.auth-switch
+    p.aut-cambio
       | Volver al acceso principal?
       a(href='/iniciar-sesion') Iniciar sesion

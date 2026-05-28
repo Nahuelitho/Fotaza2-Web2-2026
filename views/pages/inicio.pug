@@ -1,112 +1,99 @@
 extends ../layouts/main
 
 block content
-  - var safeFeaturedTags = etiquetasDestacadas || []
-  - var safePosts = posts || []
-  .home-shell.container
-    .home-grid
-      include ../partials/home-sidebar
+  - var publicacionesSeguras = publicaciones || []
+  .ini-lienzo.ly-cont
+    .ini-grilla
+      include ../partials/inicio-barra-lateral
 
-      section.feed-column
-        include ../partials/home-hero
+      section.ini-feed
+        include ../partials/inicio-hero
 
-        section.card-soft
+        section.comp-tarjeta
           if mensajeEstado
-            p.form-message.form-message--success= mensajeEstado
+            p.comp-msg.comp-msg--ok= mensajeEstado
           if mensajeError
-            p.form-message.form-message--error= mensajeError
-          .add-post-banner
+            p.comp-msg.comp-msg--error= mensajeError
+          .ini-agregar
             if usuarioActual
-              button.add-post-trigger(type='button', data-open-post-modal='true', aria-haspopup='dialog')
-                span.add-post-trigger__plus +
+              button.ini-agregar__btn(type='button', data-open-post-modal='true', aria-haspopup='dialog')
+                span.ini-agregar__ico +
                 span Agregar publicacion
             else
-              a.add-post-trigger(href='/iniciar-sesion')
-                span.add-post-trigger__plus +
+              a.ini-agregar__btn(href='/iniciar-sesion')
+                span.ini-agregar__ico +
                 span Agregar publicacion
 
 
-        section.card-soft
-          .section-heading
+        section.comp-tarjeta
+          .comp-cabecera
             h3 Publicaciones
-          if safePosts.length === 0
-            p.rail-note Todavia no hay publicaciones.
+          if publicacionesSeguras.length === 0
+            p.comp-nota Todavia no hay publicaciones.
           else
-            br
-            .post-feed
-              each post in safePosts
-                - var image = (post.PostImages && post.PostImages[0]) || null
-                - var tags = post.Tags || []
-                article.post-item
-                  .post-item__header
-                    h4= post.title
-                    if post.User
-                      span.post-item__author= '@' + post.User.username
-                  if post.description
-                    p.post-item__description= post.description
-                  if image
-                    img.post-item__image(src=`data:${image.mimeType};base64,${image.imageBase64}`, alt=post.title)
-                    p.post-item__meta
-                      | Licencia: #{image.licenseType === 'creative_commons' ? 'Sin copyright (Creative Commons)' : 'Con copyright'}
-                      if image.watermarkText
-                        |  · Marca de agua: #{image.watermarkText}
-                  if tags.length > 0
-                    .tag-row
-                      each tag in tags
-                        span.tag-pill.tag-pill--soft= tag.name
-
-      aside.right-rail
-        section.card-soft
-          .section-heading
-            h3 Desarrollo
-        section.card-soft
-          .section-heading
-            h3 Etiquetas previstas
-          .tag-cloud
-            each tag in safeFeaturedTags
-              a.tag-pill(href='#')= tag
+            .ini-posts
+              each publicacion in publicacionesSeguras
+                - var imagen = (publicacion.imagenes && publicacion.imagenes[0]) || null
+                - var etiquetas = publicacion.etiquetas || []
+                article.ini-post
+                  .ini-post__cab
+                    h4= publicacion.titulo
+                    if publicacion.usuario
+                      span.ini-post__autor= '@' + publicacion.usuario.nombreUsuario
+                  if publicacion.descripcion
+                    p.ini-post__desc= publicacion.descripcion
+                  if imagen
+                    img.ini-post__img(src=`data:${imagen.tipoMime};base64,${imagen.imagenBase64}`, alt=publicacion.titulo)
+                    p.ini-post__meta
+                      | Licencia: #{imagen.tipoLicencia === 'creative_commons' ? 'Sin copyright (Creative Commons)' : 'Con copyright'}
+                      if imagen.textoMarcaAgua
+                        |  · Marca de agua: #{imagen.textoMarcaAgua}
+                  if etiquetas.length > 0
+                    .comp-tags
+                      each etiqueta in etiquetas
+                        span.comp-tag.comp-tag--suave= etiqueta.name
 
   if usuarioActual
-    .modal-overlay#post-modal(hidden)
-      .modal-card.card-soft(role='dialog', aria-modal='true', aria-labelledby='post-modal-title')
-        .section-heading
+    .comp-modal#post-modal(hidden)
+      .comp-modal__caja.comp-tarjeta(role='dialog', aria-modal='true', aria-labelledby='post-modal-title')
+        .comp-cabecera
           h3#post-modal-title Nueva publicacion
-          button.modal-close(type='button', data-close-post-modal='true', aria-label='Cerrar') x
+          button.comp-modal__cerrar(type='button', data-close-post-modal='true', aria-label='Cerrar') x
 
-        form.auth-form(action='/publicaciones', method='post', enctype='multipart/form-data')
-          label.auth-field
+        form.aut-form(action='/publicaciones', method='post', enctype='multipart/form-data')
+          label.aut-campo
             span Titulo
             input(type='text', name='titulo', required, maxlength='150')
 
-          label.auth-field
+          label.aut-campo
             span Descripcion (opcional)
             input(type='text', name='descripcion', maxlength='500')
 
-          label.auth-field
+          label.aut-campo
             span Imagen
             input(type='file', name='imagen', accept='image/jpeg,image/png,image/webp', required)
 
-          .auth-form__row
-            label.auth-field
+          .aut-form__fila
+            label.aut-campo
               span Licencia
               select(name='tipoLicencia', required, data-license-type='true')
                 option(value='') Seleccionar
                 option(value='con_copyright') Con copyright
                 option(value='creative_commons') Sin copyright (Creative Commons)
 
-            label.auth-field
+            label.aut-campo
               span Marca de agua
               input(type='text', name='textoMarcaAgua', maxlength='100', data-watermark='true')
 
-          p.rail-note Imagen maxima: 2MB. Formatos: JPG, PNG o WEBP.
+          p.comp-nota Imagen maxima: 2MB. Formatos: JPG, PNG o WEBP.
 
-          label.auth-field
+          label.aut-campo
             span Tags (separados por coma)
             input(type='text', name='etiquetas', required, placeholder='paisaje, viaje')
 
-          .auth-form__actions
-            button.button(type='submit') Publicar
-            button.button.button-ghost(type='button', data-close-post-modal='true') Cancelar
+          .aut-form__acciones
+            button.comp-btn(type='submit') Publicar
+            button.comp-btn.comp-btn--fantasma(type='button', data-close-post-modal='true') Cancelar
 
     script.
       (function () {

@@ -1,0 +1,103 @@
+.comp-tarjeta {
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: 1.35rem;
+  padding: 1.2rem;
+  box-shadow: var(--sombra);
+}
+
+.comp-cabecera {
+  margin-bottom: 0.9rem;
+}
+
+.comp-cabecera h2,
+.comp-cabecera h3,
+.comp-cabecera h4 {
+  margin: 0;
+}
+
+.comp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 9rem;
+  padding: 0.85rem 1.15rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--acento) 0%, var(--acento-fuerte) 100%);
+  color: #fff;
+  font-weight: 600;
+}
+
+.comp-btn--suave {
+  background: rgba(255, 255, 255, 0.8);
+  color: var(--acento-fuerte);
+  border-color: var(--borde);
+}
+
+.comp-btn--fantasma {
+  background: transparent;
+  color: var(--texto-suave);
+  border-color: var(--borde);
+}
+
+.comp-msg {
+  margin: 0 0 0.9rem;
+  padding: 0.7rem 0.8rem;
+  border-radius: 0.8rem;
+  font-size: 0.92rem;
+}
+
+.comp-msg--error {
+  background: #fde9e4;
+  color: #8a3e2a;
+}
+
+.comp-msg--ok {
+  background: #e7f5e8;
+  color: #2f6a37;
+}
+
+.comp-nota {
+  margin: 0.9rem 0;
+  color: var(--texto-suave);
+  font-size: 0.93rem;
+}
+
+.comp-tags {
+  display: flex;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.comp-tag {
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  background: #f4d6bf;
+  color: #8c5639;
+}
+
+.comp-tag--suave {
+  background: #f8e8db;
+}
+
+.comp-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(53, 40, 32, 0.35);
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+}
+
+.comp-modal__caja {
+  width: min(740px, 100%);
+}
+
+.comp-modal__cerrar {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  color: var(--texto-suave);
+}

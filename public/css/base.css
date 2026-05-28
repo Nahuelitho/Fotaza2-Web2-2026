@@ -1,0 +1,54 @@
+:root {
+  --fondo: #f8f3ec;
+  --fondo-suave: #fffaf5;
+  --superficie: rgba(255, 251, 246, 0.9);
+  --texto: #352820;
+  --texto-suave: #77655b;
+  --acento: #e29c72;
+  --acento-fuerte: #d88356;
+  --borde: #eadccf;
+  --linea: rgba(119, 101, 91, 0.14);
+  --sombra: 0 18px 45px rgba(120, 84, 56, 0.1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: 'Manrope', Arial, sans-serif;
+  color: var(--texto);
+  background:
+    radial-gradient(circle at top left, rgba(226, 156, 114, 0.2), transparent 22%),
+    radial-gradient(circle at top right, rgba(244, 214, 191, 0.35), transparent 28%),
+    linear-gradient(180deg, var(--fondo-suave) 0%, var(--fondo) 100%);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+.ly-cont {
+  width: min(1240px, calc(100% - 2rem));
+  margin: 0 auto;
+}
+
+.u-solo-lect {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}

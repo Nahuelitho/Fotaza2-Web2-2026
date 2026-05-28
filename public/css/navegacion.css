@@ -1,0 +1,98 @@
+.nav-barra {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgba(248, 243, 236, 0.85);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--borde);
+  padding: 0.75rem 0;
+}
+
+.nav-conten {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.nav-marca {
+  min-width: 11rem;
+}
+
+.nav-logo {
+  display: block;
+  font-family: 'Caveat', cursive;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.nav-busc {
+  flex: 1;
+}
+
+.nav-busc input {
+  width: 100%;
+  border: 1px solid var(--borde);
+  border-radius: 999px;
+  padding: 0.85rem 1rem;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.nav-menu {
+  display: flex;
+}
+
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.75rem 0.95rem;
+  border-radius: 999px;
+  color: var(--texto-suave);
+}
+
+.nav-link--act {
+  background: rgba(255, 255, 255, 0.7);
+  color: var(--texto);
+}
+
+.nav-acciones {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.nav-usuario {
+  padding: 0.75rem 0.95rem;
+  border-radius: 999px;
+  border: 1px solid var(--borde);
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.nav-menu-btn {
+  width: 2.8rem;
+  height: 2.8rem;
+  border-radius: 50%;
+  border: 1px solid var(--borde);
+  background: rgba(255, 255, 255, 0.7);
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.23rem;
+}
+
+.nav-menu-btn__lin {
+  width: 1rem;
+  height: 2px;
+  margin: 0 auto;
+  background: var(--texto);
+}
+
+@media (max-width: 900px) {
+  .nav-conten {
+    flex-wrap: wrap;
+  }
+
+  .nav-busc,
+  .nav-menu {
+    width: 100%;
+  }
+}

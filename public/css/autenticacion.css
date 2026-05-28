@@ -1,0 +1,69 @@
+.aut-lienzo {
+  padding: 2rem 0 3rem;
+}
+
+.aut-grilla {
+  display: grid;
+  grid-template-columns: minmax(220px, 320px) minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.aut-lateral,
+.aut-tar {
+  align-self: start;
+}
+
+.aut-ceja,
+.aut-texto,
+.aut-cambio,
+.aut-link,
+.aut-campo span {
+  color: var(--texto-suave);
+}
+
+.aut-titulo {
+  margin: 0;
+}
+
+.aut-cambio a,
+.aut-link {
+  color: var(--acento-fuerte);
+}
+
+.aut-form {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.aut-form__fila {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+}
+
+.aut-campo {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.aut-campo input,
+.aut-campo select {
+  border: 1px solid var(--borde);
+  border-radius: 0.75rem;
+  min-height: 2.8rem;
+  padding: 0.6rem 0.7rem;
+  background: rgba(255, 255, 255, 0.75);
+}
+
+.aut-form__acciones {
+  display: flex;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 900px) {
+  .aut-grilla,
+  .aut-form__fila {
+    grid-template-columns: 1fr;
+  }
+}
