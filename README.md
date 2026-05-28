@@ -2,7 +2,7 @@
 
 Base inicial del proyecto integrador de Programacion Web II.
 
-## Stack
+## Tecnologias
 
 - Node.js
 - Express
@@ -40,16 +40,3 @@ routes/
 services/
 views/
 ```
-
-## Usuarios de ejemplo
-
-Los usuarios de ejemplo se cargan con `npm run db:init`:
-
-- `admin`
-- `validator`
-- `demo`
-
-Contrasena de usuarios de ejemplo:
-
-- valor por defecto: `123456`
-- se puede cambiar con `SEED_DEMO_PASSWORD` en `.env`
