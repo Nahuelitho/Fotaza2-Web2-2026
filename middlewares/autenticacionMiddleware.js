@@ -1,5 +1,5 @@
 function requerirAutenticacion(req, res, next) {
-  if (req.session.user) {
+  if (req.session.usuario) {
     return next();
   }
 
@@ -7,7 +7,7 @@ function requerirAutenticacion(req, res, next) {
 }
 
 function requerirInvitado(req, res, next) {
-  if (!req.session.user) {
+  if (!req.session.usuario) {
     return next();
   }
 

@@ -9,8 +9,8 @@ const { checkDbConnection } = require('./config/db');
 dotenv.config({ quiet: true });
 
 const indexRouter = require('./routes');
-const authRouter = require('./routes/auth.routes');
-const postRouter = require('./routes/post.routes');
+const authRouter = require('./routes/autenticacion.routes');
+const postRouter = require('./routes/publicacion.routes');
 
 const app = express();
 const port = Number(process.env.PORT || 3000);
@@ -39,7 +39,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
   res.locals.appName = 'Fotaza 2';
-  res.locals.usuarioActual = req.session.user || null;
+  res.locals.usuarioActual = req.session.usuario || null;
   res.locals.accesosRapidos = ['Explorar', 'Tendencias', 'Colecciones', 'Fotografos', 'Favoritos'];
   res.locals.etiquetasDestacadas = ['Paisajes', 'Retratos', 'Ciudad', 'Viajes', 'Naturaleza'];
   next();
@@ -50,9 +50,9 @@ app.use('/', authRouter);
 app.use('/', postRouter);
 
 app.use((req, res) => {
-  res.status(404).render('pages/home', {
+  res.status(404).render('pages/inicio', {
     title: 'Pagina no encontrada',
-    posts: [],
+    publicaciones: [],
   });
 });
 

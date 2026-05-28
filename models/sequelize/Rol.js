@@ -1,8 +1,8 @@
 const { DataTypes } = require('sequelize');
 
-function defineTag(sequelize) {
+function defineRole(sequelize) {
   return sequelize.define(
-    'Tag',
+    'Rol',
     {
       id: {
         type: DataTypes.INTEGER,
@@ -16,11 +16,13 @@ function defineTag(sequelize) {
       },
     },
     {
-      tableName: 'tags',
+      tableName: 'roles',
       underscored: true,
-      timestamps: false,
+      timestamps: true,
+      createdAt: 'created_at',
+      updatedAt: false,
     }
   );
 }
 
-module.exports = defineTag;
+module.exports = defineRole;

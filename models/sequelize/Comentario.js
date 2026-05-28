@@ -1,47 +1,37 @@
 const { DataTypes } = require('sequelize');
 
-function defineImageRating(sequelize) {
+function defineComment(sequelize) {
   return sequelize.define(
-    'ImageRating',
+    'Comentario',
     {
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
       },
-      imageId: {
+      idPublicacion: {
         type: DataTypes.INTEGER,
-        field: 'image_id',
+        field: 'id_publicacion',
         allowNull: false,
       },
-      userId: {
+      idUsuario: {
         type: DataTypes.INTEGER,
-        field: 'user_id',
+        field: 'id_usuario',
         allowNull: false,
       },
-      score: {
-        type: DataTypes.INTEGER,
+      contenido: {
+        type: DataTypes.TEXT,
         allowNull: false,
-        validate: {
-          min: 1,
-          max: 5,
-        },
       },
     },
     {
-      tableName: 'image_ratings',
+      tableName: 'comentarios',
       underscored: true,
       timestamps: true,
       createdAt: 'created_at',
       updatedAt: false,
-      indexes: [
-        {
-          unique: true,
-          fields: ['image_id', 'user_id'],
-        },
-      ],
     }
   );
 }
 
-module.exports = defineImageRating;
+module.exports = defineComment;

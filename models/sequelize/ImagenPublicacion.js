@@ -2,42 +2,42 @@ const { DataTypes } = require('sequelize');
 
 function definePostImage(sequelize) {
   return sequelize.define(
-    'PostImage',
+    'ImagenPublicacion',
     {
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
       },
-      postId: {
+      idPublicacion: {
         type: DataTypes.INTEGER,
-        field: 'post_id',
+        field: 'id_publicacion',
         allowNull: false,
       },
-      mimeType: {
+      tipoMime: {
         type: DataTypes.STRING(100),
-        field: 'mime_type',
+        field: 'tipo_mime',
         allowNull: false,
       },
-      imageBase64: {
+      imagenBase64: {
         type: DataTypes.TEXT,
-        field: 'image_base64',
+        field: 'imagen_base64',
         allowNull: false,
       },
-      licenseType: {
-        type: DataTypes.ENUM('copyright', 'creative_commons'),
-        field: 'license_type',
+      tipoLicencia: {
+        type: DataTypes.ENUM('con_copyright', 'creative_commons'),
+        field: 'tipo_licencia',
         allowNull: false,
-        defaultValue: 'copyright',
+        defaultValue: 'con_copyright',
       },
-      watermarkText: {
+      textoMarcaAgua: {
         type: DataTypes.STRING(100),
-        field: 'watermark_text',
+        field: 'texto_marca_agua',
         allowNull: true,
       },
     },
     {
-      tableName: 'post_images',
+      tableName: 'imagenes_publicacion',
       underscored: true,
       timestamps: true,
       createdAt: 'created_at',

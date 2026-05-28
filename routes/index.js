@@ -1,5 +1,5 @@
 const express = require('express');
-const { renderizarInicio } = require('../controllers/homeController');
+const { renderizarInicio } = require('../controllers/inicioController');
 
 const router = express.Router();
 

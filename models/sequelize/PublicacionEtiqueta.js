@@ -2,23 +2,23 @@ const { DataTypes } = require('sequelize');
 
 function definePostTag(sequelize) {
   return sequelize.define(
-    'PostTag',
+    'PublicacionEtiqueta',
     {
-      postId: {
+      idPublicacion: {
         type: DataTypes.INTEGER,
-        field: 'post_id',
+        field: 'id_publicacion',
         allowNull: false,
         primaryKey: true,
       },
-      tagId: {
+      idEtiqueta: {
         type: DataTypes.INTEGER,
-        field: 'tag_id',
+        field: 'id_etiqueta',
         allowNull: false,
         primaryKey: true,
       },
     },
     {
-      tableName: 'post_tags',
+      tableName: 'publicaciones_etiquetas',
       underscored: true,
       timestamps: false,
     }

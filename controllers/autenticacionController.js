@@ -4,10 +4,10 @@ const {
   buscarPorUsuario,
   buscarPorCorreoOUsuario,
   crearUsuario,
-} = require('../models/userModel');
+} = require('../models/usuarioModel');
 
 function renderizarVistaInicioSesion(res, opciones = {}) {
-  return res.render('pages/login', {
+  return res.render('pages/iniciar-sesion', {
     title: 'Iniciar sesion | Fotaza 2',
     tituloAuth: 'Iniciar sesion',
     cejaAuth: '',
@@ -20,7 +20,7 @@ function renderizarVistaInicioSesion(res, opciones = {}) {
 }
 
 function renderizarVistaRegistro(res, opciones = {}) {
-  return res.render('pages/register', {
+  return res.render('pages/registro', {
     title: 'Crear cuenta | Fotaza 2',
     tituloAuth: 'Crear cuenta',
     cejaAuth: '',
@@ -102,7 +102,7 @@ async function registrarUsuario(req, res) {
       nombreVisible: nombreVisibleNormalizado,
     });
 
-    req.session.user = {
+    req.session.usuario = {
       id: usuarioCreado.id,
       usuario: usuarioCreado.usuario,
       correo: usuarioCreado.correo,
@@ -139,7 +139,7 @@ async function iniciarSesionUsuario(req, res) {
       });
     }
 
-    const contrasenaValida = await bcrypt.compare(contrasena, usuario.password_hash);
+    const contrasenaValida = await bcrypt.compare(contrasena, usuario.hashContrasena);
 
     if (!contrasenaValida) {
       return renderizarVistaInicioSesion(res, {
@@ -148,18 +148,18 @@ async function iniciarSesionUsuario(req, res) {
       });
     }
 
-    if (!usuario.is_active) {
+    if (!usuario.estaActivo) {
       return renderizarVistaInicioSesion(res, {
         mensajeError: 'Tu cuenta esta inactiva. Contacta al administrador.',
         datosFormulario: { identificador: identificadorNormalizado },
       });
     }
 
-    req.session.user = {
+    req.session.usuario = {
       id: usuario.id,
-      usuario: usuario.username,
-      correo: usuario.email,
-      nombreVisible: usuario.display_name,
+      usuario: usuario.nombreUsuario,
+      correo: usuario.correo,
+      nombreVisible: usuario.nombreVisible,
     };
 
     return res.redirect('/');

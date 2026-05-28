@@ -1,26 +1,26 @@
 const { Op } = require('sequelize');
-const { User, Role } = require('./sequelize');
+const { Usuario, Rol } = require('./sequelize');
 
 async function buscarPorCorreo(correo) {
-  return User.findOne({ where: { email: correo }, raw: true });
+  return Usuario.findOne({ where: { correo }, raw: true });
 }
 
 async function buscarPorUsuario(usuario) {
-  return User.findOne({ where: { username: usuario }, raw: true });
+  return Usuario.findOne({ where: { nombreUsuario: usuario }, raw: true });
 }
 
 async function buscarPorCorreoOUsuario(identificador) {
-  return User.findOne({
+  return Usuario.findOne({
     where: {
-      [Op.or]: [{ email: identificador }, { username: identificador }],
+      [Op.or]: [{ correo: identificador }, { nombreUsuario: identificador }],
     },
     raw: true,
   });
 }
 
 async function buscarIdRolPredeterminado() {
-  const role = await Role.findOne({ where: { name: 'user' }, raw: true });
-  return role?.id || null;
+  const rol = await Rol.findOne({ where: { name: 'usuario' }, raw: true });
+  return rol?.id || null;
 }
 
 async function crearUsuario({ usuario, correo, hashContrasena, nombreVisible }) {
@@ -30,21 +30,21 @@ async function crearUsuario({ usuario, correo, hashContrasena, nombreVisible }) 
     throw new Error('No existe el rol base de usuario. Ejecuta npm run db:init.');
   }
 
-  const user = await User.create({
-    roleId,
-    username: usuario,
-    email: correo,
-    passwordHash: hashContrasena,
-    displayName: nombreVisible,
+  const usuarioCreado = await Usuario.create({
+    idRol: roleId,
+    nombreUsuario: usuario,
+    correo,
+    hashContrasena,
+    nombreVisible,
   });
 
   return {
-    id: user.id,
+    id: usuarioCreado.id,
     role_id: roleId,
     usuario,
     correo,
     nombre_visible: nombreVisible,
-    is_active: 1,
+    esta_activo: 1,
   };
 }
 

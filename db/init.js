@@ -1,7 +1,6 @@
 const dotenv = require('dotenv');
-const bcrypt = require('bcryptjs');
 const { Client } = require('pg');
-const { sequelize, Role, User, Tag } = require('../models/sequelize');
+const { sequelize, Rol, Etiqueta } = require('../models/sequelize');
 
 dotenv.config({ quiet: true });
 
@@ -13,8 +12,6 @@ if (missingEnv.length > 0) {
   console.error('Copia .env.example a .env y completa los datos antes de ejecutar db:init.');
   process.exit(1);
 }
-
-const DEMO_PASSWORD = process.env.SEED_DEMO_PASSWORD || '123456';
 
 async function ensureDatabaseExists() {
   const adminClient = new Client({
@@ -48,54 +45,20 @@ async function run() {
   await sequelize.authenticate();
   await sequelize.sync();
 
-  const roles = ['admin', 'validator', 'user'];
-  for (const name of roles) {
-    await Role.findOrCreate({ where: { name }, defaults: { name } });
+  const roles = ['admin', 'validador', 'usuario'];
+  for (const nombreRol of roles) {
+    await Rol.findOrCreate({ where: { name: nombreRol }, defaults: { name: nombreRol } });
   }
 
-  const userRole = await Role.findOne({ where: { name: 'user' } });
-  const adminRole = await Role.findOne({ where: { name: 'admin' } });
-  const validatorRole = await Role.findOne({ where: { name: 'validator' } });
+  const rolUsuario = await Rol.findOne({ where: { name: 'usuario' } });
 
-  const passwordHash = await bcrypt.hash(DEMO_PASSWORD, 10);
-
-  const seedUsers = [
-    {
-      username: 'admin',
-      email: 'admin@fotaza.local',
-      displayName: 'Admin Fotaza',
-      roleId: adminRole.id,
-    },
-    {
-      username: 'validator',
-      email: 'validator@fotaza.local',
-      displayName: 'Validador Fotaza',
-      roleId: validatorRole.id,
-    },
-    {
-      username: 'demo',
-      email: 'demo@fotaza.local',
-      displayName: 'Usuario Demo',
-      roleId: userRole.id,
-    },
-  ];
-
-  for (const seedUser of seedUsers) {
-    await User.findOrCreate({
-      where: { username: seedUser.username },
-      defaults: {
-        roleId: seedUser.roleId,
-        username: seedUser.username,
-        email: seedUser.email,
-        passwordHash,
-        displayName: seedUser.displayName,
-      },
-    });
+  if (!rolUsuario) {
+    throw new Error('No se pudo crear o encontrar el rol base usuario.');
   }
 
-  const tags = ['paisaje', 'retrato', 'urbano', 'naturaleza', 'viajes'];
-  for (const name of tags) {
-    await Tag.findOrCreate({ where: { name }, defaults: { name } });
+  const etiquetas = ['paisaje', 'retrato', 'urbano', 'naturaleza', 'viajes'];
+  for (const nombreEtiqueta of etiquetas) {
+    await Etiqueta.findOrCreate({ where: { name: nombreEtiqueta }, defaults: { name: nombreEtiqueta } });
   }
 
   console.log(`Base de datos '${process.env.DB_NAME}' inicializada correctamente en PostgreSQL.`);

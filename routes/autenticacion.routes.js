@@ -6,8 +6,9 @@ const {
   registrarUsuario,
   iniciarSesionUsuario,
   cerrarSesionUsuario,
-} = require('../controllers/authController');
-const { requerirInvitado, requerirAutenticacion } = require('../middlewares/authMiddleware');
+} = require('../controllers/autenticacionController');
+
+const { requerirInvitado, requerirAutenticacion } = require('../middlewares/autenticacionMiddleware');
 
 const router = express.Router();
 

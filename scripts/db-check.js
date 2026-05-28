@@ -2,14 +2,14 @@ const { sequelize } = require('../models/sequelize');
 
 const TABLES = [
   'roles',
-  'users',
-  'tags',
-  'posts',
-  'post_images',
-  'post_tags',
-  'comments',
-  'image_ratings',
-  'follows',
+  'usuarios',
+  'etiquetas',
+  'publicaciones',
+  'imagenes_publicacion',
+  'publicaciones_etiquetas',
+  'comentarios',
+  'valoraciones_imagen',
+  'seguimientos',
 ];
 
 async function run() {
@@ -24,7 +24,7 @@ async function run() {
     SELECT table_name, column_name, data_type, udt_name, is_nullable, column_default
     FROM information_schema.columns
     WHERE table_schema = 'public'
-      AND table_name IN ('roles','users','tags','posts','post_images','post_tags','comments','image_ratings','follows')
+      AND table_name IN ('roles','usuarios','etiquetas','publicaciones','imagenes_publicacion','publicaciones_etiquetas','comentarios','valoraciones_imagen','seguimientos')
     ORDER BY table_name, ordinal_position
   `);
 

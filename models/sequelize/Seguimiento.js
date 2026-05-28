@@ -2,30 +2,30 @@ const { DataTypes } = require('sequelize');
 
 function defineFollow(sequelize) {
   return sequelize.define(
-    'Follow',
+    'Seguimiento',
     {
-      followerId: {
+      idSeguidor: {
         type: DataTypes.INTEGER,
-        field: 'follower_id',
+        field: 'id_seguidor',
         allowNull: false,
         primaryKey: true,
       },
-      followedId: {
+      idSeguido: {
         type: DataTypes.INTEGER,
-        field: 'followed_id',
+        field: 'id_seguido',
         allowNull: false,
         primaryKey: true,
       },
     },
     {
-      tableName: 'follows',
+      tableName: 'seguimientos',
       underscored: true,
       timestamps: true,
       createdAt: 'created_at',
       updatedAt: false,
       validate: {
         notSelfFollow() {
-          if (this.followerId === this.followedId) {
+          if (this.idSeguidor === this.idSeguido) {
             throw new Error('Un usuario no puede seguirse a si mismo.');
           }
         },

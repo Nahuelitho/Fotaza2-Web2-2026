@@ -1,4 +1,4 @@
-const { sequelize, Post, PostImage, Tag, PostTag } = require('../models/sequelize');
+const { sequelize, Publicacion, ImagenPublicacion, Etiqueta, PublicacionEtiqueta } = require('../models/sequelize');
 
 const TIPOS_MIME_PERMITIDOS = ['image/jpeg', 'image/png', 'image/webp'];
 
@@ -19,7 +19,7 @@ function normalizarEtiquetas(etiquetasCrudas) {
 }
 
 async function crearPublicacion(req, res) {
-  const usuarioActual = req.session.user;
+  const usuarioActual = req.session.usuario;
   const { titulo, descripcion, tipoLicencia, textoMarcaAgua, etiquetas } = req.body;
   const archivoSubido = req.file;
   const tituloNormalizado = titulo?.trim();
@@ -57,41 +57,41 @@ async function crearPublicacion(req, res) {
   const transaction = await sequelize.transaction();
 
   try {
-    const post = await Post.create(
+    const publicacion = await Publicacion.create(
       {
-        userId: usuarioActual.id,
-        title: tituloNormalizado,
-        description: descripcionNormalizada,
+        idUsuario: usuarioActual.id,
+        titulo: tituloNormalizado,
+        descripcion: descripcionNormalizada,
       },
       { transaction }
     );
 
-    await PostImage.create(
+    await ImagenPublicacion.create(
       {
-        postId: post.id,
-        mimeType: archivoSubido.mimetype,
-        imageBase64: imagenBase64,
-        licenseType: tipoLicenciaNormalizado === 'con_copyright' ? 'copyright' : tipoLicenciaNormalizado,
-        watermarkText: tipoLicenciaNormalizado === 'con_copyright' ? textoMarcaAguaNormalizado : null,
+        idPublicacion: publicacion.id,
+        tipoMime: archivoSubido.mimetype,
+        imagenBase64,
+        tipoLicencia: tipoLicenciaNormalizado,
+        textoMarcaAgua: tipoLicenciaNormalizado === 'con_copyright' ? textoMarcaAguaNormalizado : null,
       },
       { transaction }
     );
 
     for (const nombreEtiqueta of etiquetasNormalizadas) {
-      const [tag] = await Tag.findOrCreate({
+      const [etiqueta] = await Etiqueta.findOrCreate({
         where: { name: nombreEtiqueta },
         defaults: { name: nombreEtiqueta },
         transaction,
       });
 
-      await PostTag.findOrCreate({
+      await PublicacionEtiqueta.findOrCreate({
         where: {
-          postId: post.id,
-          tagId: tag.id,
+          idPublicacion: publicacion.id,
+          idEtiqueta: etiqueta.id,
         },
         defaults: {
-          postId: post.id,
-          tagId: tag.id,
+          idPublicacion: publicacion.id,
+          idEtiqueta: etiqueta.id,
         },
         transaction,
       });

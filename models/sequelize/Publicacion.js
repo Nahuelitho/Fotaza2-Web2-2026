@@ -2,45 +2,45 @@ const { DataTypes } = require('sequelize');
 
 function definePost(sequelize) {
   return sequelize.define(
-    'Post',
+    'Publicacion',
     {
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
       },
-      userId: {
+      idUsuario: {
         type: DataTypes.INTEGER,
-        field: 'user_id',
+        field: 'id_usuario',
         allowNull: false,
       },
-      title: {
+      titulo: {
         type: DataTypes.STRING(150),
         allowNull: false,
       },
-      description: {
+      descripcion: {
         type: DataTypes.TEXT,
         allowNull: true,
       },
-      commentsEnabled: {
+      comentariosHabilitados: {
         type: DataTypes.BOOLEAN,
-        field: 'comments_enabled',
+        field: 'comentarios_habilitados',
         allowNull: false,
         defaultValue: true,
       },
-      visibility: {
-        type: DataTypes.ENUM('public', 'private'),
+      visibilidad: {
+        type: DataTypes.ENUM('publica', 'privada'),
         allowNull: false,
-        defaultValue: 'public',
+        defaultValue: 'publica',
       },
-      status: {
-        type: DataTypes.ENUM('active', 'reported', 'under_review', 'removed'),
+      estado: {
+        type: DataTypes.ENUM('activa', 'reportada', 'en_revision', 'eliminada'),
         allowNull: false,
-        defaultValue: 'active',
+        defaultValue: 'activa',
       },
     },
     {
-      tableName: 'posts',
+      tableName: 'publicaciones',
       underscored: true,
       timestamps: true,
       createdAt: 'created_at',

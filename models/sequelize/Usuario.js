@@ -2,62 +2,63 @@ const { DataTypes } = require('sequelize');
 
 function defineUser(sequelize) {
   return sequelize.define(
-    'User',
+    'Usuario',
     {
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
       },
-      roleId: {
+      idRol: {
         type: DataTypes.INTEGER,
-        field: 'role_id',
+        field: 'id_rol',
         allowNull: false,
       },
-      username: {
+      nombreUsuario: {
         type: DataTypes.STRING(50),
+        field: 'nombre_usuario',
         allowNull: false,
         unique: true,
       },
-      email: {
+      correo: {
         type: DataTypes.STRING(120),
         allowNull: false,
         unique: true,
       },
-      passwordHash: {
+      hashContrasena: {
         type: DataTypes.STRING(255),
-        field: 'password_hash',
+        field: 'hash_contrasena',
         allowNull: false,
       },
-      displayName: {
+      nombreVisible: {
         type: DataTypes.STRING(100),
-        field: 'display_name',
+        field: 'nombre_visible',
         allowNull: false,
       },
-      bio: {
+      biografia: {
         type: DataTypes.TEXT,
         allowNull: true,
       },
-      avatarUrl: {
+      urlAvatar: {
         type: DataTypes.STRING(255),
-        field: 'avatar_url',
+        field: 'url_avatar',
         allowNull: true,
       },
-      isActive: {
+      estaActivo: {
         type: DataTypes.BOOLEAN,
-        field: 'is_active',
+        field: 'esta_activo',
         allowNull: false,
         defaultValue: true,
       },
-      removedPostsCount: {
+      cantidadPublicacionesEliminadas: {
         type: DataTypes.INTEGER,
-        field: 'removed_posts_count',
+        field: 'cantidad_publicaciones_eliminadas',
         allowNull: false,
         defaultValue: 0,
       },
     },
     {
-      tableName: 'users',
+      tableName: 'usuarios',
       underscored: true,
       timestamps: true,
       createdAt: 'created_at',
