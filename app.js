@@ -56,9 +56,7 @@ app.use((req, res) => {
   });
 });
 
-app.listen(port, () => {
-  console.log(`Servidor corriendo en http://localhost:${port}`);
-
+function verificarConexionDb() {
   checkDbConnection()
     .then(() => {
       console.log('Base de datos conectada correctamente.');
@@ -66,4 +64,15 @@ app.listen(port, () => {
     .catch((error) => {
       console.error(`No se pudo conectar a la base de datos: ${error.code || error.message}`);
     });
-});
+}
+
+if (process.env.VERCEL !== '1') {
+  app.listen(port, () => {
+    console.log(`Servidor corriendo en http://localhost:${port}`);
+    verificarConexionDb();
+  });
+} else {
+  verificarConexionDb();
+}
+
+module.exports = app;
