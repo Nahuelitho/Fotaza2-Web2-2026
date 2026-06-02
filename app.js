@@ -4,7 +4,7 @@ const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const methodOverride = require('method-override');
 const dotenv = require('dotenv');
-const { checkDbConnection } = require('./config/db');
+const { sequelize, Rol, Etiqueta } = require('./models/sequelize');
 
 dotenv.config({ quiet: true });
 
@@ -14,6 +14,23 @@ const postRouter = require('./routes/publicacion.routes');
 
 const app = express();
 const port = Number(process.env.PORT || 3000);
+
+async function inicializarBaseDatos() {
+  await sequelize.authenticate();
+  await sequelize.sync();
+
+  const roles = ['admin', 'validador', 'usuario'];
+  for (const nombreRol of roles) {
+    await Rol.findOrCreate({ where: { name: nombreRol }, defaults: { name: nombreRol } });
+  }
+
+  const etiquetas = ['paisaje', 'retrato', 'urbano', 'naturaleza', 'viajes'];
+  for (const nombreEtiqueta of etiquetas) {
+    await Etiqueta.findOrCreate({ where: { name: nombreEtiqueta }, defaults: { name: nombreEtiqueta } });
+  }
+}
+
+const baseDatosLista = inicializarBaseDatos();
 
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
@@ -37,6 +54,15 @@ app.use(
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(async (req, res, next) => {
+  try {
+    await baseDatosLista;
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
+
 app.use((req, res, next) => {
   res.locals.appName = 'Fotaza 2';
   res.locals.usuarioActual = req.session.usuario || null;
@@ -57,9 +83,9 @@ app.use((req, res) => {
 });
 
 function verificarConexionDb() {
-  checkDbConnection()
+  baseDatosLista
     .then(() => {
-      console.log('Base de datos conectada correctamente.');
+      console.log('Base de datos inicializada correctamente.');
     })
     .catch((error) => {
       console.error(`No se pudo conectar a la base de datos: ${error.code || error.message}`);
