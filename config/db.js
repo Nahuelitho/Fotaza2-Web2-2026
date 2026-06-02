@@ -5,6 +5,7 @@ const pg = require('pg');
 dotenv.config();
 
 const isProduction = process.env.NODE_ENV === 'production';
+const usarSSL = process.env.DB_SSL === 'true';
 
 if (isProduction) {
   const requiredEnv = ['DB_NAME', 'DB_USER', 'DB_PASSWORD', 'DB_HOST', 'DB_PORT'];
@@ -25,7 +26,7 @@ const sequelize = new Sequelize(
     port: Number(process.env.DB_PORT || 5432),
     dialect: 'postgres',
     dialectModule: pg,
-    dialectOptions: isProduction
+    dialectOptions: usarSSL
       ? {
           ssl: {
             require: true,
