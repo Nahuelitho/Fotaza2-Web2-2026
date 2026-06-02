@@ -4,7 +4,9 @@ const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const methodOverride = require('method-override');
 const dotenv = require('dotenv');
-const { sequelize, Rol, Etiqueta } = require('./models/sequelize');
+const bcrypt = require('bcryptjs');
+const { Op } = require('sequelize');
+const { sequelize, Rol, Etiqueta, Usuario } = require('./models/sequelize');
 
 dotenv.config({ quiet: true });
 
@@ -22,6 +24,28 @@ async function inicializarBaseDatos() {
   const roles = ['admin', 'validador', 'usuario'];
   for (const nombreRol of roles) {
     await Rol.findOrCreate({ where: { name: nombreRol }, defaults: { name: nombreRol } });
+  }
+
+  const rolUsuario = await Rol.findOne({ where: { name: 'usuario' } });
+
+  if (rolUsuario) {
+    const usuarioDemo = await Usuario.findOne({
+      where: {
+        [Op.or]: [{ correo: 'demo@fotaza.test' }, { nombreUsuario: 'demo' }],
+      },
+    });
+
+    if (!usuarioDemo) {
+      const hashContrasena = await bcrypt.hash('123456', 10);
+
+      await Usuario.create({
+        idRol: rolUsuario.id,
+        nombreUsuario: 'demo',
+        correo: 'demo@fotaza.test',
+        hashContrasena,
+        nombreVisible: 'Usuario Demo',
+      });
+    }
   }
 
   const etiquetas = ['paisaje', 'retrato', 'urbano', 'naturaleza', 'viajes'];
