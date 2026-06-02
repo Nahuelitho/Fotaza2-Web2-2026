@@ -7,6 +7,8 @@ dotenv.config();
 const usarSSL = process.env.DB_SSL === 'true' || process.env.VERCEL === '1';
 const sslConn = usarSSL
   ? {
+      keepAlive: true,
+      connectionTimeoutMillis: 30000,
       ssl: {
         require: true,
         rejectUnauthorized: false,
@@ -15,10 +17,10 @@ const sslConn = usarSSL
   : undefined;
 
 const databaseUrl =
-  process.env.POSTGRES_URL ||
-  process.env.DATABASE_URL ||
   process.env.POSTGRES_URL_NON_POOLING ||
-  process.env.DATABASE_URL_UNPOOLED;
+  process.env.DATABASE_URL_UNPOOLED ||
+  process.env.POSTGRES_URL ||
+  process.env.DATABASE_URL;
 const dbName = process.env.DB_NAME || process.env.PGDATABASE || 'fotaza2';
 const dbUser = process.env.DB_USER || process.env.PGUSER || 'postgres';
 const dbPassword = process.env.DB_PASSWORD || process.env.PGPASSWORD || '';
@@ -34,6 +36,9 @@ const sequelizeOptions = {
     min: 0,
     acquire: 30000,
     idle: 10000,
+  },
+  retry: {
+    max: 2,
   },
   logging: false,
 };
