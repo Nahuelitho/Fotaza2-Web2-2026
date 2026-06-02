@@ -14,7 +14,11 @@ const sslConn = usarSSL
     }
   : undefined;
 
-const databaseUrl = process.env.POSTGRES_URL || process.env.DATABASE_URL || process.env.DATABASE_URL_UNPOOLED;
+const databaseUrl =
+  process.env.DATABASE_URL_UNPOOLED ||
+  process.env.POSTGRES_URL_NON_POOLING ||
+  process.env.DATABASE_URL ||
+  process.env.POSTGRES_URL;
 const dbName = process.env.DB_NAME || process.env.PGDATABASE || 'fotaza2';
 const dbUser = process.env.DB_USER || process.env.PGUSER || 'postgres';
 const dbPassword = process.env.DB_PASSWORD || process.env.PGPASSWORD || '';
@@ -25,6 +29,12 @@ const sequelizeOptions = {
   dialect: 'postgres',
   dialectModule: pg,
   dialectOptions: sslConn,
+  pool: {
+    max: 1,
+    min: 0,
+    acquire: 10000,
+    idle: 1000,
+  },
   logging: false,
 };
 
