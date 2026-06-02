@@ -1,7 +1,20 @@
 const { Sequelize } = require('sequelize');
 const dotenv = require('dotenv');
-dotenv.config({ quiet: true });
 const pg = require('pg');
+
+dotenv.config();
+
+const isProduction = process.env.NODE_ENV === 'production';
+
+if (isProduction) {
+  const requiredEnv = ['DB_NAME', 'DB_USER', 'DB_PASSWORD', 'DB_HOST', 'DB_PORT'];
+
+  requiredEnv.forEach((key) => {
+    if (!process.env[key]) {
+      throw new Error(`Falta la variable de entorno: ${key}`);
+    }
+  });
+}
 
 const sequelize = new Sequelize(
   process.env.DB_NAME || 'fotaza2',
@@ -12,6 +25,14 @@ const sequelize = new Sequelize(
     port: Number(process.env.DB_PORT || 5432),
     dialect: 'postgres',
     dialectModule: pg,
+    dialectOptions: isProduction
+      ? {
+          ssl: {
+            require: true,
+            rejectUnauthorized: false,
+          },
+        }
+      : {},
     logging: false,
   }
 );
@@ -19,8 +40,6 @@ const sequelize = new Sequelize(
 async function checkDbConnection() {
   await sequelize.authenticate();
 }
-
-
 
 module.exports = {
   sequelize,
