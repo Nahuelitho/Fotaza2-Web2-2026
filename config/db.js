@@ -4,8 +4,8 @@ const pg = require('pg');
 
 dotenv.config();
 
-const isProduction = process.env.NODE_ENV === 'production';
-const sslConn = process.env.DB_SSL === 'true'
+const usarSSL = process.env.DB_SSL === 'true' || process.env.VERCEL === '1';
+const sslConn = usarSSL
   ? {
       ssl: {
         require: true,
@@ -14,29 +14,27 @@ const sslConn = process.env.DB_SSL === 'true'
     }
   : undefined;
 
-if (isProduction) {
-  const requiredEnv = ['DB_NAME', 'DB_USER', 'DB_PASSWORD', 'DB_HOST', 'DB_PORT'];
+const databaseUrl = process.env.POSTGRES_URL || process.env.DATABASE_URL || process.env.DATABASE_URL_UNPOOLED;
+const dbName = process.env.DB_NAME || process.env.PGDATABASE || 'fotaza2';
+const dbUser = process.env.DB_USER || process.env.PGUSER || 'postgres';
+const dbPassword = process.env.DB_PASSWORD || process.env.PGPASSWORD || '';
+const dbHost = process.env.DB_HOST || process.env.PGHOST || 'localhost';
+const dbPort = Number(process.env.DB_PORT || process.env.PGPORT || 5432);
 
-  requiredEnv.forEach((key) => {
-    if (!process.env[key]) {
-      throw new Error(`Falta la variable de entorno: ${key}`);
-    }
-  });
-}
+const sequelizeOptions = {
+  dialect: 'postgres',
+  dialectModule: pg,
+  dialectOptions: sslConn,
+  logging: false,
+};
 
-const sequelize = new Sequelize(
-  process.env.DB_NAME || 'fotaza2',
-  process.env.DB_USER || 'postgres',
-  process.env.DB_PASSWORD || '',
-  {
-    host: process.env.DB_HOST || 'localhost',
-    port: Number(process.env.DB_PORT || 5432),
-    dialect: 'postgres',
-    dialectModule: pg,
-    dialectOptions: sslConn,
-    logging: false,
-  }
-);
+const sequelize = databaseUrl
+  ? new Sequelize(databaseUrl, sequelizeOptions)
+  : new Sequelize(dbName, dbUser, dbPassword, {
+      ...sequelizeOptions,
+      host: dbHost,
+      port: dbPort,
+    });
 
 async function checkDbConnection() {
   await sequelize.authenticate();
