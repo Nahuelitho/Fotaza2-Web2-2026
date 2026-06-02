@@ -1,7 +1,7 @@
 const { Sequelize } = require('sequelize');
 const dotenv = require('dotenv');
 dotenv.config({ quiet: true });
-const pg = require('pg')
+const pg = require('pg');
 
 const sequelize = new Sequelize(
   process.env.DB_NAME || 'fotaza2',
