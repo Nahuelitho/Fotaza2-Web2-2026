@@ -57,8 +57,24 @@
 
 .aut-form__acciones {
   display: flex;
+  align-items: center;
   gap: 0.7rem;
   flex-wrap: wrap;
+}
+
+.aut-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.9rem;
+  padding: 0 0.35rem;
+  font-weight: 600;
+  color: rgb(85, 85, 255);
+}
+
+.aut-link:hover {
+  color: blue;
+  text-decoration: underline;
+  text-underline-offset: 0.2rem;
 }
 
 @media (max-width: 900px) {

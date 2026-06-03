@@ -24,14 +24,18 @@
   padding: 0.85rem 1.15rem;
   border: 1px solid transparent;
   border-radius: 999px;
-  background: linear-gradient(135deg, var(--acento) 0%, var(--acento-fuerte) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--acento) 0%,
+    var(--acento-fuerte) 100%
+  );
   color: #fff;
   font-weight: 600;
 }
 
 .comp-btn--suave {
-  background: rgba(255, 255, 255, 0.8);
-  color: var(--acento-fuerte);
+  background: rgba(107, 200, 253, 0.8);
+  color: #fff;
   border-color: var(--borde);
 }
 
@@ -39,6 +43,17 @@
   background: transparent;
   color: var(--texto-suave);
   border-color: var(--borde);
+}
+
+.comp-btn--cancelar {
+  background: #ff4d4d;
+  color: #fff;
+  border-color: #ff4d4d;
+}
+button:not(:disabled),
+.comp-btn,
+.ini-agregar__btn {
+  cursor: pointer;
 }
 
 .comp-msg {
@@ -95,9 +110,28 @@
   width: min(740px, 100%);
 }
 
+.comp-modal .comp-cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
 .comp-modal__cerrar {
+  width: 2rem;
+  height: 2rem;
   border: 0;
+  border-radius: 999px;
   background: transparent;
   cursor: pointer;
   color: var(--texto-suave);
+  font-weight: 700;
+}
+
+.comp-modal__cerrar:hover {
+  background: #f8e8db;
+  color: var(--acento-fuerte);
+}
+.comp-modal[hidden] {
+  display: none;
 }

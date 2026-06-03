@@ -20,7 +20,7 @@ block content
                 span.ini-agregar__ico +
                 span Agregar publicacion
             else
-              a.ini-agregar__btn(href='/iniciar-sesion')
+              button.ini-agregar__btn(type='button', data-open-auth-modal='true', aria-haspopup='dialog')
                 span.ini-agregar__ico +
                 span Agregar publicacion
 
@@ -54,7 +54,7 @@ block content
                         span.comp-tag.comp-tag--suave= etiqueta.name
 
   if usuarioActual
-    .comp-modal#post-modal(hidden)
+    .comp-modal#post-modal(hidden=true)
       .comp-modal__caja.comp-tarjeta(role='dialog', aria-modal='true', aria-labelledby='post-modal-title')
         .comp-cabecera
           h3#post-modal-title Nueva publicacion
@@ -93,8 +93,7 @@ block content
 
           .aut-form__acciones
             button.comp-btn(type='submit') Publicar
-            button.comp-btn.comp-btn--fantasma(type='button', data-close-post-modal='true') Cancelar
-
+            button.comp-btn.comp-btn--cancelar(type='button', data-close-post-modal='true') Cancelar
     script.
       (function () {
         var openButton = document.querySelector('[data-open-post-modal="true"]');
@@ -102,10 +101,11 @@ block content
         var closeButtons = document.querySelectorAll('[data-close-post-modal="true"]');
         var licenseSelect = document.querySelector('[data-license-type="true"]');
         var watermarkInput = document.querySelector('[data-watermark="true"]');
-        var form = modal.querySelector('form');
-        var imageInput = modal.querySelector('input[name="imagen"]');
 
         if (!modal || !openButton) return;
+
+        var form = modal.querySelector('form');
+        var imageInput = modal.querySelector('input[name="imagen"]');
 
         function updateWatermarkState() {
           if (!licenseSelect || !watermarkInput) return;
@@ -152,4 +152,43 @@ block content
         if (window.location.search.indexOf('estado=creada') >= 0 || window.location.search.indexOf('error=') >= 0) {
           window.history.replaceState({}, document.title, '/');
         }
+        
+      })();
+  else
+    .comp-modal#auth-required-modal(hidden=true)
+      .comp-modal__caja.comp-tarjeta(role='dialog', aria-modal='true', aria-labelledby='auth-required-title')
+        .comp-cabecera
+          h3#auth-required-title Necesitas una cuenta
+          button.comp-modal__cerrar(type='button', data-close-auth-modal='true', aria-label='Cerrar') x
+
+        p.comp-nota Para crear una publicacion tenes que iniciar sesion o crear una cuenta.
+
+        .aut-form__acciones
+          a.comp-btn(href='/registro') Crear cuenta
+          a.comp-btn.comp-btn--suave(href='/iniciar-sesion') Iniciar sesion
+          button.comp-btn.comp-btn--cancelar(type='button', data-close-auth-modal='true') Cancelar
+
+    script.
+      (function () {
+        var openButton = document.querySelector('[data-open-auth-modal="true"]');
+        var modal = document.getElementById('auth-required-modal');
+        var closeButtons = document.querySelectorAll('[data-close-auth-modal="true"]');
+
+        if (!modal || !openButton) return;
+
+        openButton.addEventListener('click', function () {
+          modal.hidden = false;
+        });
+
+        closeButtons.forEach(function (button) {
+          button.addEventListener('click', function () {
+            modal.hidden = true;
+          });
+        });
+
+        modal.addEventListener('click', function (event) {
+          if (event.target === modal) {
+            modal.hidden = true;
+          }
+        });
       })();
