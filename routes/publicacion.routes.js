@@ -1,9 +1,12 @@
 const express = require('express');
 const multer = require('multer');
 const { requerirAutenticacion } = require('../middlewares/autenticacionMiddleware');
-const { crearPublicacion } = require('../controllers/publicacionController');
+const { crearPublicacion, mostrarDetallePublicacion, eliminarPublicacion } = require('../controllers/publicacionController');
 
 const router = express.Router();
+
+router.get('/publicaciones/:id', mostrarDetallePublicacion);
+router.delete('/publicaciones/:id', requerirAutenticacion, eliminarPublicacion);
 
 const upload = multer({
   storage: multer.memoryStorage(),

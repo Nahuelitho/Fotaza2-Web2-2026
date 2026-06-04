@@ -1,0 +1,46 @@
+extends ../layouts/main
+
+block content
+  - var imagen = (publicacion.imagenes && publicacion.imagenes[0]) || null
+  - var etiquetas = publicacion.etiquetas || []
+  - var esAutor = usuarioActual && usuarioActual.id === publicacion.idUsuario
+
+  .pub-detalle.ly-cont
+    a.pub-detalle__volver(href='/') Volver al inicio
+
+    article.comp-tarjeta
+      .pub-detalle__cab
+        div
+          h1= publicacion.titulo
+          if publicacion.usuario
+            p.pub-detalle__autor= '@' + publicacion.usuario.nombreUsuario
+        span.comp-tag.comp-tag--suave= publicacion.visibilidad
+
+      if publicacion.descripcion
+        p.pub-detalle__desc= publicacion.descripcion
+
+      if imagen
+        img.pub-detalle__img(src=`data:${imagen.tipoMime};base64,${imagen.imagenBase64}`, alt=publicacion.titulo)
+        p.pub-detalle__meta
+          | Licencia: #{imagen.tipoLicencia === 'creative_commons' ? 'Sin copyright (Creative Commons)' : 'Con copyright'}
+          if imagen.textoMarcaAgua
+            |  · Marca de agua: #{imagen.textoMarcaAgua}
+
+      if etiquetas.length > 0
+        .comp-tags
+          each etiqueta in etiquetas
+            span.comp-tag.comp-tag--suave= etiqueta.name
+
+      if esAutor
+        .pub-detalle__acciones
+          form(action=`/publicaciones/${publicacion.id}?_method=DELETE`, method='post')
+            button.comp-btn.comp-btn--cancelar(type='submit') Eliminar publicacion
+
+    section.pub-detalle__comentarios.comp-tarjeta
+      h2 Comentarios
+      p.comp-nota El modulo de comentarios se implementara en la siguiente etapa.
+      if usuarioActual
+        textarea.pub-detalle__comentario-input(placeholder='Escribi un comentario...', disabled)
+        button.comp-btn(type='button', disabled) Comentar
+      else
+        p.comp-nota Inicia sesion para comentar esta publicacion.

@@ -1,4 +1,4 @@
-const { sequelize, Publicacion, ImagenPublicacion, Etiqueta, PublicacionEtiqueta } = require('../models/sequelize');
+const { sequelize, Publicacion, ImagenPublicacion, Etiqueta, PublicacionEtiqueta, Usuario } = require('../models/sequelize');
 
 const TIPOS_MIME_PERMITIDOS = ['image/jpeg', 'image/png', 'image/webp'];
 
@@ -106,6 +106,66 @@ async function crearPublicacion(req, res) {
   }
 }
 
+async function mostrarDetallePublicacion(req, res) {
+  const publicacion = await Publicacion.findOne({
+    where: {
+      id: req.params.id,
+      visibilidad: 'publica',
+      estado: 'activa',
+    },
+    include: [
+      {
+        model: ImagenPublicacion,
+        as: 'imagenes',
+      },
+      {
+        model: Etiqueta,
+        as: 'etiquetas',
+        through: { attributes: [] },
+      },
+      {
+        model: Usuario,
+        as: 'usuario',
+        attributes: ['nombreVisible', 'nombreUsuario'],
+      },
+    ],
+  });
+
+  if (!publicacion) {
+    return res.status(404).render('pages/inicio', {
+      title: 'Publicacion no encontrada',
+      publicaciones: [],
+      mensajeError: 'La publicacion no existe o no esta disponible.',
+    });
+  }
+
+  return res.render('pages/publicacion-detalle', {
+    title: `${publicacion.titulo} | Fotaza 2`,
+    extraCss: ['/css/publicacion-detalle.css'],
+    usuarioActual: req.session.usuario || null,
+    publicacion,
+  });
+}
+
+async function eliminarPublicacion(req, res) {
+  const usuarioActual = req.session.usuario;
+  const publicacion = await Publicacion.findByPk(req.params.id);
+
+  if (!publicacion) {
+    return res.redirect('/?error=La publicacion no existe.');
+  }
+
+  if (publicacion.idUsuario !== usuarioActual.id) {
+    return res.redirect(`/publicaciones/${req.params.id}?error=No podes eliminar una publicacion que no es tuya.`);
+  }
+
+  await publicacion.update({ estado: 'eliminada' });
+
+  return res.redirect('/?estado=eliminada');
+}
+
 module.exports = {
   crearPublicacion,
+  mostrarDetallePublicacion,
+  eliminarPublicacion,
 };

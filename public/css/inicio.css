@@ -100,6 +100,8 @@
   border-radius: 1rem;
   padding: 0.9rem;
   background: rgba(255, 255, 255, 0.5);
+  max-width: 560px;
+  margin: 0 auto;
 }
 
 .ini-post__cab {
@@ -121,10 +123,18 @@
 }
 
 .ini-post__img {
+  display: block;
+  width: 100%;
   margin-top: 0.65rem;
-  max-width: 100%;
+  max-height: 360px;
+  object-fit: cover;
+  object-position: center;
   border-radius: 0.8rem;
   border: 1px solid var(--borde);
+}
+
+.ini-post__acciones {
+  margin-top: 0.8rem;
 }
 
 @media (max-width: 980px) {

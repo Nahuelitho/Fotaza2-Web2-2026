@@ -52,6 +52,8 @@ block content
                     .comp-tags
                       each etiqueta in etiquetas
                         span.comp-tag.comp-tag--suave= etiqueta.name
+                  .ini-post__acciones
+                    a.comp-btn.comp-btn--fantasma(href=`/publicaciones/${publicacion.id}`) Ver detalle
 
   if usuarioActual
     .comp-modal#post-modal(hidden=true)

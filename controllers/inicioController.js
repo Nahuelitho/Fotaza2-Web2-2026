@@ -3,6 +3,10 @@ const { Publicacion, ImagenPublicacion, Etiqueta, Usuario } = require('../models
 async function renderizarInicio(req, res) {
   const estado = req.query.estado || '';
   const error = req.query.error || '';
+  const mensajesEstado = {
+    creada: 'Publicacion creada.',
+    eliminada: 'Publicacion eliminada.',
+  };
 
   const publicaciones = await Publicacion.findAll({
     include: [
@@ -30,7 +34,7 @@ async function renderizarInicio(req, res) {
     usuarioActual: req.session.usuario || null,
     etiquetasDestacadas: ['Paisajes', 'Retratos', 'Ciudad', 'Viajes', 'Naturaleza'],
     accesosRapidos: ['Explorar', 'Tendencias', 'Colecciones', 'Fotografos', 'Favoritos'],
-    mensajeEstado: estado === 'creada' ? 'Publicacion creada.' : '',
+    mensajeEstado: mensajesEstado[estado] || '',
     mensajeError: error || '',
     publicaciones,
   });
