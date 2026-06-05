@@ -10,13 +10,13 @@ aside.aut-lateral.comp-tarjeta
       | Todavia no tienes cuenta?
       br
       br
-      a(href='/registro') Crear cuenta
+      a.comp-btn(href='/registro') Crear cuenta
   else if modoAuth === 'registro'
     p.aut-cambio
       | Ya tienes cuenta?
       br
       br
-      a(href='/iniciar-sesion') Iniciar sesion
+      a.comp-btn.comp-btn--suave(href='/iniciar-sesion') Iniciar sesion
   else
     p.aut-cambio
       | Volver al acceso principal?

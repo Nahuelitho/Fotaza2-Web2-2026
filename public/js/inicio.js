@@ -1,19 +1,19 @@
 (function () {
-  var postModal = document.getElementById('post-modal');
-  var authModal = document.getElementById('auth-required-modal');
+  var modalPublicacion = document.getElementById('post-modal');
+  var modalAutenticacion = document.getElementById('auth-required-modal');
 
-  function configurarModal(modal, openButtonSelector, closeButtonSelector) {
-    var openButton = document.querySelector(openButtonSelector);
-    var closeButtons = document.querySelectorAll(closeButtonSelector);
+  function configurarModal(modal, selectorBotonAbrir, selectorBotonCerrar) {
+    var botonAbrir = document.querySelector(selectorBotonAbrir);
+    var botonesCerrar = document.querySelectorAll(selectorBotonCerrar);
 
-    if (!modal || !openButton) return;
+    if (!modal || !botonAbrir) return;
 
-    openButton.addEventListener('click', function () {
+    botonAbrir.addEventListener('click', function () {
       modal.hidden = false;
     });
 
-    closeButtons.forEach(function (button) {
-      button.addEventListener('click', function () {
+    botonesCerrar.forEach(function (boton) {
+      boton.addEventListener('click', function () {
         modal.hidden = true;
       });
     });
@@ -25,105 +25,105 @@
     });
   }
 
-  configurarModal(postModal, '[data-open-post-modal="true"]', '[data-close-post-modal="true"]');
-  configurarModal(authModal, '[data-open-auth-modal="true"]', '[data-close-auth-modal="true"]');
+  configurarModal(modalPublicacion, '[data-abrir-modal-publicacion="true"]', '[data-cerrar-modal-publicacion="true"]');
+  configurarModal(modalAutenticacion, '[data-abrir-modal-autenticacion="true"]', '[data-cerrar-modal-autenticacion="true"]');
 
-  if (!postModal) return;
+  if (!modalPublicacion) return;
 
-  var form = postModal.querySelector('form');
-  var imageInput = postModal.querySelector('input[name="imagen"]');
-  var licenseSelect = postModal.querySelector('[data-license-type="true"]');
-  var watermarkInput = postModal.querySelector('[data-watermark="true"]');
-  var tagSelect = postModal.querySelector('[data-tag-select="true"]');
-  var addExistingTagButton = postModal.querySelector('[data-add-existing-tag="true"]');
-  var newTagInput = postModal.querySelector('[data-new-tag="true"]');
-  var addNewTagButton = postModal.querySelector('[data-add-new-tag="true"]');
-  var selectedTagsContainer = postModal.querySelector('[data-selected-tags="true"]');
+  var formulario = modalPublicacion.querySelector('form');
+  var inputImagen = modalPublicacion.querySelector('input[name="imagen"]');
+  var selectLicencia = modalPublicacion.querySelector('[data-tipo-licencia="true"]');
+  var inputMarcaAgua = modalPublicacion.querySelector('[data-marca-agua="true"]');
+  var selectEtiqueta = modalPublicacion.querySelector('[data-select-etiqueta="true"]');
+  var botonAgregarEtiquetaExistente = modalPublicacion.querySelector('[data-agregar-etiqueta-existente="true"]');
+  var inputEtiquetaNueva = modalPublicacion.querySelector('[data-etiqueta-nueva="true"]');
+  var botonCrearEtiquetaNueva = modalPublicacion.querySelector('[data-crear-etiqueta-nueva="true"]');
+  var contenedorEtiquetasElegidas = modalPublicacion.querySelector('[data-etiquetas-elegidas="true"]');
 
-  function countSelectedTags() {
-    if (!selectedTagsContainer) return 0;
-    return selectedTagsContainer.querySelectorAll('input[name="etiquetasExistentes"]').length;
+  function contarEtiquetasElegidas() {
+    if (!contenedorEtiquetasElegidas) return 0;
+    return contenedorEtiquetasElegidas.querySelectorAll('input[name="etiquetasExistentes"]').length;
   }
 
-  function tagAlreadySelected(tagName) {
-    if (!selectedTagsContainer) return false;
-    var selectedInputs = selectedTagsContainer.querySelectorAll('input[name="etiquetasExistentes"]');
-    return Array.prototype.some.call(selectedInputs, function (input) {
-      return input.value === tagName;
+  function etiquetaYaElegida(nombreEtiqueta) {
+    if (!contenedorEtiquetasElegidas) return false;
+    var inputsSeleccionados = contenedorEtiquetasElegidas.querySelectorAll('input[name="etiquetasExistentes"]');
+    return Array.prototype.some.call(inputsSeleccionados, function (inputSeleccionado) {
+      return inputSeleccionado.value === nombreEtiqueta;
     });
   }
 
-  function addSelectedTag(tagName) {
-    if (!selectedTagsContainer) return;
-    var normalizedTagName = tagName.trim().toLowerCase();
+  function agregarEtiquetaElegida(nombreEtiqueta) {
+    if (!contenedorEtiquetasElegidas) return;
+    var nombreEtiquetaNormalizado = nombreEtiqueta.trim().toLowerCase();
 
-    if (!normalizedTagName) return;
+    if (!nombreEtiquetaNormalizado) return;
 
-    if (countSelectedTags() >= 3) {
+    if (contarEtiquetasElegidas() >= 3) {
       alert('Solo podes elegir hasta 3 etiquetas.');
       return;
     }
 
-    if (tagAlreadySelected(normalizedTagName)) {
+    if (etiquetaYaElegida(nombreEtiquetaNormalizado)) {
       alert('Esa etiqueta ya fue agregada.');
       return;
     }
 
-    var tagChip = document.createElement('span');
-    tagChip.className = 'ini-tag-elegido';
-    tagChip.textContent = normalizedTagName;
+    var etiquetaChip = document.createElement('span');
+    etiquetaChip.className = 'ini-tag-elegido';
+    etiquetaChip.textContent = nombreEtiquetaNormalizado;
 
-    var hiddenInput = document.createElement('input');
-    hiddenInput.type = 'hidden';
-    hiddenInput.name = 'etiquetasExistentes';
-    hiddenInput.value = normalizedTagName;
+    var inputOculto = document.createElement('input');
+    inputOculto.type = 'hidden';
+    inputOculto.name = 'etiquetasExistentes';
+    inputOculto.value = nombreEtiquetaNormalizado;
 
-    var removeButton = document.createElement('button');
-    removeButton.type = 'button';
-    removeButton.textContent = 'x';
-    removeButton.setAttribute('aria-label', 'Quitar etiqueta ' + normalizedTagName);
-    removeButton.addEventListener('click', function () {
-      tagChip.remove();
+    var botonQuitar = document.createElement('button');
+    botonQuitar.type = 'button';
+    botonQuitar.textContent = 'x';
+    botonQuitar.setAttribute('aria-label', 'Quitar etiqueta ' + nombreEtiquetaNormalizado);
+    botonQuitar.addEventListener('click', function () {
+      etiquetaChip.remove();
     });
 
-    tagChip.appendChild(hiddenInput);
-    tagChip.appendChild(removeButton);
-    selectedTagsContainer.appendChild(tagChip);
+    etiquetaChip.appendChild(inputOculto);
+    etiquetaChip.appendChild(botonQuitar);
+    contenedorEtiquetasElegidas.appendChild(etiquetaChip);
   }
 
-  function updateWatermarkState() {
-    if (!licenseSelect || !watermarkInput) return;
-    var requiresWatermark = licenseSelect.value === 'con_copyright';
-    watermarkInput.required = requiresWatermark;
-    watermarkInput.disabled = !requiresWatermark;
-    if (!requiresWatermark) {
-      watermarkInput.value = '';
+  function actualizarEstadoMarcaAgua() {
+    if (!selectLicencia || !inputMarcaAgua) return;
+    var requiereMarcaAgua = selectLicencia.value === 'con_copyright';
+    inputMarcaAgua.required = requiereMarcaAgua;
+    inputMarcaAgua.disabled = !requiereMarcaAgua;
+    if (!requiereMarcaAgua) {
+      inputMarcaAgua.value = '';
     }
   }
 
-  if (licenseSelect) {
-    licenseSelect.addEventListener('change', updateWatermarkState);
-    updateWatermarkState();
+  if (selectLicencia) {
+    selectLicencia.addEventListener('change', actualizarEstadoMarcaAgua);
+    actualizarEstadoMarcaAgua();
   }
 
-  if (addExistingTagButton && tagSelect) {
-    addExistingTagButton.addEventListener('click', function () {
-      addSelectedTag(tagSelect.value);
-      tagSelect.value = '';
+  if (botonAgregarEtiquetaExistente && selectEtiqueta) {
+    botonAgregarEtiquetaExistente.addEventListener('click', function () {
+      agregarEtiquetaElegida(selectEtiqueta.value);
+      selectEtiqueta.value = '';
     });
   }
 
-  if (addNewTagButton && newTagInput) {
-    addNewTagButton.addEventListener('click', function () {
-      addSelectedTag(newTagInput.value);
-      newTagInput.value = '';
+  if (botonCrearEtiquetaNueva && inputEtiquetaNueva) {
+    botonCrearEtiquetaNueva.addEventListener('click', function () {
+      agregarEtiquetaElegida(inputEtiquetaNueva.value);
+      inputEtiquetaNueva.value = '';
     });
   }
 
-  if (form && imageInput) {
-    form.addEventListener('submit', function (event) {
-      var file = imageInput.files && imageInput.files[0];
-      var cantidadTags = countSelectedTags();
+  if (formulario && inputImagen) {
+    formulario.addEventListener('submit', function (event) {
+      var archivo = inputImagen.files && inputImagen.files[0];
+      var cantidadTags = contarEtiquetasElegidas();
 
       if (cantidadTags === 0) {
         event.preventDefault();
@@ -137,9 +137,9 @@
         return;
       }
 
-      if (!file) return;
+      if (!archivo) return;
 
-      if (file.size > 2 * 1024 * 1024) {
+      if (archivo.size > 2 * 1024 * 1024) {
         event.preventDefault();
         alert('La imagen supera el tamano maximo permitido (2MB).');
       }

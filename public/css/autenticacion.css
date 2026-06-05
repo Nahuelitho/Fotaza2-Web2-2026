@@ -25,9 +25,12 @@
   margin: 0;
 }
 
-.aut-cambio a,
+
 .aut-link {
   color: var(--acento-fuerte);
+}
+.aut-cambio a{
+  color: white;
 }
 
 .aut-form {

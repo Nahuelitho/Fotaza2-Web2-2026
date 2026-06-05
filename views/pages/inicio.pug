@@ -16,11 +16,11 @@ block content
             p.comp-msg.comp-msg--error= mensajeError
           .ini-agregar
             if usuarioActual
-              button.ini-agregar__btn(type='button', data-open-post-modal='true', aria-haspopup='dialog')
+              button.ini-agregar__btn(type='button', data-abrir-modal-publicacion='true', aria-haspopup='dialog')
                 span.ini-agregar__ico +
                 span Agregar publicacion
             else
-              button.ini-agregar__btn(type='button', data-open-auth-modal='true', aria-haspopup='dialog')
+              button.ini-agregar__btn(type='button', data-abrir-modal-autenticacion='true', aria-haspopup='dialog')
                 span.ini-agregar__ico +
                 span Agregar publicacion
 
@@ -60,7 +60,7 @@ block content
       .comp-modal__caja.comp-tarjeta(role='dialog', aria-modal='true', aria-labelledby='post-modal-title')
         .comp-cabecera
           h3#post-modal-title Nueva publicacion
-          button.comp-modal__cerrar(type='button', data-close-post-modal='true', aria-label='Cerrar') x
+          button.comp-modal__cerrar(type='button', data-cerrar-modal-publicacion='true', aria-label='Cerrar') x
 
         form.aut-form(action='/publicaciones', method='post', enctype='multipart/form-data')
           label.aut-campo
@@ -78,51 +78,51 @@ block content
           .aut-form__fila
             label.aut-campo
               span Licencia
-              select(name='tipoLicencia', required, data-license-type='true')
+              select(name='tipoLicencia', required, data-tipo-licencia='true')
                 option(value='') Seleccionar
                 option(value='con_copyright') Con copyright
                 option(value='creative_commons') Sin copyright (Creative Commons)
 
             label.aut-campo
               span Marca de agua
-              input(type='text', name='textoMarcaAgua', maxlength='100', data-watermark='true')
+              input(type='text', name='textoMarcaAgua', maxlength='100', data-marca-agua='true')
 
           p.comp-nota Imagen maxima: 2MB. Formatos: JPG, PNG o WEBP.
 
           fieldset.aut-campo.ini-tags-campo
             span Tags (elegi entre 1 y 3)
             .ini-tags-selector
-              select(data-tag-select='true')
+              select(data-select-etiqueta='true')
                 option(value='') Seleccionar tag
                 each etiqueta in etiquetasDisponibles
                   option(value=etiqueta.name)= etiqueta.name
-              button.comp-btn.comp-btn--fantasma(type='button', data-add-existing-tag='true') Agregar
+              button.comp-btn.comp-btn--fantasma(type='button', data-agregar-etiqueta-existente='true') Agregar
 
           .aut-campo
             span Agregar tag nuevo (opcional)
             .ini-tags-selector
-              input(type='text', maxlength='50', placeholder='Ej: deportes', data-new-tag='true')
-              button.comp-btn.comp-btn--fantasma(type='button', data-add-new-tag='true') Crear
+              input(type='text', maxlength='50', placeholder='Ej: deportes', data-etiqueta-nueva='true')
+              button.comp-btn.comp-btn--fantasma(type='button', data-crear-etiqueta-nueva='true') Crear
 
-          .ini-tags-elegidos(data-selected-tags='true')
+          .ini-tags-elegidos(data-etiquetas-elegidas='true')
 
           p.comp-nota Podes combinar tags existentes y un tag nuevo. Maximo: 3.
 
           .aut-form__acciones
             button.comp-btn(type='submit') Publicar
-            button.comp-btn.comp-btn--cancelar(type='button', data-close-post-modal='true') Cancelar
+            button.comp-btn.comp-btn--cancelar(type='button', data-cerrar-modal-publicacion='true') Cancelar
   else
     .comp-modal#auth-required-modal(hidden=true)
       .comp-modal__caja.comp-tarjeta(role='dialog', aria-modal='true', aria-labelledby='auth-required-title')
         .comp-cabecera
           h3#auth-required-title Necesitas una cuenta
-          button.comp-modal__cerrar(type='button', data-close-auth-modal='true', aria-label='Cerrar') x
+          button.comp-modal__cerrar(type='button', data-cerrar-modal-autenticacion='true', aria-label='Cerrar') x
 
         p.comp-nota Para crear una publicacion tenes que iniciar sesion o crear una cuenta.
 
         .aut-form__acciones
           a.comp-btn(href='/registro') Crear cuenta
           a.comp-btn.comp-btn--suave(href='/iniciar-sesion') Iniciar sesion
-          button.comp-btn.comp-btn--cancelar(type='button', data-close-auth-modal='true') Cancelar
+          button.comp-btn.comp-btn--cancelar(type='button', data-cerrar-modal-autenticacion='true') Cancelar
 
   script(src='/js/inicio.js')
