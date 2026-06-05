@@ -1,4 +1,4 @@
-const { sequelize, Publicacion, ImagenPublicacion, Etiqueta, PublicacionEtiqueta, Usuario } = require('../models/sequelize');
+const { sequelize, Publicacion, ImagenPublicacion, Etiqueta, PublicacionEtiqueta, Usuario, Comentario } = require('../models/sequelize');
 
 const TIPOS_MIME_PERMITIDOS = ['image/jpeg', 'image/png', 'image/webp'];
 
@@ -6,13 +6,20 @@ function redirigirConError(res, mensaje) {
   return res.redirect(`/?error=${encodeURIComponent(mensaje)}`);
 }
 
-function normalizarEtiquetas(etiquetasCrudas) {
-  if (!etiquetasCrudas) {
-    return [];
+function normalizarEtiquetasDesdeFormulario(etiquetasExistentes, etiquetaNueva) {
+  const etiquetasSeleccionadas = Array.isArray(etiquetasExistentes)
+    ? etiquetasExistentes
+    : etiquetasExistentes
+      ? [etiquetasExistentes]
+      : [];
+
+  const etiquetasCrudas = [...etiquetasSeleccionadas];
+
+  if (etiquetaNueva?.trim()) {
+    etiquetasCrudas.push(etiquetaNueva.trim());
   }
 
   return etiquetasCrudas
-    .split(',')
     .map((tag) => tag.trim().toLowerCase())
     .filter(Boolean)
     .filter((tag, index, arr) => arr.indexOf(tag) === index);
@@ -20,13 +27,13 @@ function normalizarEtiquetas(etiquetasCrudas) {
 
 async function crearPublicacion(req, res) {
   const usuarioActual = req.session.usuario;
-  const { titulo, descripcion, tipoLicencia, textoMarcaAgua, etiquetas } = req.body;
+  const { titulo, descripcion, tipoLicencia, textoMarcaAgua, etiquetasExistentes, etiquetaNueva } = req.body;
   const archivoSubido = req.file;
   const tituloNormalizado = titulo?.trim();
   const descripcionNormalizada = descripcion?.trim() || null;
   const tipoLicenciaNormalizado = tipoLicencia?.trim();
   const textoMarcaAguaNormalizado = textoMarcaAgua?.trim() || null;
-  const etiquetasNormalizadas = normalizarEtiquetas(etiquetas);
+  const etiquetasNormalizadas = normalizarEtiquetasDesdeFormulario(etiquetasExistentes, etiquetaNueva);
 
   if (!tituloNormalizado) {
     return redirigirConError(res, 'El titulo es obligatorio.');
@@ -49,7 +56,11 @@ async function crearPublicacion(req, res) {
   }
 
   if (etiquetasNormalizadas.length === 0) {
-    return redirigirConError(res, 'Debes ingresar al menos una etiqueta.');
+    return redirigirConError(res, 'Debes elegir al menos una etiqueta.');
+  }
+
+  if (etiquetasNormalizadas.length > 3) {
+    return redirigirConError(res, 'Solo podes elegir hasta 3 etiquetas.');
   }
 
   const imagenBase64 = archivoSubido.buffer.toString('base64');
@@ -128,7 +139,19 @@ async function mostrarDetallePublicacion(req, res) {
         as: 'usuario',
         attributes: ['nombreVisible', 'nombreUsuario'],
       },
+      {
+        model: Comentario,
+        as: 'comentarios',
+        include: [
+          {
+            model: Usuario,
+            as: 'usuario',
+            attributes: ['nombreVisible', 'nombreUsuario'],
+          },
+        ],
+      },
     ],
+    order: [[{ model: Comentario, as: 'comentarios' }, 'created_at', 'ASC']],
   });
 
   if (!publicacion) {
@@ -143,6 +166,7 @@ async function mostrarDetallePublicacion(req, res) {
     title: `${publicacion.titulo} | Fotaza 2`,
     extraCss: ['/css/publicacion-detalle.css'],
     usuarioActual: req.session.usuario || null,
+    mensajeError: req.query.error || '',
     publicacion,
   });
 }
@@ -164,8 +188,41 @@ async function eliminarPublicacion(req, res) {
   return res.redirect('/?estado=eliminada');
 }
 
+async function crearComentario(req, res) {
+  const contenido = req.body.contenido?.trim();
+
+  if (!contenido) {
+    return res.redirect(`/publicaciones/${req.params.id}?error=El comentario no puede estar vacio.`);
+  }
+
+  const publicacion = await Publicacion.findOne({
+    where: {
+      id: req.params.id,
+      visibilidad: 'publica',
+      estado: 'activa',
+    },
+  });
+
+  if (!publicacion) {
+    return res.redirect('/?error=La publicacion no existe.');
+  }
+
+  if (!publicacion.comentariosHabilitados) {
+    return res.redirect(`/publicaciones/${req.params.id}?error=Los comentarios estan cerrados.`);
+  }
+
+  await Comentario.create({
+    idPublicacion: publicacion.id,
+    idUsuario: req.session.usuario.id,
+    contenido,
+  });
+
+  return res.redirect(`/publicaciones/${publicacion.id}`);
+}
+
 module.exports = {
   crearPublicacion,
   mostrarDetallePublicacion,
   eliminarPublicacion,
+  crearComentario,
 };

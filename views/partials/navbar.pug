@@ -14,7 +14,7 @@ header.nav-barra
       if usuarioActual
         span.nav-usuario Hola, #{usuarioActual.nombreVisible}
         form(action='/cerrar-sesion', method='post')
-          button.comp-btn.comp-btn--suave(type='submit') Cerrar sesion
+          button.comp-btn.comp-btn--cancelar(type='submit') Cerrar sesion
       else
         a.comp-btn(href='/registro') Crear cuenta
         a.comp-btn.comp-btn--suave(href='/iniciar-sesion') Iniciar sesion

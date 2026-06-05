@@ -90,6 +90,55 @@
   font-size: 1.3rem;
 }
 
+.ini-tags-campo {
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.ini-tags-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.ini-tags-selector select,
+.ini-tags-selector input {
+  flex: 1 1 14rem;
+  border: 1px solid var(--borde);
+  border-radius: 0.75rem;
+  min-height: 2.8rem;
+  padding: 0.6rem 0.7rem;
+  background: rgba(255, 255, 255, 0.75);
+}
+
+.ini-tags-elegidos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  min-height: 2.2rem;
+}
+
+.ini-tag-elegido {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--borde);
+  border-radius: 999px;
+  background: #f8e8db;
+  color: var(--acento-fuerte);
+  font-weight: 600;
+}
+
+.ini-tag-elegido button {
+  border: 0;
+  background: transparent;
+  color: var(--acento-fuerte);
+  cursor: pointer;
+  font-weight: 700;
+}
+
 .ini-posts {
   display: grid;
   gap: 0.9rem;
@@ -135,6 +184,12 @@
 
 .ini-post__acciones {
   margin-top: 0.8rem;
+}
+
+.ini-bienvenida {
+  margin: 0.7rem 0 0;
+  color: var(--texto-suave);
+  max-width: 34rem;
 }
 
 @media (max-width: 980px) {

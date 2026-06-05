@@ -38,9 +38,22 @@ block content
 
     section.pub-detalle__comentarios.comp-tarjeta
       h2 Comentarios
-      p.comp-nota El modulo de comentarios se implementara en la siguiente etapa.
+
+      if mensajeError
+        p.comp-msg.comp-msg--error= mensajeError
+
+      if publicacion.comentarios && publicacion.comentarios.length > 0
+        each comentario in publicacion.comentarios
+          article.pub-comentario
+            if comentario.usuario
+              strong= '@' + comentario.usuario.nombreUsuario
+            p= comentario.contenido
+      else
+        p.comp-nota Todavia no hay comentarios.
+
       if usuarioActual
-        textarea.pub-detalle__comentario-input(placeholder='Escribi un comentario...', disabled)
-        button.comp-btn(type='button', disabled) Comentar
+        form(action=`/publicaciones/${publicacion.id}/comentarios`, method='post')
+          textarea.pub-detalle__comentario-input(name='contenido', placeholder='Escribi un comentario...', required)
+          button.comp-btn(type='submit') Comentar
       else
         p.comp-nota Inicia sesion para comentar esta publicacion.

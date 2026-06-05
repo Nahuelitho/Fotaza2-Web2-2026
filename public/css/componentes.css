@@ -125,14 +125,17 @@ button:not(:disabled),
 .comp-modal {
   position: fixed;
   inset: 0;
+  z-index: 100;
   background: rgba(53, 40, 32, 0.35);
   display: grid;
-  place-items: center;
-  padding: 1rem;
+  place-items: start center;
+  padding: 1.5rem 1rem;
+  overflow-y: auto;
 }
 
 .comp-modal__caja {
   width: min(740px, 100%);
+  background: rgba(255, 251, 246, 0.98);
 }
 
 .comp-modal .comp-cabecera {

@@ -8,7 +8,15 @@ async function renderizarInicio(req, res) {
     eliminada: 'Publicacion eliminada.',
   };
 
+  const etiquetasDisponibles = await Etiqueta.findAll({
+    order: [['name', 'ASC']],
+  });
+
   const publicaciones = await Publicacion.findAll({
+    where: {
+      visibilidad: 'publica',
+      estado: 'activa',
+    },
     include: [
       {
         model: ImagenPublicacion,
@@ -37,6 +45,7 @@ async function renderizarInicio(req, res) {
     mensajeEstado: mensajesEstado[estado] || '',
     mensajeError: error || '',
     publicaciones,
+    etiquetasDisponibles,
   });
 }
 

@@ -89,73 +89,28 @@ block content
 
           p.comp-nota Imagen maxima: 2MB. Formatos: JPG, PNG o WEBP.
 
-          label.aut-campo
-            span Tags (separados por coma)
-            input(type='text', name='etiquetas', required, placeholder='paisaje, viaje')
+          fieldset.aut-campo.ini-tags-campo
+            span Tags (elegi entre 1 y 3)
+            .ini-tags-selector
+              select(data-tag-select='true')
+                option(value='') Seleccionar tag
+                each etiqueta in etiquetasDisponibles
+                  option(value=etiqueta.name)= etiqueta.name
+              button.comp-btn.comp-btn--fantasma(type='button', data-add-existing-tag='true') Agregar
+
+          .aut-campo
+            span Agregar tag nuevo (opcional)
+            .ini-tags-selector
+              input(type='text', maxlength='50', placeholder='Ej: deportes', data-new-tag='true')
+              button.comp-btn.comp-btn--fantasma(type='button', data-add-new-tag='true') Crear
+
+          .ini-tags-elegidos(data-selected-tags='true')
+
+          p.comp-nota Podes combinar tags existentes y un tag nuevo. Maximo: 3.
 
           .aut-form__acciones
             button.comp-btn(type='submit') Publicar
             button.comp-btn.comp-btn--cancelar(type='button', data-close-post-modal='true') Cancelar
-    script.
-      (function () {
-        var openButton = document.querySelector('[data-open-post-modal="true"]');
-        var modal = document.getElementById('post-modal');
-        var closeButtons = document.querySelectorAll('[data-close-post-modal="true"]');
-        var licenseSelect = document.querySelector('[data-license-type="true"]');
-        var watermarkInput = document.querySelector('[data-watermark="true"]');
-
-        if (!modal || !openButton) return;
-
-        var form = modal.querySelector('form');
-        var imageInput = modal.querySelector('input[name="imagen"]');
-
-        function updateWatermarkState() {
-          if (!licenseSelect || !watermarkInput) return;
-          var requiresWatermark = licenseSelect.value === 'con_copyright';
-          watermarkInput.required = requiresWatermark;
-          watermarkInput.disabled = !requiresWatermark;
-          if (!requiresWatermark) {
-            watermarkInput.value = '';
-          }
-        }
-
-        openButton.addEventListener('click', function () {
-          modal.hidden = false;
-        });
-
-        closeButtons.forEach(function (button) {
-          button.addEventListener('click', function () {
-            modal.hidden = true;
-          });
-        });
-
-        modal.addEventListener('click', function (event) {
-          if (event.target === modal) {
-            modal.hidden = true;
-          }
-        });
-
-        if (licenseSelect) {
-          licenseSelect.addEventListener('change', updateWatermarkState);
-          updateWatermarkState();
-        }
-
-        if (form && imageInput) {
-          form.addEventListener('submit', function (event) {
-            var file = imageInput.files && imageInput.files[0];
-            if (!file) return;
-            if (file.size > 2 * 1024 * 1024) {
-              event.preventDefault();
-              alert('La imagen supera el tamano maximo permitido (2MB).');
-            }
-          });
-        }
-
-        if (window.location.search.indexOf('estado=creada') >= 0 || window.location.search.indexOf('error=') >= 0) {
-          window.history.replaceState({}, document.title, '/');
-        }
-        
-      })();
   else
     .comp-modal#auth-required-modal(hidden=true)
       .comp-modal__caja.comp-tarjeta(role='dialog', aria-modal='true', aria-labelledby='auth-required-title')
@@ -170,27 +125,4 @@ block content
           a.comp-btn.comp-btn--suave(href='/iniciar-sesion') Iniciar sesion
           button.comp-btn.comp-btn--cancelar(type='button', data-close-auth-modal='true') Cancelar
 
-    script.
-      (function () {
-        var openButton = document.querySelector('[data-open-auth-modal="true"]');
-        var modal = document.getElementById('auth-required-modal');
-        var closeButtons = document.querySelectorAll('[data-close-auth-modal="true"]');
-
-        if (!modal || !openButton) return;
-
-        openButton.addEventListener('click', function () {
-          modal.hidden = false;
-        });
-
-        closeButtons.forEach(function (button) {
-          button.addEventListener('click', function () {
-            modal.hidden = true;
-          });
-        });
-
-        modal.addEventListener('click', function (event) {
-          if (event.target === modal) {
-            modal.hidden = true;
-          }
-        });
-      })();
+  script(src='/js/inicio.js')

@@ -1,7 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const { requerirAutenticacion } = require('../middlewares/autenticacionMiddleware');
-const { crearPublicacion, mostrarDetallePublicacion, eliminarPublicacion } = require('../controllers/publicacionController');
+const { crearPublicacion, mostrarDetallePublicacion, eliminarPublicacion, crearComentario } = require('../controllers/publicacionController');
 
 const router = express.Router();
 
@@ -24,5 +24,7 @@ router.post('/publicaciones', requerirAutenticacion, (req, res, next) => {
     return next();
   });
 }, crearPublicacion);
+
+router.post('/publicaciones/:id/comentarios', requerirAutenticacion, crearComentario);
 
 module.exports = router;
