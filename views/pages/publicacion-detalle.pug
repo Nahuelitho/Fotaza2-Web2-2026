@@ -20,7 +20,10 @@ block content
         p.pub-detalle__desc= publicacion.descripcion
 
       if imagen
-        img.pub-detalle__img(src=`data:${imagen.tipoMime};base64,${imagen.imagenBase64}`, alt=publicacion.titulo)
+        .pub-detalle__imagen-caja
+          img.pub-detalle__img(src=`data:${imagen.tipoMime};base64,${imagen.imagenBase64}`, alt=publicacion.titulo)
+          if imagen.textoMarcaAgua
+            span.pub-detalle__marca-agua= imagen.textoMarcaAgua
         p.pub-detalle__meta
           | Licencia: #{imagen.tipoLicencia === 'creative_commons' ? 'Sin copyright (Creative Commons)' : 'Con copyright'}
           if imagen.textoMarcaAgua

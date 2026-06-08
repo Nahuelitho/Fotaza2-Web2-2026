@@ -43,7 +43,10 @@ block content
                   if publicacion.descripcion
                     p.ini-post__desc= publicacion.descripcion
                   if imagen
-                    img.ini-post__img(src=`data:${imagen.tipoMime};base64,${imagen.imagenBase64}`, alt=publicacion.titulo)
+                    .ini-post__imagen-caja
+                      img.ini-post__img(src=`data:${imagen.tipoMime};base64,${imagen.imagenBase64}`, alt=publicacion.titulo)
+                      if imagen.textoMarcaAgua
+                        span.ini-post__marca-agua= imagen.textoMarcaAgua
                     p.ini-post__meta
                       | Licencia: #{imagen.tipoLicencia === 'creative_commons' ? 'Sin copyright (Creative Commons)' : 'Con copyright'}
                       if imagen.textoMarcaAgua
@@ -54,6 +57,14 @@ block content
                         span.comp-tag.comp-tag--suave= etiqueta.name
                   .ini-post__acciones
                     a.comp-btn.comp-btn--fantasma(href=`/publicaciones/${publicacion.id}`) Ver detalle
+
+              if paginacion && paginacion.totalPaginas > 1
+                nav.ini-paginacion(aria-label='Paginacion de publicaciones')
+                  if paginacion.tieneAnterior
+                    a.comp-btn.comp-btn--fantasma(href=`/?pagina=${paginacion.paginaActual - 1}`) Anterior
+                  span.ini-paginacion__estado Pagina #{paginacion.paginaActual} de #{paginacion.totalPaginas}
+                  if paginacion.tieneSiguiente
+                    a.comp-btn.comp-btn--fantasma(href=`/?pagina=${paginacion.paginaActual + 1}`) Siguiente
 
   if usuarioActual
     .comp-modal#post-modal(hidden=true)
