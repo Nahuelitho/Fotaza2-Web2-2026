@@ -26,15 +26,24 @@
 }
 
 .nav-busc {
+  display: grid;
+  grid-template-columns: minmax(12rem, 1fr) minmax(10rem, 14rem) auto;
+  gap: 0.45rem;
   flex: 1;
 }
 
-.nav-busc input {
+.nav-busc input,
+.nav-busc select {
   width: 100%;
   border: 1px solid var(--borde);
   border-radius: 999px;
   padding: 0.85rem 1rem;
   background: rgba(255, 255, 255, 0.7);
+}
+
+.nav-busc .comp-btn {
+  min-width: 6.5rem;
+  box-shadow: none;
 }
 
 .nav-menu {
@@ -79,32 +88,6 @@
   background: rgba(255, 255, 255, 0.7);
 }
 
-.nav-menu-btn {
-  width: 2.8rem;
-  height: 2.8rem;
-  border-radius: 50%;
-  border: 1px solid var(--borde);
-  background: rgba(255, 255, 255, 0.7);
-  display: inline-flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 0.23rem;
-  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
-}
-
-.nav-menu-btn:hover {
-  transform: translateY(-1px);
-  background: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 10px 20px rgba(120, 84, 56, 0.14);
-}
-
-.nav-menu-btn__lin {
-  width: 1rem;
-  height: 2px;
-  margin: 0 auto;
-  background: var(--texto);
-}
-
 @media (max-width: 900px) {
   .nav-conten {
     flex-wrap: wrap;
@@ -113,5 +96,11 @@
   .nav-busc,
   .nav-menu {
     width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .nav-busc {
+    grid-template-columns: 1fr;
   }
 }

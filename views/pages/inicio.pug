@@ -61,10 +61,10 @@ block content
               if paginacion && paginacion.totalPaginas > 1
                 nav.ini-paginacion(aria-label='Paginacion de publicaciones')
                   if paginacion.tieneAnterior
-                    a.comp-btn.comp-btn--fantasma(href=`/?pagina=${paginacion.paginaActual - 1}`) Anterior
+                    a.comp-btn.comp-btn--fantasma(href=paginacion.urlAnterior) Anterior
                   span.ini-paginacion__estado Pagina #{paginacion.paginaActual} de #{paginacion.totalPaginas}
                   if paginacion.tieneSiguiente
-                    a.comp-btn.comp-btn--fantasma(href=`/?pagina=${paginacion.paginaActual + 1}`) Siguiente
+                    a.comp-btn.comp-btn--fantasma(href=paginacion.urlSiguiente) Siguiente
 
   if usuarioActual
     .comp-modal#post-modal(hidden=true)

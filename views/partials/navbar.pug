@@ -1,11 +1,19 @@
 header.nav-barra
+  - var etiquetasNav = etiquetasDisponibles || []
+  - var filtrosNav = filtrosBusqueda || {}
   .nav-conten.ly-cont
     .nav-marca
       a.nav-logo(href='/') Fotaza 2
 
-    .nav-busc
+    form.nav-busc(action='/', method='get')
       label.u-solo-lect(for='site-search') Buscar contenido
-      input#site-search(type='search', placeholder='Buscar')
+      input#site-search(type='search', name='buscar', placeholder='Buscar', value=filtrosNav.buscar || '')
+      label.u-solo-lect(for='site-tag') Filtrar por etiqueta
+      select#site-tag(name='etiqueta')
+        option(value='') Todas las etiquetas
+        each etiqueta in etiquetasNav
+          option(value=etiqueta.name, selected=filtrosNav.etiqueta === etiqueta.name)= etiqueta.name
+      button.comp-btn.comp-btn--fantasma(type='submit') Buscar
 
     nav.nav-menu(aria-label='Navegacion principal')
       a.nav-link.nav-link--act(href='/') Inicio
@@ -18,7 +26,3 @@ header.nav-barra
       else
         a.comp-btn(href='/registro') Crear cuenta
         a.comp-btn.comp-btn--suave(href='/iniciar-sesion') Iniciar sesion
-      button.nav-menu-btn(type='button', aria-label='Abrir menu')
-        span.nav-menu-btn__lin
-        span.nav-menu-btn__lin
-        span.nav-menu-btn__lin

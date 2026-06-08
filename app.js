@@ -87,12 +87,21 @@ app.use(async (req, res, next) => {
   }
 });
 
-app.use((req, res, next) => {
-  res.locals.appName = 'Fotaza 2';
-  res.locals.usuarioActual = req.session.usuario || null;
-  res.locals.accesosRapidos = ['Explorar', 'Tendencias', 'Colecciones', 'Fotografos', 'Favoritos'];
-  res.locals.etiquetasDestacadas = ['Paisajes', 'Retratos', 'Ciudad', 'Viajes', 'Naturaleza'];
-  next();
+app.use(async (req, res, next) => {
+  try {
+    res.locals.appName = 'Fotaza 2';
+    res.locals.usuarioActual = req.session.usuario || null;
+    res.locals.filtrosBusqueda = {
+      buscar: req.query.buscar?.trim() || '',
+      etiqueta: req.query.etiqueta?.trim() || '',
+    };
+    res.locals.etiquetasDisponibles = await Etiqueta.findAll({
+      order: [['name', 'ASC']],
+    });
+    next();
+  } catch (error) {
+    next(error);
+  }
 });
 
 app.use('/', indexRouter);
