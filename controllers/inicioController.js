@@ -4,8 +4,8 @@ async function renderizarInicio(req, res) {
   const estado = req.query.estado || '';
   const error = req.query.error || '';
   const mensajesEstado = {
-    creada: 'Publicacion creada.',
-    eliminada: 'Publicacion eliminada.',
+    creada: 'La publicacion se creo correctamente.',
+    eliminada: 'La publicacion fue eliminada.',
   };
 
   const etiquetasDisponibles = await Etiqueta.findAll({

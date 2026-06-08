@@ -25,11 +25,11 @@
   margin: 0;
 }
 
-
 .aut-link {
   color: var(--acento-fuerte);
 }
-.aut-cambio a{
+
+.aut-cambio .comp-btn {
   color: white;
 }
 

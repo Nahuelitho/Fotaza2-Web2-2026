@@ -58,7 +58,7 @@ async function registrarUsuario(req, res) {
 
   if (!nombreVisibleNormalizado || !usuarioNormalizado || !correoNormalizado || !contrasena || !confirmarContrasena) {
     return renderizarVistaRegistro(res, {
-      mensajeError: 'Completa todos los campos para crear la cuenta.',
+      mensajeError: 'Completa todos los campos para crear tu cuenta.',
       datosFormulario: { nombreVisible: nombreVisibleNormalizado, usuario: usuarioNormalizado, correo: correoNormalizado },
     });
   }
@@ -112,7 +112,7 @@ async function registrarUsuario(req, res) {
     return res.redirect('/');
   } catch (errorDeRegistro) {
     return renderizarVistaRegistro(res, {
-      mensajeError: errorDeRegistro.message || 'No se pudo crear la cuenta en este momento.',
+      mensajeError: errorDeRegistro.message || 'No se pudo crear la cuenta. Intentalo nuevamente.',
       datosFormulario: { nombreVisible: nombreVisibleNormalizado, usuario: usuarioNormalizado, correo: correoNormalizado },
     });
   }
@@ -124,7 +124,7 @@ async function iniciarSesionUsuario(req, res) {
 
   if (!identificadorNormalizado || !contrasena) {
     return renderizarVistaInicioSesion(res, {
-      mensajeError: 'Ingresa tu usuario o correo y la contrasena.',
+      mensajeError: 'Ingresa tu usuario o correo y tu contrasena.',
       datosFormulario: { identificador: identificadorNormalizado },
     });
   }
@@ -165,7 +165,7 @@ async function iniciarSesionUsuario(req, res) {
     return res.redirect('/');
   } catch (errorDeInicioSesion) {
     return renderizarVistaInicioSesion(res, {
-      mensajeError: errorDeInicioSesion.message || 'No se pudo iniciar sesion en este momento.',
+      mensajeError: errorDeInicioSesion.message || 'No se pudo iniciar sesion. Intentalo nuevamente.',
       datosFormulario: { identificador: identificadorNormalizado },
     });
   }

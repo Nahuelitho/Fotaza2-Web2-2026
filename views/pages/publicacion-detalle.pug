@@ -49,7 +49,7 @@ block content
               strong= '@' + comentario.usuario.nombreUsuario
             p= comentario.contenido
       else
-        p.comp-nota Todavia no hay comentarios.
+        p.comp-nota Todavia no hay comentarios en esta publicacion.
 
       if usuarioActual
         form(action=`/publicaciones/${publicacion.id}/comentarios`, method='post')

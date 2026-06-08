@@ -36,15 +36,15 @@ async function crearPublicacion(req, res) {
   const etiquetasNormalizadas = normalizarEtiquetasDesdeFormulario(etiquetasExistentes, etiquetaNueva);
 
   if (!tituloNormalizado) {
-    return redirigirConError(res, 'El titulo es obligatorio.');
+    return redirigirConError(res, 'Ingresa un titulo para la publicacion.');
   }
 
   if (!archivoSubido) {
-    return redirigirConError(res, 'La imagen es obligatoria.');
+    return redirigirConError(res, 'Selecciona una imagen para publicar.');
   }
 
   if (!TIPOS_MIME_PERMITIDOS.includes(archivoSubido.mimetype)) {
-    return redirigirConError(res, 'Solo se permiten imagenes JPG, PNG o WEBP.');
+    return redirigirConError(res, 'La imagen debe ser JPG, PNG o WEBP.');
   }
 
   if (!['con_copyright', 'creative_commons'].includes(tipoLicenciaNormalizado)) {
@@ -52,7 +52,7 @@ async function crearPublicacion(req, res) {
   }
 
   if (tipoLicenciaNormalizado === 'con_copyright' && !textoMarcaAguaNormalizado) {
-    return redirigirConError(res, 'La marca de agua es obligatoria para imagenes con copyright.');
+    return redirigirConError(res, 'Ingresa una marca de agua para imagenes con copyright.');
   }
 
   if (etiquetasNormalizadas.length === 0) {
@@ -113,7 +113,7 @@ async function crearPublicacion(req, res) {
     return res.redirect('/?estado=creada');
   } catch (error) {
     await transaction.rollback();
-    return redirigirConError(res, 'No se pudo crear la publicacion.');
+    return redirigirConError(res, 'No se pudo crear la publicacion. Intentalo nuevamente.');
   }
 }
 
@@ -158,7 +158,7 @@ async function mostrarDetallePublicacion(req, res) {
     return res.status(404).render('pages/inicio', {
       title: 'Publicacion no encontrada',
       publicaciones: [],
-      mensajeError: 'La publicacion no existe o no esta disponible.',
+      mensajeError: 'La publicacion no existe o ya no esta disponible.',
     });
   }
 
@@ -176,11 +176,11 @@ async function eliminarPublicacion(req, res) {
   const publicacion = await Publicacion.findByPk(req.params.id);
 
   if (!publicacion) {
-    return res.redirect('/?error=La publicacion no existe.');
+    return res.redirect('/?error=La publicacion no existe o ya no esta disponible.');
   }
 
   if (publicacion.idUsuario !== usuarioActual.id) {
-    return res.redirect(`/publicaciones/${req.params.id}?error=No podes eliminar una publicacion que no es tuya.`);
+    return res.redirect(`/publicaciones/${req.params.id}?error=Solo el autor puede eliminar esta publicacion.`);
   }
 
   await publicacion.update({ estado: 'eliminada' });
@@ -192,7 +192,7 @@ async function crearComentario(req, res) {
   const contenido = req.body.contenido?.trim();
 
   if (!contenido) {
-    return res.redirect(`/publicaciones/${req.params.id}?error=El comentario no puede estar vacio.`);
+    return res.redirect(`/publicaciones/${req.params.id}?error=Escribi un comentario antes de enviarlo.`);
   }
 
   const publicacion = await Publicacion.findOne({
@@ -204,11 +204,11 @@ async function crearComentario(req, res) {
   });
 
   if (!publicacion) {
-    return res.redirect('/?error=La publicacion no existe.');
+    return res.redirect('/?error=La publicacion no existe o ya no esta disponible.');
   }
 
   if (!publicacion.comentariosHabilitados) {
-    return res.redirect(`/publicaciones/${req.params.id}?error=Los comentarios estan cerrados.`);
+    return res.redirect(`/publicaciones/${req.params.id}?error=Los comentarios de esta publicacion estan cerrados.`);
   }
 
   await Comentario.create({
