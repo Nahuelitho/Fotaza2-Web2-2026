@@ -4,6 +4,8 @@ block content
   - var imagen = (publicacion.imagenes && publicacion.imagenes[0]) || null
   - var etiquetas = publicacion.etiquetas || []
   - var esAutor = usuarioActual && usuarioActual.id === publicacion.idUsuario
+  - var cantidadSeguidoresAutor = estadisticasAutor ? estadisticasAutor.cantidadSeguidores : 0
+  - var cantidadSeguidosAutor = estadisticasAutor ? estadisticasAutor.cantidadSeguidos : 0
 
   .pub-detalle.ly-cont
     a.pub-detalle__volver(href='/') Volver al inicio
@@ -38,6 +40,38 @@ block content
         .pub-detalle__acciones
           form(action=`/publicaciones/${publicacion.id}?_method=DELETE`, method='post')
             button.comp-btn.comp-btn--cancelar(type='submit') Eliminar publicacion
+
+    if publicacion.usuario
+      section.pub-detalle__autor-card.comp-tarjeta
+        .pub-autor__info
+          span.pub-autor__avatar= publicacion.usuario.nombreUsuario.slice(0, 2).toUpperCase()
+          div
+            h2= publicacion.usuario.nombreVisible || publicacion.usuario.nombreUsuario
+            p.pub-detalle__meta= '@' + publicacion.usuario.nombreUsuario
+            p.comp-nota Seguidores: #{cantidadSeguidoresAutor} · Seguidos: #{cantidadSeguidosAutor}
+        .pub-autor__acciones
+          a.comp-btn.comp-btn--fantasma(href='#') Ver perfil
+          if usuarioActual && !esAutor
+            button.comp-btn(type='button') Seguir
+          else if esAutor
+            span.comp-tag.comp-tag--suave Es tu publicacion
+
+    section.pub-detalle__valoracion.comp-tarjeta
+      h2 Valoracion de la imagen
+      p.comp-nota Promedio: sin valoraciones todavia.
+
+      if usuarioActual && !esAutor
+        p.pub-detalle__meta Tu valoracion: todavia no valoraste esta imagen.
+        .pub-valoracion__opciones(aria-label='Seleccionar puntaje')
+          each puntaje in [1, 2, 3, 4, 5]
+            label.pub-valoracion__opcion
+              input(type='radio', name='puntaje', value=puntaje)
+              span= puntaje
+        button.comp-btn(type='button') Guardar valoracion
+      else if esAutor
+        p.comp-nota No podes valorar tu propia publicacion.
+      else
+        p.comp-nota Inicia sesion para valorar esta imagen.
 
     section.pub-detalle__comentarios.comp-tarjeta
       h2 Comentarios
