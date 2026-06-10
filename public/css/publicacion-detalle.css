@@ -6,9 +6,42 @@
 
 .pub-detalle__volver {
   display: inline-flex;
-  margin-bottom: 1rem;
+  align-items: center;
+  justify-content: center;
+
+  width: fit-content;
+
+  padding: 0.65rem 1.25rem;
+  margin-bottom: 1.2rem;
+
+  border: 1px solid rgba(192, 64, 48, 0.35);
+  border-radius: 999px;
+
+  background: #ffffff;
   color: var(--acento-fuerte);
-  font-weight: 600;
+
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1;
+
+  text-decoration: none;
+
+  box-shadow: 0 8px 18px rgba(110, 53, 30, 0.08);
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.pub-detalle__volver:hover {
+  background: var(--acento-fuerte);
+  color: #ffffff;
+  border-color: var(--acento-fuerte);
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(192, 64, 48, 0.18);
 }
 
 .pub-detalle__cab {

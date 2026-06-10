@@ -3,7 +3,8 @@ extends ../layouts/main
 block content
   - var publicacionesSeguras = publicaciones || []
   - var estadisticas = estadisticasPerfil || { cantidadSeguidores: 0, cantidadSeguidos: 0 }
-  - var esPerfilPropio = usuarioActual && usuarioActual.id === usuarioPerfil.id
+  - var esPerfilPropio = usuarioActual && Number(usuarioActual.id) === Number(usuarioPerfil.id)
+  - var estaSiguiendo = typeof yaLoSigue !== 'undefined' ? yaLoSigue : false
 
   .perfil.ly-cont
     a.perfil__volver(href='/') Volver al inicio
@@ -13,10 +14,20 @@ block content
       p.perfil__usuario= '@' + usuarioPerfil.nombreUsuario
       p.comp-nota Seguidores: #{estadisticas.cantidadSeguidores} · Seguidos: #{estadisticas.cantidadSeguidos}
 
+      if mensajeError
+        p.comp-msg.comp-msg--error= mensajeError
+
       if esPerfilPropio
         span.comp-tag.comp-tag--suave Es tu perfil
       else if usuarioActual
-        button.comp-btn(type='button') Seguir
+        if estaSiguiendo
+          form(action=`/usuarios/${usuarioPerfil.id}/seguir?_method=DELETE`, method='post')
+            button.comp-btn.comp-btn--fantasma(type='submit') Dejar de seguir
+        else
+          form(action=`/usuarios/${usuarioPerfil.id}/seguir`, method='post')
+            button.comp-btn(type='submit') Seguir
+      else
+        a.comp-btn.comp-btn--fantasma(href='/iniciar-sesion') Iniciar sesion para seguir
 
     section.perfil__publicaciones.comp-tarjeta
       .comp-cabecera

@@ -9,7 +9,7 @@ block content
   - var promedioValoracion = valoracionResumen ? valoracionResumen.promedio : 0
   - var cantidadValoraciones = valoracionResumen ? valoracionResumen.cantidad : 0
   - var valoracionUsuario = valoracionResumen ? valoracionResumen.valoracionUsuario : null
-
+  - var estaSiguiendoAutor = typeof yaSigueAutor !== 'undefined' ? yaSigueAutor : false
   .pub-detalle.ly-cont
     a.pub-detalle__volver(href='/') Volver al inicio
 
@@ -55,7 +55,12 @@ block content
         .pub-autor__acciones
           a.comp-btn.comp-btn--fantasma(href=`/usuarios/${publicacion.usuario.id}`) Ver perfil
           if usuarioActual && !esAutor
-            button.comp-btn(type='button') Seguir
+            if estaSiguiendoAutor
+              form(action=`/usuarios/${publicacion.usuario.id}/seguir?_method=DELETE`, method='post')
+                button.comp-btn.comp-btn--fantasma(type='submit') Dejar de seguir
+            else
+              form(action=`/usuarios/${publicacion.usuario.id}/seguir`, method='post')
+                button.comp-btn(type='submit') Seguir
           else if esAutor
             span.comp-tag.comp-tag--suave Es tu publicacion
 
