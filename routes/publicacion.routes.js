@@ -1,7 +1,14 @@
 const express = require('express');
 const multer = require('multer');
 const { requerirAutenticacion } = require('../middlewares/autenticacionMiddleware');
-const { crearPublicacion, mostrarDetallePublicacion, eliminarPublicacion, crearComentario, valorarPublicacion } = require('../controllers/publicacionController');
+const {
+  crearPublicacion,
+  mostrarDetallePublicacion,
+  eliminarPublicacion,
+  crearComentario,
+  eliminarComentario,
+  valorarPublicacion,
+} = require('../controllers/publicacionController');
 
 const router = express.Router();
 
@@ -27,5 +34,11 @@ router.post('/publicaciones', requerirAutenticacion, (req, res, next) => {
 
 router.post('/publicaciones/:id/comentarios', requerirAutenticacion, crearComentario);
 router.post('/publicaciones/:id/valoraciones', requerirAutenticacion, valorarPublicacion);
+
+router.delete(
+  '/publicaciones/:id/comentarios/:comentarioId',
+  requerirAutenticacion,
+  eliminarComentario
+);
 
 module.exports = router;

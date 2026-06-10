@@ -148,6 +148,27 @@
   margin: 0.35rem 0 0;
 }
 
+.pub-comentario__cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.pub-comentario__eliminar {
+  border: none;
+  background: transparent;
+  color: #c04030;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.3rem 0.55rem;
+  border-radius: 999px;
+}
+
+.pub-comentario__eliminar:hover {
+  background: #f8e8db;
+}
+
 @media (max-width: 720px) {
   .pub-detalle__autor-card {
     align-items: flex-start;

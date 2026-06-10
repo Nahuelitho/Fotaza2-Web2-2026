@@ -244,7 +244,41 @@ async function crearComentario(req, res) {
 
   return res.redirect(`/publicaciones/${publicacion.id}`);
 }
+async function eliminarComentario(req, res) {
+  const usuarioActual = req.session.usuario;
+  const { id, comentarioId } = req.params;
 
+  const publicacion = await Publicacion.findOne({
+    where: {
+      id,
+      visibilidad: 'publica',
+      estado: 'activa',
+    },
+  });
+
+  if (!publicacion) {
+    return res.redirect('/?error=La publicacion no existe o ya no esta disponible.');
+  }
+
+  if (Number(publicacion.idUsuario) !== Number(usuarioActual.id)) {
+    return res.redirect(`/publicaciones/${publicacion.id}?error=Solo el dueño de la publicacion puede eliminar comentarios.`);
+  }
+
+  const comentario = await Comentario.findOne({
+    where: {
+      id: comentarioId,
+      idPublicacion: publicacion.id,
+    },
+  });
+
+  if (!comentario) {
+    return res.redirect(`/publicaciones/${publicacion.id}?error=El comentario no existe o no pertenece a esta publicacion.`);
+  }
+
+  await comentario.destroy();
+
+  return res.redirect(`/publicaciones/${publicacion.id}`);
+}
 async function valorarPublicacion(req, res) {
   const usuarioActual = req.session.usuario;
   const puntaje = Number(req.body.puntaje);
@@ -306,5 +340,6 @@ module.exports = {
   mostrarDetallePublicacion,
   eliminarPublicacion,
   crearComentario,
+  eliminarComentario,
   valorarPublicacion,
 };

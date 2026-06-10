@@ -3,7 +3,7 @@ extends ../layouts/main
 block content
   - var imagen = (publicacion.imagenes && publicacion.imagenes[0]) || null
   - var etiquetas = publicacion.etiquetas || []
-  - var esAutor = usuarioActual && usuarioActual.id === publicacion.idUsuario
+  - var esAutor = usuarioActual && Number(usuarioActual.id) === Number(publicacion.idUsuario)
   - var cantidadSeguidoresAutor = estadisticasAutor ? estadisticasAutor.cantidadSeguidores : 0
   - var cantidadSeguidosAutor = estadisticasAutor ? estadisticasAutor.cantidadSeguidos : 0
   - var promedioValoracion = valoracionResumen ? valoracionResumen.promedio : 0
@@ -92,8 +92,13 @@ block content
       if publicacion.comentarios && publicacion.comentarios.length > 0
         each comentario in publicacion.comentarios
           article.pub-comentario
-            if comentario.usuario
-              strong= '@' + comentario.usuario.nombreUsuario
+            .pub-comentario__cabecera
+              if comentario.usuario
+                strong= '@' + comentario.usuario.nombreUsuario
+
+              if esAutor
+                form(action=`/publicaciones/${publicacion.id}/comentarios/${comentario.id}?_method=DELETE`, method='post')
+                  button.pub-comentario__eliminar(type='submit' onclick='return confirm("¿Eliminar este comentario?")') Eliminar
             p= comentario.contenido
       else
         p.comp-nota Todavia no hay comentarios en esta publicacion.
