@@ -1,4 +1,4 @@
-const { sequelize, Publicacion, ImagenPublicacion, Etiqueta, PublicacionEtiqueta, Usuario, Comentario } = require('../models/sequelize');
+const { sequelize, Publicacion, ImagenPublicacion, Etiqueta, PublicacionEtiqueta, Usuario, Comentario, ValoracionImagen } = require('../models/sequelize');
 
 const TIPOS_MIME_PERMITIDOS = ['image/jpeg', 'image/png', 'image/webp'];
 
@@ -162,11 +162,36 @@ async function mostrarDetallePublicacion(req, res) {
     });
   }
 
+  const imagen = publicacion.imagenes && publicacion.imagenes[0];
+  let valoracionResumen = {
+    promedio: 0,
+    cantidad: 0,
+    valoracionUsuario: null,
+  };
+
+  if (imagen) {
+    const valoraciones = await ValoracionImagen.findAll({
+      where: { idImagen: imagen.id },
+    });
+    const cantidad = valoraciones.length;
+    const suma = valoraciones.reduce((total, valoracion) => total + valoracion.puntaje, 0);
+    const valoracionUsuario = req.session.usuario
+      ? valoraciones.find((valoracion) => valoracion.idUsuario === req.session.usuario.id)
+      : null;
+
+    valoracionResumen = {
+      promedio: cantidad ? (suma / cantidad).toFixed(1) : 0,
+      cantidad,
+      valoracionUsuario,
+    };
+  }
+
   return res.render('pages/publicacion-detalle', {
     title: `${publicacion.titulo} | Fotaza 2`,
     extraCss: ['/css/publicacion-detalle.css'],
     usuarioActual: req.session.usuario || null,
     mensajeError: req.query.error || '',
+    valoracionResumen,
     publicacion,
   });
 }
@@ -220,9 +245,66 @@ async function crearComentario(req, res) {
   return res.redirect(`/publicaciones/${publicacion.id}`);
 }
 
+async function valorarPublicacion(req, res) {
+  const usuarioActual = req.session.usuario;
+  const puntaje = Number(req.body.puntaje);
+
+  if (!Number.isInteger(puntaje) || puntaje < 1 || puntaje > 5) {
+    return res.redirect(`/publicaciones/${req.params.id}?error=Selecciona una valoracion entre 1 y 5.`);
+  }
+
+  const publicacion = await Publicacion.findOne({
+    where: {
+      id: req.params.id,
+      visibilidad: 'publica',
+      estado: 'activa',
+    },
+    include: [
+      {
+        model: ImagenPublicacion,
+        as: 'imagenes',
+      },
+    ],
+  });
+
+  if (!publicacion) {
+    return res.redirect('/?error=La publicacion no existe o ya no esta disponible.');
+  }
+
+  if (publicacion.idUsuario === usuarioActual.id) {
+    return res.redirect(`/publicaciones/${publicacion.id}?error=No podes valorar tu propia publicacion.`);
+  }
+
+  const imagen = publicacion.imagenes && publicacion.imagenes[0];
+
+  if (!imagen) {
+    return res.redirect(`/publicaciones/${publicacion.id}?error=La publicacion no tiene imagen para valorar.`);
+  }
+
+  const valoracionExistente = await ValoracionImagen.findOne({
+    where: {
+      idImagen: imagen.id,
+      idUsuario: usuarioActual.id,
+    },
+  });
+
+  if (valoracionExistente) {
+    await valoracionExistente.update({ puntaje });
+  } else {
+    await ValoracionImagen.create({
+      idImagen: imagen.id,
+      idUsuario: usuarioActual.id,
+      puntaje,
+    });
+  }
+
+  return res.redirect(`/publicaciones/${publicacion.id}`);
+}
+
 module.exports = {
   crearPublicacion,
   mostrarDetallePublicacion,
   eliminarPublicacion,
   crearComentario,
+  valorarPublicacion,
 };

@@ -6,6 +6,9 @@ block content
   - var esAutor = usuarioActual && usuarioActual.id === publicacion.idUsuario
   - var cantidadSeguidoresAutor = estadisticasAutor ? estadisticasAutor.cantidadSeguidores : 0
   - var cantidadSeguidosAutor = estadisticasAutor ? estadisticasAutor.cantidadSeguidos : 0
+  - var promedioValoracion = valoracionResumen ? valoracionResumen.promedio : 0
+  - var cantidadValoraciones = valoracionResumen ? valoracionResumen.cantidad : 0
+  - var valoracionUsuario = valoracionResumen ? valoracionResumen.valoracionUsuario : null
 
   .pub-detalle.ly-cont
     a.pub-detalle__volver(href='/') Volver al inicio
@@ -58,16 +61,23 @@ block content
 
     section.pub-detalle__valoracion.comp-tarjeta
       h2 Valoracion de la imagen
-      p.comp-nota Promedio: sin valoraciones todavia.
+      if cantidadValoraciones > 0
+        p.comp-nota Promedio: #{promedioValoracion}/5 · #{cantidadValoraciones} valoraciones
+      else
+        p.comp-nota Promedio: sin valoraciones todavia.
 
       if usuarioActual && !esAutor
-        p.pub-detalle__meta Tu valoracion: todavia no valoraste esta imagen.
-        .pub-valoracion__opciones(aria-label='Seleccionar puntaje')
-          each puntaje in [1, 2, 3, 4, 5]
-            label.pub-valoracion__opcion
-              input(type='radio', name='puntaje', value=puntaje)
-              span= puntaje
-        button.comp-btn(type='button') Guardar valoracion
+        if valoracionUsuario
+          p.pub-detalle__meta Tu valoracion actual: #{valoracionUsuario.puntaje}/5. Podes cambiarla.
+        else
+          p.pub-detalle__meta Todavia no valoraste esta imagen.
+        form(action=`/publicaciones/${publicacion.id}/valoraciones`, method='post')
+          .pub-valoracion__opciones(aria-label='Seleccionar puntaje')
+            each puntaje in [1, 2, 3, 4, 5]
+              label.pub-valoracion__opcion
+                input(type='radio', name='puntaje', value=puntaje, checked=valoracionUsuario && valoracionUsuario.puntaje === puntaje)
+                span= puntaje
+          button.comp-btn(type='submit') Guardar valoracion
       else if esAutor
         p.comp-nota No podes valorar tu propia publicacion.
       else
