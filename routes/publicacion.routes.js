@@ -12,28 +12,92 @@ const {
 
 const router = express.Router();
 
-router.get('/publicaciones/:id', mostrarDetallePublicacion);
-router.delete('/publicaciones/:id', requerirAutenticacion, eliminarPublicacion);
+const TIPOS_MIME_PERMITIDOS = ['image/jpeg', 'image/png', 'image/webp'];
 
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: {
-    fileSize: 2 * 1024 * 1024,
+    fileSize: 2 * 1024 * 1024, // 2 MB
+  },
+  fileFilter: (req, file, cb) => {
+    console.log('Archivo detectado por multer:', {
+      originalname: file.originalname,
+      mimetype: file.mimetype,
+      size: file.size,
+    });
+
+    if (!TIPOS_MIME_PERMITIDOS.includes(file.mimetype)) {
+      return cb(new Error('TIPO_ARCHIVO_INVALIDO'));
+    }
+
+    cb(null, true);
   },
 });
 
-router.post('/publicaciones', requerirAutenticacion, (req, res, next) => {
+function manejarErrorUpload(req, res, next) {
   upload.single('imagen')(req, res, (error) => {
     if (error) {
-      return res.redirect('/?error=La imagen supera el tamano maximo permitido (2MB).');
+      console.error('Error de multer al subir imagen:', {
+        message: error.message,
+        code: error.code,
+        name: error.name,
+      });
+
+      if (error.code === 'LIMIT_FILE_SIZE') {
+        return res.redirect(
+          `/?error=${encodeURIComponent('La imagen supera el tamaño máximo permitido de 2MB.')}`
+        );
+      }
+
+      if (error.message === 'TIPO_ARCHIVO_INVALIDO') {
+        return res.redirect(
+          `/?error=${encodeURIComponent('La imagen debe ser JPG, PNG o WEBP.')}`
+        );
+      }
+
+      return res.redirect(
+        `/?error=${encodeURIComponent('No se pudo procesar la imagen.')}`
+      );
     }
+
+    console.log('Resultado final de multer:', {
+      existeArchivo: !!req.file,
+      originalname: req.file?.originalname,
+      mimetype: req.file?.mimetype,
+      size: req.file?.size,
+      tieneBuffer: !!req.file?.buffer,
+    });
 
     return next();
   });
-}, crearPublicacion);
+}
 
-router.post('/publicaciones/:id/comentarios', requerirAutenticacion, crearComentario);
-router.post('/publicaciones/:id/valoraciones', requerirAutenticacion, valorarPublicacion);
+router.get('/publicaciones/:id', mostrarDetallePublicacion);
+
+router.delete(
+  '/publicaciones/:id',
+  requerirAutenticacion,
+  eliminarPublicacion
+);
+
+router.post(
+  '/publicaciones',
+  requerirAutenticacion,
+  manejarErrorUpload,
+  crearPublicacion
+);
+
+router.post(
+  '/publicaciones/:id/comentarios',
+  requerirAutenticacion,
+  crearComentario
+);
+
+router.post(
+  '/publicaciones/:id/valoraciones',
+  requerirAutenticacion,
+  valorarPublicacion
+);
 
 router.delete(
   '/publicaciones/:id/comentarios/:comentarioId',

@@ -39,66 +39,126 @@ function normalizarEtiquetasDesdeFormulario(
 }
 
 async function crearPublicacion(req, res) {
-  const usuarioActual = req.session.usuario;
-  const {
-    titulo,
-    descripcion,
-    tipoLicencia,
-    textoMarcaAgua,
-    etiquetasExistentes,
-    etiquetaNueva,
-  } = req.body;
-  const archivoSubido = req.file;
-  const tituloNormalizado = titulo?.trim();
-  const descripcionNormalizada = descripcion?.trim() || null;
-  const tipoLicenciaNormalizado = tipoLicencia?.trim();
-  const textoMarcaAguaNormalizado = textoMarcaAgua?.trim() || null;
-  const etiquetasNormalizadas = normalizarEtiquetasDesdeFormulario(
-    etiquetasExistentes,
-    etiquetaNueva,
-  );
-
-  if (!tituloNormalizado) {
-    return redirigirConError(res, "Ingresa un titulo para la publicacion.");
-  }
-
-  if (!archivoSubido) {
-    return redirigirConError(res, "Selecciona una imagen para publicar.");
-  }
-
-  if (!TIPOS_MIME_PERMITIDOS.includes(archivoSubido.mimetype)) {
-    return redirigirConError(res, "La imagen debe ser JPG, PNG o WEBP.");
-  }
-
-  if (
-    !["con_copyright", "creative_commons"].includes(tipoLicenciaNormalizado)
-  ) {
-    return redirigirConError(res, "Selecciona una licencia valida.");
-  }
-
-  if (
-    tipoLicenciaNormalizado === "con_copyright" &&
-    !textoMarcaAguaNormalizado
-  ) {
-    return redirigirConError(
-      res,
-      "Ingresa una marca de agua para imagenes con copyright.",
-    );
-  }
-
-  if (etiquetasNormalizadas.length === 0) {
-    return redirigirConError(res, "Debes elegir al menos una etiqueta.");
-  }
-
-  if (etiquetasNormalizadas.length > 3) {
-    return redirigirConError(res, "Solo podes elegir hasta 3 etiquetas.");
-  }
-
-  const imagenBase64 = archivoSubido.buffer.toString("base64");
-
-  const transaction = await sequelize.transaction();
+  let transaction;
 
   try {
+    const usuarioActual = req.session.usuario;
+
+    const {
+      titulo,
+      descripcion,
+      tipoLicencia,
+      textoMarcaAgua,
+      etiquetasExistentes,
+      etiquetaNueva,
+    } = req.body;
+
+    const archivoSubido = req.file;
+
+    console.log("Body recibido:", {
+      titulo,
+      descripcion,
+      tipoLicencia,
+      textoMarcaAgua,
+      etiquetasExistentes,
+      etiquetaNueva,
+    });
+
+    console.log("Archivo recibido:", {
+      existe: !!archivoSubido,
+      originalname: archivoSubido?.originalname,
+      mimetype: archivoSubido?.mimetype,
+      size: archivoSubido?.size,
+      tieneBuffer: !!archivoSubido?.buffer,
+    });
+
+    if (!usuarioActual) {
+      return redirigirConError(
+        res,
+        "Tu sesion expiro. Inicia sesion nuevamente.",
+      );
+    }
+
+    const tituloNormalizado = titulo?.trim();
+    const descripcionNormalizada = descripcion?.trim() || null;
+    const tipoLicenciaNormalizado = tipoLicencia?.trim();
+    const textoMarcaAguaNormalizado = textoMarcaAgua?.trim() || null;
+
+    const etiquetasNormalizadas = normalizarEtiquetasDesdeFormulario(
+      etiquetasExistentes,
+      etiquetaNueva,
+    );
+
+    if (!tituloNormalizado) {
+      return redirigirConError(res, "Ingresa un titulo para la publicacion.");
+    }
+
+    if (!archivoSubido) {
+      return redirigirConError(res, "Selecciona una imagen para publicar.");
+    }
+
+    if (!archivoSubido.buffer) {
+      console.error("El archivo llego, pero no tiene buffer. Revisa multer.");
+
+      return redirigirConError(
+        res,
+        "No se pudo procesar la imagen. Revisa la configuracion de subida.",
+      );
+    }
+
+    if (archivoSubido.size > 2 * 1024 * 1024) {
+      return redirigirConError(
+        res,
+        "La imagen es demasiado pesada. Sube una imagen menor a 2 MB.",
+      );
+    }
+
+    if (!TIPOS_MIME_PERMITIDOS.includes(archivoSubido.mimetype)) {
+      return redirigirConError(res, "La imagen debe ser JPG, PNG o WEBP.");
+    }
+
+    if (
+      !["con_copyright", "creative_commons"].includes(tipoLicenciaNormalizado)
+    ) {
+      return redirigirConError(res, "Selecciona una licencia valida.");
+    }
+
+    if (
+      tipoLicenciaNormalizado === "con_copyright" &&
+      !textoMarcaAguaNormalizado
+    ) {
+      return redirigirConError(
+        res,
+        "Ingresa una marca de agua para imagenes con copyright.",
+      );
+    }
+
+    if (etiquetasNormalizadas.length === 0) {
+      return redirigirConError(res, "Debes elegir al menos una etiqueta.");
+    }
+
+    if (etiquetasNormalizadas.length > 3) {
+      return redirigirConError(res, "Solo podes elegir hasta 3 etiquetas.");
+    }
+
+    if (!archivoSubido.buffer) {
+      console.error("El archivo llegó, pero no tiene buffer:", archivoSubido);
+
+      return redirigirConError(
+        res,
+        "No se pudo procesar la imagen. Intentalo nuevamente.",
+      );
+    }
+
+    const imagenBase64 = archivoSubido.buffer.toString("base64");
+
+    console.log("Imagen convertida a base64:", {
+      sizeOriginalBytes: archivoSubido.size,
+      sizeBase64Caracteres: imagenBase64.length,
+    });
+
+    transaction = await sequelize.transaction();
+
     const publicacion = await Publicacion.create(
       {
         idUsuario: usuarioActual.id,
@@ -147,13 +207,13 @@ async function crearPublicacion(req, res) {
     return res.redirect("/?estado=creada");
   } catch (error) {
     await transaction.rollback();
+
     return redirigirConError(
       res,
       "No se pudo crear la publicacion. Intentalo nuevamente.",
     );
   }
 }
-
 async function mostrarDetallePublicacion(req, res) {
   const publicacion = await Publicacion.findOne({
     where: {
