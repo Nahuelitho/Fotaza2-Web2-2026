@@ -137,7 +137,7 @@ async function mostrarDetallePublicacion(req, res) {
       {
         model: Usuario,
         as: 'usuario',
-        attributes: ['nombreVisible', 'nombreUsuario'],
+        attributes: ['id', 'nombreVisible', 'nombreUsuario'],
       },
       {
         model: Comentario,

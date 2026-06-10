@@ -1,0 +1,31 @@
+extends ../layouts/main
+
+block content
+  - var publicacionesSeguras = publicaciones || []
+  - var estadisticas = estadisticasPerfil || { cantidadSeguidores: 0, cantidadSeguidos: 0 }
+  - var esPerfilPropio = usuarioActual && usuarioActual.id === usuarioPerfil.id
+
+  .perfil.ly-cont
+    a.perfil__volver(href='/') Volver al inicio
+
+    section.perfil__cabecera.comp-tarjeta
+      h1= usuarioPerfil.nombreVisible
+      p.perfil__usuario= '@' + usuarioPerfil.nombreUsuario
+      p.comp-nota Seguidores: #{estadisticas.cantidadSeguidores} · Seguidos: #{estadisticas.cantidadSeguidos}
+
+      if esPerfilPropio
+        span.comp-tag.comp-tag--suave Es tu perfil
+      else if usuarioActual
+        button.comp-btn(type='button') Seguir
+
+    section.perfil__publicaciones.comp-tarjeta
+      .comp-cabecera
+        h2 Publicaciones de #{usuarioPerfil.nombreVisible}
+
+      if publicacionesSeguras.length === 0
+        p.comp-nota Este usuario todavia no tiene publicaciones publicas.
+      else
+        .ini-posts.perfil-posts
+          each publicacion in publicacionesSeguras
+            - var mostrarAutor = false
+            include ../partials/publicacion-card

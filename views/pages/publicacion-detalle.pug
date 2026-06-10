@@ -53,7 +53,7 @@ block content
             p.pub-detalle__meta= '@' + publicacion.usuario.nombreUsuario
             p.comp-nota Seguidores: #{cantidadSeguidoresAutor} · Seguidos: #{cantidadSeguidosAutor}
         .pub-autor__acciones
-          a.comp-btn.comp-btn--fantasma(href='#') Ver perfil
+          a.comp-btn.comp-btn--fantasma(href=`/usuarios/${publicacion.usuario.id}`) Ver perfil
           if usuarioActual && !esAutor
             button.comp-btn(type='button') Seguir
           else if esAutor

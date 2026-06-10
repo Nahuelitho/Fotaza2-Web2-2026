@@ -1,0 +1,33 @@
+.perfil {
+  width: min(960px, 100%);
+  margin: 0 auto;
+  padding: 1.8rem 0 2.8rem;
+}
+
+.perfil__volver {
+  display: inline-flex;
+  margin-bottom: 1rem;
+  color: var(--acento-fuerte);
+  font-weight: 600;
+}
+
+.perfil__cabecera {
+  gap: 0.8rem;
+}
+
+.perfil__cabecera h1,
+.perfil__usuario {
+  margin: 0;
+}
+
+.perfil__usuario {
+  color: var(--texto-suave);
+}
+
+.perfil__publicaciones {
+  margin-top: 1rem;
+}
+
+.perfil-posts {
+  margin-top: 0;
+}
