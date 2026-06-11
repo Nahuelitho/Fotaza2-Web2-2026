@@ -1,47 +1,53 @@
-const { Op } = require('sequelize');
-const { Publicacion, ImagenPublicacion, Etiqueta, Usuario } = require('../models/sequelize');
+const { Op } = require("sequelize");
+const {
+  Publicacion,
+  ImagenPublicacion,
+  Etiqueta,
+  Usuario,
+} = require("../models/sequelize");
 
 function armarUrlPagina(pagina, filtros) {
   const params = new URLSearchParams();
 
   if (filtros.buscar) {
-    params.set('buscar', filtros.buscar);
+    params.set("buscar", filtros.buscar);
   }
 
   if (filtros.etiqueta) {
-    params.set('etiqueta', filtros.etiqueta);
+    params.set("etiqueta", filtros.etiqueta);
   }
 
-  params.set('pagina', pagina);
+  params.set("pagina", pagina);
 
   return `/?${params.toString()}`;
 }
 
 async function renderizarInicio(req, res) {
-  const estado = req.query.estado || '';
-  const error = req.query.error || '';
-  const buscar = req.query.buscar?.trim() || '';
-  const etiqueta = req.query.etiqueta?.trim() || '';
+  const estado = req.query.estado || "";
+  const error = req.query.error || "";
+  const buscar = req.query.buscar?.trim() || "";
+  const etiqueta = req.query.etiqueta?.trim() || "";
   const publicacionesPorPagina = 10;
   const paginaPedida = Number(req.query.pagina) || 1;
   const paginaActual = Math.max(paginaPedida, 1);
   const offset = (paginaActual - 1) * publicacionesPorPagina;
   const filtrosBusqueda = { buscar, etiqueta };
   const mensajesEstado = {
-    creada: 'La publicacion se creo correctamente.',
-    eliminada: 'La publicacion fue eliminada.',
+    creada: "La publicacion se creo correctamente.",
+    eliminada: "La publicacion fue eliminada.",
   };
 
   const wherePublicacion = {
-    visibilidad: 'publica',
-    estado: 'activa',
+    visibilidad: "publica",
+    estado: "activa",
   };
+  const usuarioActual = res.locals.usuarioActual || null;
 
   if (buscar) {
     wherePublicacion[Op.or] = [
       { titulo: { [Op.iLike]: `%${buscar}%` } },
       { descripcion: { [Op.iLike]: `%${buscar}%` } },
-      { '$etiquetas.name$': { [Op.iLike]: `%${buscar}%` } },
+      { "$etiquetas.name$": { [Op.iLike]: `%${buscar}%` } },
     ];
   }
 
@@ -50,33 +56,40 @@ async function renderizarInicio(req, res) {
     include: [
       {
         model: ImagenPublicacion,
-        as: 'imagenes',
+        as: "imagenes",
+        ...(usuarioActual
+          ? {}
+          : {
+              where: {
+                tipoLicencia: "creative_commons",
+              },
+              required: true,
+            }),
       },
       {
         model: Etiqueta,
-        as: 'etiquetas',
+        as: "etiquetas",
         through: { attributes: [] },
         ...(etiqueta ? { where: { name: etiqueta } } : {}),
       },
       {
         model: Usuario,
-        as: 'usuario',
-        attributes: ['nombreVisible', 'nombreUsuario'],
+        as: "usuario",
+        attributes: ["nombreVisible", "nombreUsuario"],
       },
     ],
-    order: [['created_at', 'DESC']],
+    order: [["created_at", "DESC"]],
     limit: publicacionesPorPagina,
     offset,
     distinct: true,
     subQuery: false,
   });
-
   const totalPaginas = Math.max(Math.ceil(count / publicacionesPorPagina), 1);
 
-  res.render('pages/inicio', {
-    title: 'Fotaza 2',
-    mensajeEstado: mensajesEstado[estado] || '',
-    mensajeError: error || '',
+  res.render("pages/inicio", {
+    title: "Fotaza 2",
+    mensajeEstado: mensajesEstado[estado] || "",
+    mensajeError: error || "",
     publicaciones,
     paginacion: {
       paginaActual,
