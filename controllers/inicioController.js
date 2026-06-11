@@ -27,7 +27,7 @@ async function renderizarInicio(req, res) {
   const error = req.query.error || "";
   const buscar = req.query.buscar?.trim() || "";
   const etiqueta = req.query.etiqueta?.trim() || "";
-  const publicacionesPorPagina = 10;
+  const publicacionesPorPagina = 6;
   const paginaPedida = Number(req.query.pagina) || 1;
   const paginaActual = Math.max(paginaPedida, 1);
   const offset = (paginaActual - 1) * publicacionesPorPagina;
