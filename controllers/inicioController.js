@@ -1,5 +1,6 @@
-const { Op } = require("sequelize");
+const { Op, QueryTypes } = require("sequelize");
 const {
+  sequelize,
   Publicacion,
   ImagenPublicacion,
   Etiqueta,
@@ -43,47 +44,104 @@ async function renderizarInicio(req, res) {
   };
   const usuarioActual = res.locals.usuarioActual || null;
 
-  if (buscar) {
-    wherePublicacion[Op.or] = [
-      { titulo: { [Op.iLike]: `%${buscar}%` } },
-      { descripcion: { [Op.iLike]: `%${buscar}%` } },
-      { "$etiquetas.name$": { [Op.iLike]: `%${buscar}%` } },
-    ];
-  }
-
-  const { count, rows: publicaciones } = await Publicacion.findAndCountAll({
-    where: wherePublicacion,
-    include: [
-      {
-        model: ImagenPublicacion,
-        as: "imagenes",
-        ...(usuarioActual
-          ? {}
-          : {
-              where: {
-                tipoLicencia: "creative_commons",
-              },
-              required: true,
-            }),
-      },
-      {
-        model: Etiqueta,
-        as: "etiquetas",
-        through: { attributes: [] },
-        ...(etiqueta ? { where: { name: etiqueta } } : {}),
-      },
-      {
-        model: Usuario,
-        as: "usuario",
-        attributes: ["nombreVisible", "nombreUsuario"],
-      },
-    ],
-    order: [["created_at", "DESC"]],
+  const condicionesSql = [
+    "p.visibilidad = 'publica'",
+    "p.estado = 'activa'",
+  ];
+  const replacements = {
     limit: publicacionesPorPagina,
     offset,
-    distinct: true,
-    subQuery: false,
-  });
+  };
+
+  if (!usuarioActual) {
+    condicionesSql.push(`EXISTS (
+      SELECT 1
+      FROM imagenes_publicacion ip
+      WHERE ip.id_publicacion = p.id
+        AND ip.tipo_licencia = 'creative_commons'
+    )`);
+  }
+
+  if (etiqueta) {
+    condicionesSql.push(`EXISTS (
+      SELECT 1
+      FROM publicaciones_etiquetas pe
+      INNER JOIN etiquetas e ON e.id = pe.id_etiqueta
+      WHERE pe.id_publicacion = p.id
+        AND e.name = :etiqueta
+    )`);
+    replacements.etiqueta = etiqueta;
+  }
+
+  if (buscar) {
+    condicionesSql.push(`(
+      p.titulo ILIKE :buscar
+      OR p.descripcion ILIKE :buscar
+      OR EXISTS (
+        SELECT 1
+        FROM publicaciones_etiquetas pe_busqueda
+        INNER JOIN etiquetas e_busqueda ON e_busqueda.id = pe_busqueda.id_etiqueta
+        WHERE pe_busqueda.id_publicacion = p.id
+          AND e_busqueda.name ILIKE :buscar
+      )
+    )`);
+    replacements.buscar = `%${buscar}%`;
+  }
+
+  const whereSql = condicionesSql.join(" AND ");
+  const [{ total }] = await sequelize.query(
+    `SELECT COUNT(*)::int AS total FROM publicaciones p WHERE ${whereSql}`,
+    {
+      replacements,
+      type: QueryTypes.SELECT,
+    },
+  );
+  const publicacionesPaginadas = await sequelize.query(
+    `SELECT p.id
+     FROM publicaciones p
+     WHERE ${whereSql}
+     ORDER BY p.created_at DESC, p.id DESC
+     LIMIT :limit OFFSET :offset`,
+    {
+      replacements,
+      type: QueryTypes.SELECT,
+    },
+  );
+  const idsPublicaciones = publicacionesPaginadas.map((publicacion) => publicacion.id);
+  const publicaciones = idsPublicaciones.length
+    ? await Publicacion.findAll({
+        where: {
+          ...wherePublicacion,
+          id: { [Op.in]: idsPublicaciones },
+        },
+        include: [
+          {
+            model: ImagenPublicacion,
+            as: "imagenes",
+            ...(usuarioActual
+              ? {}
+              : {
+                  where: {
+                    tipoLicencia: "creative_commons",
+                  },
+                  required: true,
+                }),
+          },
+          {
+            model: Etiqueta,
+            as: "etiquetas",
+            through: { attributes: [] },
+          },
+          {
+            model: Usuario,
+            as: "usuario",
+            attributes: ["nombreVisible", "nombreUsuario"],
+          },
+        ],
+        order: [["created_at", "DESC"], ["id", "DESC"]],
+      })
+    : [];
+  const count = total;
   const totalPaginas = Math.max(Math.ceil(count / publicacionesPorPagina), 1);
 
   res.render("pages/inicio", {
