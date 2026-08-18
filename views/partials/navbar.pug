@@ -16,13 +16,15 @@ header.nav-barra
       button.comp-btn.comp-btn--fantasma(type='submit') Buscar
 
     nav.nav-menu(aria-label='Navegacion principal')
-      a.nav-link.nav-link--act(href='/') Inicio
+      a.nav-link(class=rutaActual === '/' ? 'nav-link--act' : '', href='/') Inicio
+      a.nav-link(class=rutaActual === '/seguidos' ? 'nav-link--act' : '', href='/seguidos') Seguidos
 
-    .nav-acciones
-      if usuarioActual
-        a.nav-usuario(href=`/usuarios/${usuarioActual.id}`) Hola, #{usuarioActual.nombreVisible}
+    if usuarioActual
+      .nav-acciones.nav-acciones--usuario
+        a.nav-usuario(class=rutaActual === `/usuarios/${usuarioActual.id}` ? 'nav-usuario--act' : '', href=`/usuarios/${usuarioActual.id}`) Hola, #{usuarioActual.nombreVisible}
         form(action='/cerrar-sesion', method='post')
           button.comp-btn.comp-btn--cancelar(type='submit') Cerrar sesion
-      else
+    else
+      .nav-acciones.nav-acciones--auth
         a.comp-btn(href='/registro') Crear cuenta
         a.comp-btn.comp-btn--suave(href='/iniciar-sesion') Iniciar sesion

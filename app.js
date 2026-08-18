@@ -121,6 +121,7 @@ app.use(async (req, res, next) => {
   try {
     res.locals.appName = 'Fotaza 2';
     res.locals.usuarioActual = req.session.usuario || null;
+    res.locals.rutaActual = req.path;
     res.locals.filtrosBusqueda = {
       buscar: req.query.buscar?.trim() || '',
       etiqueta: req.query.etiqueta?.trim() || '',

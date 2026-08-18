@@ -14,15 +14,16 @@ block content
             p.comp-msg.comp-msg--ok= mensajeEstado
           if mensajeError
             p.comp-msg.comp-msg--error= mensajeError
-          .ini-agregar
-            if usuarioActual
-              button.ini-agregar__btn(type='button', data-abrir-modal-publicacion='true', aria-haspopup='dialog')
-                span.ini-agregar__ico +
-                span Agregar publicacion
-            else
-              button.ini-agregar__btn(type='button', data-abrir-modal-autenticacion='true', aria-haspopup='dialog')
-                span.ini-agregar__ico +
-                span Agregar publicacion
+          if rutaActual === '/'
+            .ini-agregar
+              if usuarioActual
+                button.ini-agregar__btn(type='button', data-abrir-modal-publicacion='true', aria-haspopup='dialog')
+                  span.ini-agregar__ico +
+                  span Agregar publicacion
+              else
+                button.ini-agregar__btn(type='button', data-abrir-modal-autenticacion='true', aria-haspopup='dialog')
+                  span.ini-agregar__ico +
+                  span Agregar publicacion
 
 
         section.comp-tarjeta

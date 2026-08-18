@@ -119,6 +119,27 @@
   min-height: 2.2rem;
 }
 
+.seg-lista {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.seg-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--borde);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.58);
+}
+
+.seg-card__bio {
+  margin: 0.35rem 0 0;
+  color: var(--texto-suave);
+}
+
 .ini-tag-elegido {
   display: inline-flex;
   align-items: center;
@@ -241,6 +262,32 @@
 }
 
 @media (max-width: 760px) {
+  .ini-lienzo {
+    padding: 1rem 0 2rem;
+  }
+
+  .ini-lateral {
+    display: none;
+  }
+
+  .ini-feed {
+    gap: 0.8rem;
+  }
+
+  .ini-hero__caja {
+    padding: 1rem 1.1rem;
+  }
+
+  .ini-titulo {
+    font-size: 2.7rem;
+  }
+
+  .ini-acciones .comp-btn {
+    min-width: 0;
+    flex: 1 1 8rem;
+    padding: 0.75rem 0.9rem;
+  }
+
   .ini-posts {
     grid-template-columns: 1fr;
   }

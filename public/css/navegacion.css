@@ -82,6 +82,7 @@
 
 .nav-menu {
   display: flex;
+  gap: 0.45rem;
 }
 
 /* Botón Inicio */
@@ -182,6 +183,21 @@
   box-shadow: 0 12px 24px rgba(192, 64, 48, 0.14);
 }
 
+.nav-usuario--act {
+  background: #ffffff;
+  color: var(--acento-fuerte);
+  border-color: rgba(192, 64, 48, 0.35);
+  font-weight: 700;
+  box-shadow: 0 8px 18px rgba(110, 53, 30, 0.08);
+}
+
+.nav-usuario--act:hover {
+  background: var(--acento-fuerte);
+  color: #ffffff;
+  border-color: var(--acento-fuerte);
+  box-shadow: 0 12px 24px rgba(192, 64, 48, 0.18);
+}
+
 @media (max-width: 900px) {
   .nav-conten {
     flex-wrap: wrap;
@@ -194,7 +210,56 @@
 }
 
 @media (max-width: 640px) {
+  .nav-barra {
+    position: static;
+    padding: 0.65rem 0;
+  }
+
+  .nav-conten {
+    align-items: center;
+    gap: 0.65rem;
+  }
+
+  .nav-marca {
+    min-width: auto;
+    flex: 1;
+  }
+
+  .nav-logo {
+    font-size: 1.8rem;
+  }
+
   .nav-busc {
+    order: 3;
     grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .nav-busc input,
+  .nav-busc select,
+  .nav-busc .comp-btn {
+    min-height: 3rem;
+    padding: 0.72rem 1rem;
+  }
+
+  .nav-busc .comp-btn {
+    width: 100%;
+  }
+
+  .nav-menu,
+  .nav-acciones--auth {
+    display: none;
+  }
+
+  .nav-acciones--usuario {
+    width: auto;
+    gap: 0.45rem;
+  }
+
+  .nav-acciones--usuario .nav-usuario,
+  .nav-acciones--usuario .comp-btn {
+    min-width: auto;
+    padding: 0.65rem 0.8rem;
+    font-size: 0.9rem;
   }
 }

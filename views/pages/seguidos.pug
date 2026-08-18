@@ -1,0 +1,30 @@
+extends ../layouts/main
+
+block content
+  - var seguidos = usuariosSeguidos || []
+  .ini-lienzo.ly-cont
+    .ini-grilla
+      include ../partials/inicio-barra-lateral
+
+      section.ini-feed
+        section.comp-tarjeta
+          h1.ini-titulo Seguidos
+          p.comp-nota Usuarios seguidos: #{seguidos.length}
+
+        section.comp-tarjeta
+          .comp-cabecera
+            h3 Personas seguidas
+          if seguidos.length === 0
+            p.comp-nota Todavia no seguis a ningun usuario.
+          else
+            .seg-lista
+              each usuario in seguidos
+                article.seg-card
+                  .ini-perfil
+                    .ini-perfil__av= usuario.nombreVisible ? usuario.nombreVisible.slice(0, 2).toUpperCase() : 'US'
+                    .ini-perfil__cont
+                      h3= usuario.nombreVisible
+                      p.comp-nota @#{usuario.nombreUsuario}
+                      if usuario.biografia
+                        p.seg-card__bio= usuario.biografia
+                  a.comp-btn.comp-btn--suave(href=`/usuarios/${usuario.id}`) Ver perfil
