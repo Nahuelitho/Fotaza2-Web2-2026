@@ -1,0 +1,94 @@
+.editar-perfil {
+  max-width: 760px;
+  margin: 0 auto;
+  padding-top: 24px;
+  padding-bottom: 48px;
+}
+
+.editar-perfil__volver {
+  display: inline-block;
+  margin-bottom: 16px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.editar-perfil__volver:hover {
+  text-decoration: underline;
+}
+
+.editar-perfil__tarjeta {
+  padding: 32px;
+}
+
+.editar-perfil__cabecera {
+  margin-bottom: 28px;
+}
+
+.editar-perfil__cabecera h1 {
+  margin: 0 0 8px;
+}
+
+.editar-perfil__form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.editar-perfil__campo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.editar-perfil__campo label {
+  font-weight: 600;
+}
+
+.editar-perfil__campo input,
+.editar-perfil__campo textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font: inherit;
+  background: #fff;
+}
+
+.editar-perfil__campo textarea {
+  min-height: 130px;
+  resize: vertical;
+}
+
+.editar-perfil__campo input:focus,
+.editar-perfil__campo textarea:focus {
+  outline: none;
+  border-color: #e58b58;
+}
+
+.editar-perfil__acciones {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-top: 8px;
+}
+
+@media (max-width: 600px) {
+  .editar-perfil {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .editar-perfil__tarjeta {
+    padding: 22px;
+  }
+
+  .editar-perfil__acciones {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .editar-perfil__acciones .comp-btn {
+    width: 100%;
+  }
+}
