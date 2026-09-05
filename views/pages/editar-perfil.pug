@@ -1,0 +1,63 @@
+extends ../layouts/main
+
+block content
+  .editar-perfil
+    a.editar-perfil__volver(href=`/usuarios/${usuarioPerfil.id}`) ← Volver al perfil
+
+    section.editar-perfil__tarjeta.comp-tarjeta
+      .editar-perfil__cabecera
+        h1 Editar perfil
+        p.comp-nota Actualiza la información que se muestra en tu perfil.
+
+      if mensajeError
+        p.comp-msg.comp-msg--error= mensajeError
+
+      form.editar-perfil__form(
+        action=`/usuarios/${usuarioPerfil.id}?_method=PUT`
+        method='post'
+      )
+        .editar-perfil__campo
+          label(for='nombreVisible') Nombre visible
+          input(
+            type='text'
+            id='nombreVisible'
+            name='nombreVisible'
+            value=usuarioPerfil.nombreVisible
+            required
+          )
+
+        .editar-perfil__campo
+          label(for='nombreUsuario') Nombre de usuario
+          input(
+            type='text'
+            id='nombreUsuario'
+            name='nombreUsuario'
+            value=usuarioPerfil.nombreUsuario
+            required
+          )
+
+        .editar-perfil__campo
+          label(for='correo') Correo electrónico
+          input(
+            type='email'
+            id='correo'
+            name='correo'
+            value=usuarioPerfil.correo
+            required
+          )
+
+        .editar-perfil__campo
+          label(for='biografia') Biografía
+          textarea(
+            id='biografia'
+            name='biografia'
+            rows='5'
+            maxlength='500'
+            placeholder='Contá algo sobre vos...'
+          )= usuarioPerfil.biografia || ''
+
+        .editar-perfil__acciones
+          button.comp-btn(type='submit') Guardar cambios
+          a.comp-btn.comp-btn--fantasma(
+            href=`/usuarios/${usuarioPerfil.id}`
+          ) Cancelar

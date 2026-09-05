@@ -1,17 +1,25 @@
-const express = require('express');
-const { requerirAutenticacion } = require('../middlewares/autenticacionMiddleware');
+const express = require("express");
+const {
+  requerirAutenticacion,
+} = require("../middlewares/autenticacionMiddleware");
 const {
   mostrarPerfilUsuario,
+  mostrarEditarPerfil,
+  actualizarPerfil,
   seguirUsuario,
   dejarDeSeguirUsuario,
-} = require('../controllers/usuarioController');
+} = require("../controllers/usuarioController");
 
 const router = express.Router();
 
-router.get('/usuarios/:id', mostrarPerfilUsuario);
+router.get("/usuarios/:id/editar", requerirAutenticacion, mostrarEditarPerfil);
 
-router.post('/usuarios/:id/seguir', requerirAutenticacion, seguirUsuario);
+router.get("/usuarios/:id", mostrarPerfilUsuario);
 
-router.delete('/usuarios/:id/seguir', requerirAutenticacion, dejarDeSeguirUsuario);
+router.put("/usuarios/:id", requerirAutenticacion, actualizarPerfil);
+
+router.post("/usuarios/:id/seguir", requerirAutenticacion, seguirUsuario);
+
+router.delete("/usuarios/:id/seguir", requerirAutenticacion, dejarDeSeguirUsuario,);
 
 module.exports = router;

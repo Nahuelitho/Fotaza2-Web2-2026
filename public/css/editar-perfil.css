@@ -1,0 +1,101 @@
+.editar-perfil {
+  width: min(760px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 1.8rem 0 3rem;
+}
+
+.editar-perfil__volver {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  padding: 0.65rem 1.15rem;
+  border: 1px solid rgba(192, 64, 48, 0.35);
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--acento-fuerte);
+  font-weight: 700;
+  box-shadow: 0 8px 18px rgba(110, 53, 30, 0.08);
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.editar-perfil__volver:hover {
+  background: var(--acento-fuerte);
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(192, 64, 48, 0.18);
+}
+
+.editar-perfil__tarjeta {
+  padding: 2rem;
+}
+
+.editar-perfil__cabecera {
+  margin-bottom: 1.75rem;
+}
+
+.editar-perfil__cabecera h1 {
+  margin: 0 0 0.5rem;
+}
+
+.editar-perfil__form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.editar-perfil__campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.editar-perfil__campo label {
+  font-weight: 600;
+}
+
+.editar-perfil__campo input,
+.editar-perfil__campo textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.85rem 0.95rem;
+  border: 1px solid var(--borde);
+  border-radius: 0.9rem;
+  font: inherit;
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--texto);
+}
+
+.editar-perfil__campo textarea {
+  min-height: 130px;
+  resize: vertical;
+}
+
+.editar-perfil__campo input:focus,
+.editar-perfil__campo textarea:focus {
+  outline: none;
+  border-color: var(--acento-fuerte);
+  box-shadow: 0 0 0 3px rgba(216, 131, 86, 0.12);
+}
+
+.editar-perfil__acciones {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 600px) {
+  .editar-perfil__tarjeta {
+    padding: 1.4rem;
+  }
+
+  .editar-perfil__acciones {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .editar-perfil__acciones .comp-btn {
+    width: 100%;
+  }
+}

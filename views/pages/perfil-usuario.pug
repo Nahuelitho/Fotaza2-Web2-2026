@@ -11,14 +11,28 @@ block content
 
     section.perfil__cabecera.comp-tarjeta
       h1= usuarioPerfil.nombreVisible
-      p.perfil__usuario= '@' + usuarioPerfil.nombreUsuario
-      p.comp-nota Seguidores: #{estadisticas.cantidadSeguidores} · Seguidos: #{estadisticas.cantidadSeguidos}
+      p.perfil__usuario Usuario: @#{usuarioPerfil.nombreUsuario}
+      if esPerfilPropio
+        p.perfil__correo= usuarioPerfil.correo
+
+      if usuarioPerfil.biografia
+        p.perfil__biografia= usuarioPerfil.biografia
+      else
+        p.comp-nota Este usuario todavía no agregó una biografía.
+
+      .perfil__estadisticas
+        span Seguidores: #{estadisticas.cantidadSeguidores}
+        span Seguidos: #{estadisticas.cantidadSeguidos}
 
       if mensajeError
         p.comp-msg.comp-msg--error= mensajeError
+      if mensajeExito
+        p.comp-msg.comp-msg--ok= mensajeExito
 
       if esPerfilPropio
-        span.comp-tag.comp-tag--suave Es tu perfil
+        .perfil__acciones
+          span.comp-tag.comp-tag--suave Es tu perfil
+          a.comp-btn.comp-btn--fantasma(href=`/usuarios/${usuarioPerfil.id}/editar`) Editar perfil
       else if usuarioActual
         if estaSiguiendo
           form(action=`/usuarios/${usuarioPerfil.id}/seguir?_method=DELETE`, method='post')

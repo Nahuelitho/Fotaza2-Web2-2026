@@ -2,7 +2,7 @@ const { Sequelize } = require('sequelize');
 const dotenv = require('dotenv');
 const pg = require('pg');
 
-dotenv.config();
+dotenv.config({ quiet: true });
 
 const usarSSL = process.env.DB_SSL === 'true' || process.env.VERCEL === '1';
 const sslConn = usarSSL

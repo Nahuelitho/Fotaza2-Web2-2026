@@ -109,7 +109,17 @@ async function registrarUsuario(req, res) {
       nombreVisible: usuarioCreado.nombre_visible,
     };
 
-    return res.redirect('/');
+    req.session.save((error) => {
+      if (error) {
+        console.error('Error al guardar la sesion:', error);
+        return renderizarVistaRegistro(res, {
+          mensajeError: 'No se pudo crear la cuenta. Intentalo nuevamente.',
+          datosFormulario: { nombreVisible: nombreVisibleNormalizado, usuario: usuarioNormalizado, correo: correoNormalizado },
+        });
+      }
+
+      return res.redirect('/');
+    });
   } catch (errorDeRegistro) {
     return renderizarVistaRegistro(res, {
       mensajeError: errorDeRegistro.message || 'No se pudo crear la cuenta. Intentalo nuevamente.',
@@ -162,7 +172,17 @@ async function iniciarSesionUsuario(req, res) {
       nombreVisible: usuario.nombreVisible,
     };
 
-    return res.redirect('/');
+    req.session.save((error) => {
+      if (error) {
+        console.error('Error al guardar la sesion:', error);
+        return renderizarVistaInicioSesion(res, {
+          mensajeError: 'No se pudo iniciar sesion. Intentalo nuevamente.',
+          datosFormulario: { identificador: identificadorNormalizado },
+        });
+      }
+
+      return res.redirect('/');
+    });
   } catch (errorDeInicioSesion) {
     return renderizarVistaInicioSesion(res, {
       mensajeError: errorDeInicioSesion.message || 'No se pudo iniciar sesion. Intentalo nuevamente.',
