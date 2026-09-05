@@ -18,12 +18,13 @@ const usuarioRouter = require('./routes/usuario.routes');
 
 const app = express();
 const port = Number(process.env.PORT || 3000);
+const duracionSesion = 5 * 60 * 1000;
 
 const sessionStore = new SequelizeStore({
   db: sequelize,
   tableName: 'sesiones',
   checkExpirationInterval: 15 * 60 * 1000,
-  expiration: 24 * 60 * 60 * 1000,
+  expiration: duracionSesion,
 });
 
 async function inicializarBaseDatos() {
@@ -96,12 +97,13 @@ app.use(
     store: sessionStore,
     resave: false,
     saveUninitialized: false,
+    rolling: true,
     proxy: true,
     cookie: {
       httpOnly: true,
       sameSite: 'lax',
       secure: process.env.VERCEL === '1',
-      maxAge: 1000 * 60 * 60 * 24,
+      maxAge: duracionSesion,
     },
   })
 );

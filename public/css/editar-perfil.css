@@ -1,43 +1,53 @@
 .editar-perfil {
-  max-width: 760px;
+  width: min(760px, calc(100% - 2rem));
   margin: 0 auto;
-  padding-top: 24px;
-  padding-bottom: 48px;
+  padding: 1.8rem 0 3rem;
 }
 
 .editar-perfil__volver {
-  display: inline-block;
-  margin-bottom: 16px;
-  color: inherit;
-  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  padding: 0.65rem 1.15rem;
+  border: 1px solid rgba(192, 64, 48, 0.35);
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--acento-fuerte);
+  font-weight: 700;
+  box-shadow: 0 8px 18px rgba(110, 53, 30, 0.08);
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .editar-perfil__volver:hover {
-  text-decoration: underline;
+  background: var(--acento-fuerte);
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(192, 64, 48, 0.18);
 }
 
 .editar-perfil__tarjeta {
-  padding: 32px;
+  padding: 2rem;
 }
 
 .editar-perfil__cabecera {
-  margin-bottom: 28px;
+  margin-bottom: 1.75rem;
 }
 
 .editar-perfil__cabecera h1 {
-  margin: 0 0 8px;
+  margin: 0 0 0.5rem;
 }
 
 .editar-perfil__form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 1.25rem;
 }
 
 .editar-perfil__campo {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 0.5rem;
 }
 
 .editar-perfil__campo label {
@@ -48,11 +58,12 @@
 .editar-perfil__campo textarea {
   width: 100%;
   box-sizing: border-box;
-  padding: 12px 14px;
-  border: 1px solid #ddd;
-  border-radius: 10px;
+  padding: 0.85rem 0.95rem;
+  border: 1px solid var(--borde);
+  border-radius: 0.9rem;
   font: inherit;
-  background: #fff;
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--texto);
 }
 
 .editar-perfil__campo textarea {
@@ -63,24 +74,20 @@
 .editar-perfil__campo input:focus,
 .editar-perfil__campo textarea:focus {
   outline: none;
-  border-color: #e58b58;
+  border-color: var(--acento-fuerte);
+  box-shadow: 0 0 0 3px rgba(216, 131, 86, 0.12);
 }
 
 .editar-perfil__acciones {
   display: flex;
-  gap: 12px;
+  gap: 0.75rem;
   align-items: center;
-  margin-top: 8px;
+  margin-top: 0.5rem;
 }
 
 @media (max-width: 600px) {
-  .editar-perfil {
-    padding-left: 16px;
-    padding-right: 16px;
-  }
-
   .editar-perfil__tarjeta {
-    padding: 22px;
+    padding: 1.4rem;
   }
 
   .editar-perfil__acciones {

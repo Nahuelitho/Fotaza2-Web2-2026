@@ -6,22 +6,71 @@
 
 .perfil__volver {
   display: inline-flex;
+  align-items: center;
+  justify-content: center;
   margin-bottom: 1rem;
+  padding: 0.65rem 1.15rem;
+  border: 1px solid rgba(192, 64, 48, 0.35);
+  border-radius: 999px;
+  background: #ffffff;
   color: var(--acento-fuerte);
-  font-weight: 600;
+  font-weight: 700;
+  box-shadow: 0 8px 18px rgba(110, 53, 30, 0.08);
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.perfil__volver:hover {
+  background: var(--acento-fuerte);
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(192, 64, 48, 0.18);
 }
 
 .perfil__cabecera {
-  gap: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.6rem;
 }
 
 .perfil__cabecera h1,
-.perfil__usuario {
+.perfil__usuario,
+.perfil__correo {
   margin: 0;
 }
 
 .perfil__usuario {
+  margin-top: 0.2rem;
+  color: var(--acento-fuerte);
+  font-weight: 700;
+}
+
+.perfil__correo,
+.perfil__biografia {
   color: var(--texto-suave);
+}
+
+.perfil__biografia {
+  max-width: 62ch;
+  margin: 0;
+  line-height: 1.65;
+}
+
+.perfil__estadisticas,
+.perfil__acciones {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+}
+
+.perfil__estadisticas span {
+  padding: 0.45rem 0.75rem;
+  border: 1px solid var(--borde);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.58);
+  color: var(--texto-suave);
+  font-size: 0.92rem;
 }
 
 .perfil__publicaciones {
@@ -30,4 +79,10 @@
 
 .perfil-posts {
   margin-top: 0;
+}
+
+@media (max-width: 600px) {
+  .perfil__acciones .comp-btn {
+    width: 100%;
+  }
 }
