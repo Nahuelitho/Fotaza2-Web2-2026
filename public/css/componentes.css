@@ -66,14 +66,14 @@
 }
 
 .comp-btn--cancelar {
-  background: #ff4d4d;
+  background: var(--peligro);
   color: #fff;
-  border-color: #ff4d4d;
-  box-shadow: 0 8px 18px rgba(255, 77, 77, 0.2);
+  border-color: var(--peligro);
+  box-shadow: 0 8px 18px var(--peligro-sombra);
 }
 
 .comp-btn--cancelar:hover {
-  box-shadow: 0 12px 24px rgba(255, 77, 77, 0.32);
+  box-shadow: 0 12px 24px var(--peligro-sombra-fuerte);
 }
 button:not(:disabled),
 .comp-btn,

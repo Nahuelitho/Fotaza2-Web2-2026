@@ -10,6 +10,8 @@ const {
   valorarPublicacion,
 } = require('../controllers/publicacionController');
 
+const { denunciarPublicacion } = require('../controllers/denunciaController');
+
 const router = express.Router();
 
 const TIPOS_MIME_PERMITIDOS = ['image/jpeg', 'image/png', 'image/webp'];
@@ -97,6 +99,12 @@ router.post(
   '/publicaciones/:id/valoraciones',
   requerirAutenticacion,
   valorarPublicacion
+);
+
+router.post(
+  '/publicaciones/:id/denuncias',
+  requerirAutenticacion,
+  denunciarPublicacion
 );
 
 router.delete(

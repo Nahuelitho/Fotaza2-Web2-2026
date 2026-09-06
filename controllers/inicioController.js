@@ -36,6 +36,7 @@ async function renderizarInicio(req, res) {
   const mensajesEstado = {
     creada: "La publicacion se creo correctamente.",
     eliminada: "La publicacion fue eliminada.",
+    en_revision: "La publicacion paso a revision por tener 3 denuncias.",
   };
 
   const wherePublicacion = {
