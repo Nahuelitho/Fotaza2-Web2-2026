@@ -20,6 +20,8 @@ header.nav-barra
 
     .nav-acciones
       if usuarioActual
+        if usuarioActual.rol === 'validador'
+          a.nav-link(href='/validador/denuncias') Panel validador
         a.nav-usuario(href=`/usuarios/${usuarioActual.id}`) Hola, #{usuarioActual.nombreVisible}
         form(action='/cerrar-sesion', method='post')
           button.comp-btn.comp-btn--cancelar(type='submit') Cerrar sesion

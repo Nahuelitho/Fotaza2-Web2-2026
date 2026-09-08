@@ -1,0 +1,25 @@
+.validador {
+  width: min(960px, 100%);
+  margin: 0 auto;
+  padding: 1.8rem 0 3rem;
+}
+
+.validador__item {
+  margin-top: 1rem;
+}
+
+.validador__img {
+  display: block;
+  width: 100%;
+  max-height: 420px;
+  object-fit: contain;
+  border: 1px solid var(--borde);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.6);
+  margin: 1rem 0;
+}
+
+.validador__denuncia {
+  padding: 0.85rem 0;
+  border-top: 1px solid var(--linea);
+}

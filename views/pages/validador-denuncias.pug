@@ -1,0 +1,36 @@
+extends ../layouts/main
+
+block content
+  .validador.ly-cont
+    section.comp-tarjeta
+      .comp-cabecera
+        h1 Panel validador
+        p.comp-nota Publicaciones enviadas a revision por denuncias.
+
+      if mensajeError
+        p.comp-msg.comp-msg--error= mensajeError
+      if mensajeExito
+        p.comp-msg.comp-msg--ok= mensajeExito
+
+    if publicaciones.length === 0
+      section.comp-tarjeta
+        p.comp-nota No hay publicaciones en revision.
+    else
+      each publicacion in publicaciones
+        section.validador__item.comp-tarjeta
+          h2= publicacion.titulo
+
+          if publicacion.usuario
+            p.comp-nota Autor: @#{publicacion.usuario.nombreUsuario}
+
+          if publicacion.imagenes && publicacion.imagenes[0]
+            - var imagen = publicacion.imagenes[0]
+            img.validador__img(src=`data:${imagen.tipoMime};base64,${imagen.imagenBase64}`, alt=publicacion.titulo)
+
+          h3 Denuncias pendientes
+          each denuncia in publicacion.denuncias
+            article.validador__denuncia
+              strong= denuncia.motivo
+              p= denuncia.descripcion
+              if denuncia.usuario
+                p.comp-nota Denunciado por: @#{denuncia.usuario.nombreUsuario}

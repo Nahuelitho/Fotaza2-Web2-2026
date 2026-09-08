@@ -14,7 +14,13 @@ async function buscarPorCorreoOUsuario(identificador) {
     where: {
       [Op.or]: [{ correo: identificador }, { nombreUsuario: identificador }],
     },
-    raw: true,
+    include: [
+      {
+        model: Rol,
+        as: 'rol',
+        attributes: ['id', 'name'],
+      },
+    ],
   });
 }
 
