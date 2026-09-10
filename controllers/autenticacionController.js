@@ -135,7 +135,7 @@ async function registrarUsuario(req, res) {
       correo: usuarioCreado.correo,
       nombreVisible: usuarioCreado.nombre_visible,
       idRol: usuarioCreado.role_id,
-      rol: 'usuario',
+      rol: "usuario",
     };
 
     req.session.save((error) => {
@@ -225,7 +225,10 @@ async function iniciarSesionUsuario(req, res) {
         });
       }
 
-      return res.redirect("/");
+      const destino =
+        req.session.usuario.rol === "validador" ? "/validador/denuncias" : "/";
+
+      return res.redirect(destino);
     });
   } catch (errorDeInicioSesion) {
     return renderizarVistaInicioSesion(res, {

@@ -1,0 +1,93 @@
+extends ../layouts/main
+
+block content
+  - var imagen = publicacion.imagenes && publicacion.imagenes[0]
+  - var etiquetas = publicacion.etiquetas || []
+  - var denuncias = publicacion.denuncias || []
+
+  .validador.validador--detalle.ly-cont
+    a.comp-btn.comp-btn--fantasma(href=`/validador/denuncias?vista=${vistaActual}`) Volver al panel
+
+    if mensajeError
+      p.comp-msg.comp-msg--error= mensajeError
+
+    if mensajeExito
+      p.comp-msg.comp-msg--ok= mensajeExito
+
+    details.comp-tarjeta.validador__detalle(open)
+      summary.validador__resumen
+        span Publicacion: #{publicacion.titulo}
+
+      .validador__contenido
+        if publicacion.usuario
+          p.comp-nota
+            | Autor: @#{publicacion.usuario.nombreUsuario}
+            |  · #{publicacion.usuario.nombreVisible}
+
+        if publicacion.descripcion
+          p= publicacion.descripcion
+
+        if imagen
+          .validador__imagen-caja
+            img.validador__imagen(
+              src=`data:${imagen.tipoMime};base64,${imagen.imagenBase64}`
+              alt=publicacion.titulo
+            )
+
+            if imagen.textoMarcaAgua
+              span.ini-post__marca-agua= imagen.textoMarcaAgua
+
+        if etiquetas.length > 0
+          .comp-tags
+            each etiqueta in etiquetas
+              span.comp-tag.comp-tag--suave= etiqueta.name
+
+    details.comp-tarjeta.validador__denuncias(open)
+      summary.validador__resumen
+        if vistaActual === 'pendientes'
+          span Denuncias pendientes
+        else if vistaActual === 'desestimadas'
+          span Denuncias desestimadas
+        else
+          span Denuncias aceptadas
+        span.validador__contador= denuncias.length
+
+      .validador__contenido
+        each denuncia in denuncias
+          article.validador__denuncia
+            strong= denuncia.motivo
+
+            if denuncia.descripcion
+              p= denuncia.descripcion
+
+            if denuncia.usuario
+              p.comp-nota Denunciado por: @#{denuncia.usuario.nombreUsuario}
+
+    if puedeModerar
+      section.comp-tarjeta.validador__acciones
+        .comp-cabecera
+          h2 Resolver publicacion
+          p.comp-nota Elegi que hacer con las denuncias recibidas.
+
+        .validador__acciones-botones
+          form(
+            action=`/validador/publicaciones/${publicacion.id}/desestimar`
+            method='post'
+          )
+            button.comp-btn.comp-btn--suave(type='submit') Desestimar denuncias
+
+          form(
+            action=`/validador/publicaciones/${publicacion.id}/dar-de-baja`
+            method='post'
+            onsubmit="return confirm('¿Seguro que queres dar de baja esta publicacion?')"
+          )
+            button.comp-btn.comp-btn--cancelar(type='submit') Dar de baja publicacion
+    else
+      section.comp-tarjeta.validador__resultado
+        strong Resultado de moderacion
+
+        if vistaActual === 'desestimadas'
+          p.comp-nota Las denuncias fueron desestimadas y la publicacion permanece activa.
+
+        if vistaActual === 'bajas'
+          p.comp-nota Las denuncias fueron aceptadas y la publicacion fue dada de baja.
