@@ -1,0 +1,48 @@
+extends ../layouts/main
+
+block content
+  - var publicacionesSeguras = publicaciones || []
+
+  .validador.ly-cont
+    section.comp-tarjeta
+      .comp-cabecera
+        h1 Panel validador
+        p.comp-nota Administra las publicaciones denunciadas.
+
+      if mensajeError
+        p.comp-msg.comp-msg--error= mensajeError
+
+      if mensajeExito
+        p.comp-msg.comp-msg--ok= mensajeExito
+
+      nav.validador__filtros(aria-label='Estados de moderacion')
+        a.comp-btn(
+          class=vistaActual === 'pendientes' ? '' : 'comp-btn--fantasma'
+          href='/validador/denuncias?vista=pendientes'
+        ) Pendientes
+
+        a.comp-btn(
+          class=vistaActual === 'desestimadas' ? '' : 'comp-btn--fantasma'
+          href='/validador/denuncias?vista=desestimadas'
+        ) Desestimadas
+
+        a.comp-btn(
+          class=vistaActual === 'bajas' ? '' : 'comp-btn--fantasma'
+          href='/validador/denuncias?vista=bajas'
+        ) Dadas de baja
+
+    section.validador__listado
+      h2= tituloListado
+
+      if publicacionesSeguras.length === 0
+        .comp-tarjeta.validador__vacio
+          p.comp-nota No hay publicaciones en esta lista.
+      else
+        .validador__grilla
+          each publicacion in publicacionesSeguras
+            - var mostrarAutor = true
+            - var cantidadDenuncias = publicacion.denuncias ? publicacion.denuncias.length : 0
+            - var textoDenuncias = vistaActual === 'pendientes' ? 'denuncias pendientes' : vistaActual === 'desestimadas' ? 'denuncias desestimadas' : 'denuncias aceptadas'
+            - var textoDetalle = vistaActual === 'pendientes' ? 'Revisar publicacion' : 'Ver resultado'
+            - var urlDetalle = `/validador/publicaciones/${publicacion.id}?vista=${vistaActual}`
+            include ../partials/publicacion-card

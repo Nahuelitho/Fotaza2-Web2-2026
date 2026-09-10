@@ -191,6 +191,8 @@ Se implemento el perfil de usuario con sus publicaciones publicas, cantidad de s
 
 Tambien se agrego la accion de seguir y dejar de seguir otros usuarios, evitando que un usuario pueda seguirse a si mismo.
 
+Mas adelante se completo la edicion de perfil. Cada usuario puede modificar su nombre visible, nombre de usuario, correo y biografia desde una pantalla protegida. La autorizacion se valida en backend comparando el usuario de la sesion con el ID de la URL, se evita mass assignment usando una lista explicita de campos permitidos, se validan longitudes y formato de correo, se controlan duplicados de correo y nombre de usuario, y se actualiza la sesion despues de guardar.
+
 ### 11. Despliegue en Vercel y Neon
 
 La ultima etapa fue preparar el proyecto para produccion.
@@ -245,7 +247,7 @@ Solucion: se movieron `etiquetasDisponibles` y `filtrosBusqueda` a `res.locals` 
 
 Problema: las sesiones en memoria no son recomendables para produccion y pueden fallar en entornos serverless.
 
-Solucion: se uso `connect-session-sequelize` para guardar sesiones en PostgreSQL.
+Solucion: se uso `connect-session-sequelize` para guardar sesiones en PostgreSQL. Ademas se fuerza el guardado de sesion antes de redirigir despues de login o registro, para evitar que la primera pantalla cargue sin detectar al usuario logueado. La sesion se configuro con una duracion corta de 5 minutos y renovacion por actividad.
 
 ## Decisiones tecnicas
 
@@ -258,3 +260,5 @@ Solucion: se uso `connect-session-sequelize` para guardar sesiones en PostgreSQL
 - Las imagenes se guardan en base64 para simplificar el despliegue en Vercel.
 - El buscador del navbar usa datos globales mediante `res.locals`.
 - La tarjeta de publicacion se reutiliza con un parcial Pug en el inicio y en perfiles.
+- El correo del usuario solo se muestra en el perfil propio, no en perfiles publicos de otros usuarios.
+- La edicion de perfil no permite cambiar contrasena ni campos administrativos; eso queda separado por seguridad.

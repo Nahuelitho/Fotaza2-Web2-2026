@@ -1,12 +1,18 @@
 - var imagen = (publicacion.imagenes && publicacion.imagenes[0]) || null
 - var etiquetas = publicacion.etiquetas || []
 - var mostrarAutorCard = typeof mostrarAutor === 'undefined' ? true : mostrarAutor
+- var urlDetalleCard = typeof urlDetalle === 'undefined' ? `/publicaciones/${publicacion.id}` : urlDetalle
+- var textoDetalleCard = typeof textoDetalle === 'undefined' ? 'Ver detalle' : textoDetalle
+- var cantidadDenunciasCard = typeof cantidadDenuncias === 'undefined' ? null : cantidadDenuncias
+- var textoDenunciasCard = typeof textoDenuncias === 'undefined' ? 'denuncias pendientes' : textoDenuncias
 
 article.ini-post
   .ini-post__cab
     h4= publicacion.titulo
     if mostrarAutorCard && publicacion.usuario
       span.ini-post__autor= '@' + publicacion.usuario.nombreUsuario
+  if cantidadDenunciasCard !== null
+    p.validador__cantidad= `${cantidadDenunciasCard} ${textoDenunciasCard}`
   if publicacion.descripcion
     p.ini-post__desc= publicacion.descripcion
   if imagen
@@ -23,4 +29,4 @@ article.ini-post
       each etiqueta in etiquetas
         span.comp-tag.comp-tag--suave= etiqueta.name
   .ini-post__acciones
-    a.comp-btn.comp-btn--fantasma(href=`/publicaciones/${publicacion.id}`) Ver detalle
+    a.comp-btn.comp-btn--fantasma(href=urlDetalleCard)= textoDetalleCard

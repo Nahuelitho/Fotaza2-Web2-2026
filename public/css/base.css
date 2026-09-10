@@ -6,6 +6,9 @@
   --texto-suave: #77655b;
   --acento: #e29c72;
   --acento-fuerte: #d88356;
+  --peligro: #ff4d4d;
+  --peligro-sombra: rgba(255, 77, 77, 0.2);
+  --peligro-sombra-fuerte: rgba(255, 77, 77, 0.32);
   --borde: #eadccf;
   --linea: rgba(119, 101, 91, 0.14);
   --sombra: 0 18px 45px rgba(120, 84, 56, 0.1);

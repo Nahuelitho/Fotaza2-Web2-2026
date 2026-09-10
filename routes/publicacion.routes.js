@@ -1,6 +1,9 @@
 const express = require('express');
 const multer = require('multer');
-const { requerirAutenticacion } = require('../middlewares/autenticacionMiddleware');
+const {
+  requerirAutenticacion,
+  impedirPublicacionValidador,
+} = require('../middlewares/autenticacionMiddleware');
 const {
   crearPublicacion,
   mostrarDetallePublicacion,
@@ -9,6 +12,8 @@ const {
   eliminarComentario,
   valorarPublicacion,
 } = require('../controllers/publicacionController');
+
+const { denunciarPublicacion } = require('../controllers/denunciaController');
 
 const router = express.Router();
 
@@ -83,6 +88,7 @@ router.delete(
 router.post(
   '/publicaciones',
   requerirAutenticacion,
+  impedirPublicacionValidador,
   manejarErrorUpload,
   crearPublicacion
 );
@@ -97,6 +103,12 @@ router.post(
   '/publicaciones/:id/valoraciones',
   requerirAutenticacion,
   valorarPublicacion
+);
+
+router.post(
+  '/publicaciones/:id/denuncias',
+  requerirAutenticacion,
+  denunciarPublicacion
 );
 
 router.delete(

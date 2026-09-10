@@ -317,6 +317,7 @@ async function mostrarDetallePublicacion(req, res) {
     extraCss: ["/css/publicacion-detalle.css"],
     usuarioActual,
     mensajeError: req.query.error || "",
+    mensajeExito: req.query.exito || "",
     valoracionResumen,
     estadisticasAutor: {
       cantidadSeguidores: cantidadSeguidoresAutor,

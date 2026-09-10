@@ -3,7 +3,10 @@ section.ini-hero
     h1.ini-titulo Fotaza 2
 
     if usuarioActual
-      p.ini-bienvenida Bienvenido, #{usuarioActual.nombreVisible}. Ya podes crear y compartir tus publicaciones.
+      if usuarioActual.rol === 'validador'
+        p.ini-bienvenida Bienvenido, #{usuarioActual.nombreVisible}. Accede al panel para revisar publicaciones denunciadas.
+      else
+        p.ini-bienvenida Bienvenido, #{usuarioActual.nombreVisible}. Ya podes crear y compartir tus publicaciones.
     else
       .ini-acciones
         a.comp-btn(href='/registro') Crear cuenta

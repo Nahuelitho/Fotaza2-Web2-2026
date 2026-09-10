@@ -11,8 +11,27 @@ block content
   - var valoracionUsuario = valoracionResumen ? valoracionResumen.valoracionUsuario : null
   - var estaSiguiendoAutor = typeof yaSigueAutor !== 'undefined' ? yaSigueAutor : false
   .pub-detalle.ly-cont
-    a.pub-detalle__volver(href='/') Volver al inicio
+    if publicacion.usuario
+      section.pub-detalle__autor-card.comp-tarjeta
+        .pub-autor__info
+          span.pub-autor__avatar= publicacion.usuario.nombreUsuario.slice(0, 2).toUpperCase()
+          div
+            h2= publicacion.usuario.nombreVisible || publicacion.usuario.nombreUsuario
+            p.pub-detalle__meta= '@' + publicacion.usuario.nombreUsuario
+            p.comp-nota Seguidores: #{cantidadSeguidoresAutor} · Seguidos: #{cantidadSeguidosAutor}
+        .pub-autor__acciones
+          a.comp-btn.comp-btn--fantasma(href=`/usuarios/${publicacion.usuario.id}`) Ver perfil
+          if usuarioActual && !esAutor
+            if estaSiguiendoAutor
+              form(action=`/usuarios/${publicacion.usuario.id}/seguir?_method=DELETE`, method='post')
+                button.comp-btn.comp-btn--fantasma(type='submit') Dejar de seguir
+            else
+              form(action=`/usuarios/${publicacion.usuario.id}/seguir`, method='post')
+                button.comp-btn(type='submit') Seguir
+          else if esAutor
+            span.comp-tag.comp-tag--suave Es tu publicacion
 
+    br
     article.comp-tarjeta
       .pub-detalle__cab
         div
@@ -44,26 +63,6 @@ block content
           form(action=`/publicaciones/${publicacion.id}?_method=DELETE`, method='post')
             button.comp-btn.comp-btn--cancelar(type='submit') Eliminar publicacion
 
-    if publicacion.usuario
-      section.pub-detalle__autor-card.comp-tarjeta
-        .pub-autor__info
-          span.pub-autor__avatar= publicacion.usuario.nombreUsuario.slice(0, 2).toUpperCase()
-          div
-            h2= publicacion.usuario.nombreVisible || publicacion.usuario.nombreUsuario
-            p.pub-detalle__meta= '@' + publicacion.usuario.nombreUsuario
-            p.comp-nota Seguidores: #{cantidadSeguidoresAutor} · Seguidos: #{cantidadSeguidosAutor}
-        .pub-autor__acciones
-          a.comp-btn.comp-btn--fantasma(href=`/usuarios/${publicacion.usuario.id}`) Ver perfil
-          if usuarioActual && !esAutor
-            if estaSiguiendoAutor
-              form(action=`/usuarios/${publicacion.usuario.id}/seguir?_method=DELETE`, method='post')
-                button.comp-btn.comp-btn--fantasma(type='submit') Dejar de seguir
-            else
-              form(action=`/usuarios/${publicacion.usuario.id}/seguir`, method='post')
-                button.comp-btn(type='submit') Seguir
-          else if esAutor
-            span.comp-tag.comp-tag--suave Es tu publicacion
-
     section.pub-detalle__valoracion.comp-tarjeta
       h2 Valoracion de la imagen
       if cantidadValoraciones > 0
@@ -87,12 +86,38 @@ block content
         p.comp-nota No podes valorar tu propia publicacion.
       else
         p.comp-nota Inicia sesion para valorar esta imagen.
+    if mensajeError
+      p.comp-msg.comp-msg--error= mensajeError
+    if mensajeExito
+      p.comp-msg.comp-msg--ok= mensajeExito
 
+    if usuarioActual && !esAutor
+      details.pub-detalle__denuncia.comp-tarjeta
+        summary.comp-btn.pub-denuncia__boton DENUNCIAR PUBLICACION
+        p.comp-nota Si esta publicacion incumple las reglas, podes enviarla a revision.
+
+        form(action=`/publicaciones/${publicacion.id}/denuncias`, method='post')
+          label.pub-denuncia__label(for='motivo') Motivo
+          select.pub-denuncia__campo(id='motivo', name='motivo', required)
+            option(value='') Selecciona un motivo
+            option(value='Contenido inapropiado') Contenido inapropiado
+            option(value='Copyright o autoria dudosa') Copyright o autoria dudosa
+            option(value='Spam') Spam
+            option(value='Otro') Otro
+
+          label.pub-denuncia__label(for='descripcion') Descripcion
+          textarea.pub-denuncia__campo(
+            id='descripcion'
+            name='descripcion'
+            rows='4'
+            maxlength='500'
+            placeholder='Agrega mas detalles si hace falta...'
+            required
+          )
+
+          button.comp-btn.comp-btn--cancelar(type='submit') ENVIAR DENUNCIA
     section.pub-detalle__comentarios.comp-tarjeta
       h2 Comentarios
-
-      if mensajeError
-        p.comp-msg.comp-msg--error= mensajeError
 
       if publicacion.comentarios && publicacion.comentarios.length > 0
         each comentario in publicacion.comentarios
