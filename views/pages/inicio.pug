@@ -16,11 +16,11 @@ block content
             p.comp-msg.comp-msg--error= mensajeError
           .ini-agregar
             if usuarioActual && usuarioActual.rol !== 'validador'
-              button.ini-agregar__btn(type='button', data-abrir-modal-publicacion='true', aria-haspopup='dialog')
+              button.ini-agregar__btn.comp-btn--contorno(type='button', data-abrir-modal-publicacion='true', aria-haspopup='dialog')
                 span.ini-agregar__ico +
                 span Agregar publicacion
             else if !usuarioActual
-              button.ini-agregar__btn(type='button', data-abrir-modal-autenticacion='true', aria-haspopup='dialog')
+              button.ini-agregar__btn.comp-btn--contorno(type='button', data-abrir-modal-autenticacion='true', aria-haspopup='dialog')
                 span.ini-agregar__ico +
                 span Agregar publicacion
 

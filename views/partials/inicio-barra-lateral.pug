@@ -1,6 +1,6 @@
 aside.ini-lateral
   section.comp-tarjeta.ini-perfil
-    .ini-perfil__av NV
     .ini-perfil__cont
       h2 Fotaza 2
-      p.ini-perfil__txt Plataforma en desarrollo.
+      if usuarioActual
+        a.comp-btn.comp-btn--contorno.ini-perfil__feed(href='/siguiendo') Publicaciones de usuarios seguidos

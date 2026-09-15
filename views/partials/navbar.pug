@@ -13,10 +13,13 @@ header.nav-barra
         option(value='') Todas las etiquetas
         each etiqueta in etiquetasNav
           option(value=etiqueta.name, selected=filtrosNav.etiqueta === etiqueta.name)= etiqueta.name
-      button.comp-btn.comp-btn--fantasma(type='submit') Buscar
+      button.comp-btn.comp-btn--contorno(type='submit') Buscar
 
     nav.nav-menu(aria-label='Navegacion principal')
-      a.nav-link.nav-link--act(href='/') Inicio
+      a.nav-link.comp-btn--contorno(href='/') Inicio
+      if usuarioActual
+        span.nav-campana(title='Notificaciones proximamente')
+          img(src='/img/campana.png', alt='Notificaciones')
 
     .nav-acciones
       if usuarioActual

@@ -5,6 +5,7 @@ const {
   ImagenPublicacion,
   Etiqueta,
   Usuario,
+  Seguimiento,
 } = require("../models/sequelize");
 
 function armarUrlPagina(pagina, filtros) {
@@ -161,6 +162,50 @@ async function renderizarInicio(req, res) {
   });
 }
 
+async function renderizarPublicacionesSeguidas(req, res) {
+  const seguimientos = await Seguimiento.findAll({
+    where: {
+      idSeguidor: Number(req.session.usuario.id),
+    },
+    attributes: ["idSeguido"],
+    raw: true,
+  });
+  const idsSeguidos = seguimientos.map((seguimiento) => seguimiento.idSeguido);
+
+  const publicaciones = idsSeguidos.length
+    ? await Publicacion.findAll({
+        where: {
+          idUsuario: { [Op.in]: idsSeguidos },
+          visibilidad: "publica",
+          estado: "activa",
+        },
+        include: [
+          {
+            model: ImagenPublicacion,
+            as: "imagenes",
+          },
+          {
+            model: Etiqueta,
+            as: "etiquetas",
+            through: { attributes: [] },
+          },
+          {
+            model: Usuario,
+            as: "usuario",
+            attributes: ["id", "nombreVisible", "nombreUsuario"],
+          },
+        ],
+        order: [["created_at", "DESC"]],
+      })
+    : [];
+
+  return res.render("pages/publicaciones-seguidas", {
+    title: "Publicaciones de usuarios seguidos | Fotaza 2",
+    publicaciones,
+  });
+}
+
 module.exports = {
   renderizarInicio,
+  renderizarPublicacionesSeguidas,
 };

@@ -1,0 +1,22 @@
+extends ../layouts/main
+
+block content
+  - var publicacionesSeguras = publicaciones || []
+
+  .ini-lienzo.ly-cont
+    .ini-grilla
+      include ../partials/inicio-barra-lateral
+
+      section.ini-feed
+        section.comp-tarjeta
+          .comp-cabecera
+            h1 Publicaciones de usuarios seguidos
+            p.comp-nota Ultimas publicaciones de las personas que seguis.
+
+          if publicacionesSeguras.length === 0
+            p.comp-nota Todavia no hay publicaciones para mostrar. Segui usuarios para ver sus publicaciones aca.
+          else
+            .ini-posts
+              each publicacion in publicacionesSeguras
+                - var mostrarAutor = true
+                include ../partials/publicacion-card

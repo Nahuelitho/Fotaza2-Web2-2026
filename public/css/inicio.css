@@ -25,6 +25,10 @@
   margin: 0;
 }
 
+.ini-perfil__cont {
+  width: 100%;
+}
+
 .ini-perfil__av {
   width: 3rem;
   height: 3rem;
@@ -38,6 +42,13 @@
 .ini-perfil__txt {
   margin: 0.3rem 0 0;
   color: var(--texto-suave);
+}
+
+.ini-perfil__feed {
+  width: 100%;
+  margin-top: 0.8rem;
+  white-space: normal;
+  text-align: center;
 }
 
 .ini-lista {
@@ -73,12 +84,9 @@
 
 .ini-agregar__btn {
   width: 100%;
-  border: 1px solid var(--borde);
   border-radius: 1rem;
-  background: rgba(255, 255, 255, 0.58);
   min-height: 3.9rem;
   font-weight: 600;
-  color: var(--texto);
   display: inline-flex;
   align-items: center;
   justify-content: center;

@@ -53,35 +53,28 @@
   min-width: 6.5rem;
 }
 
-.nav-busc button.comp-btn.comp-btn--fantasma {
-  background: #ffffff;
-  color: var(--acento-fuerte);
-  border: 1px solid rgba(192, 64, 48, 0.35);
-
-  font-weight: 700;
-
-  box-shadow: 0 8px 18px rgba(110, 53, 30, 0.08);
-
-  transition:
-    background 0.2s ease,
-    color 0.2s ease,
-    border-color 0.2s ease,
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-.nav-busc button.comp-btn.comp-btn--fantasma:hover {
-  background: var(--acento-fuerte);
-  color: #ffffff;
-  border-color: var(--acento-fuerte);
-
-  transform: translateY(-1px);
-
-  box-shadow: 0 12px 24px rgba(192, 64, 48, 0.18);
-}
-
 .nav-menu {
   display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.nav-campana {
+  display: inline-grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  place-items: center;
+  border: 1px solid var(--acento-borde);
+  border-radius: 50%;
+  background: var(--acento-superficie);
+  box-shadow: 0 8px 18px rgba(110, 53, 30, 0.08);
+}
+
+.nav-campana img {
+  display: block;
+  width: 1.35rem;
+  height: 1.35rem;
+  object-fit: contain;
 }
 
 /* Botón Inicio */
@@ -107,27 +100,7 @@
     border-color 0.18s ease;
 }
 
-.nav-link--act {
-  background: #ffffff;
-  color: var(--acento-fuerte);
-  border-color: rgba(192, 64, 48, 0.35);
-
-  font-weight: 700;
-
-  box-shadow: 0 8px 18px rgba(110, 53, 30, 0.08);
-}
-
-.nav-link--act:hover {
-  background: var(--acento-fuerte);
-  color: #ffffff;
-  border-color: var(--acento-fuerte);
-
-  transform: translateY(-1px);
-
-  box-shadow: 0 12px 24px rgba(192, 64, 48, 0.18);
-}
-
-.nav-link:hover:not(.nav-link--act) {
+.nav-link:hover:not(.comp-btn--contorno) {
   transform: translateY(-1px);
 
   background: rgba(255, 255, 255, 0.9);
