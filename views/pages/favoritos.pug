@@ -1,0 +1,34 @@
+extends ../layouts/main
+
+block content
+  - var publicacionesSeguras = publicaciones || []
+
+  .ini-lienzo.ly-cont
+    .ini-grilla
+      include ../partials/inicio-barra-lateral
+
+      section.ini-feed
+        section.comp-tarjeta
+          .comp-cabecera
+            h1 Mis favoritos
+            p.comp-nota Tus publicaciones guardadas son privadas.
+
+          if mensajeError
+            p.comp-msg.comp-msg--error= mensajeError
+
+          if mensajeExito
+            p.comp-msg.comp-msg--ok= mensajeExito
+
+          if publicacionesSeguras.length === 0
+            p.comp-nota Todavia no guardaste publicaciones favoritas.
+          else
+            .ini-posts
+              each publicacion in publicacionesSeguras
+                .favorito-item
+                  - var mostrarAutor = true
+                  include ../partials/publicacion-card
+
+                  form(action=`/publicaciones/${publicacion.id}/favorito?_method=DELETE`, method='post')
+                    input(type='hidden', name='origen', value='favoritos')
+                    button.favorito-control.favorito-item__quitar(type='submit', title='Quitar de favoritos', aria-label='Quitar de favoritos')
+                      img(src='/img/favoritoRojo.png', alt='')

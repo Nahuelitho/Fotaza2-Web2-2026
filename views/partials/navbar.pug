@@ -3,7 +3,7 @@ header.nav-barra
   - var filtrosNav = filtrosBusqueda || {}
   .nav-conten.ly-cont
     .nav-marca
-      a.nav-logo(href='/') Fotaza 2
+      a.nav-logo.marca-tipografia(href='/') Fotaza 2
 
     form.nav-busc(action='/', method='get')
       label.u-solo-lect(for='site-search') Buscar contenido
@@ -24,8 +24,11 @@ header.nav-barra
     .nav-acciones
       if usuarioActual
         if usuarioActual.rol === 'validador'
-          a.nav-link(href='/validador/denuncias') Panel validador
-        a.nav-usuario(href=`/usuarios/${usuarioActual.id}`) Hola, #{usuarioActual.nombreVisible}
+          a.nav-link.comp-btn--contorno(href='/validador/denuncias') Panel validador
+        if usuarioActual.rol === 'validador'
+          a.nav-usuario(href='/validador/denuncias') Hola, #{usuarioActual.nombreVisible}
+        else
+          a.nav-usuario(href=`/usuarios/${usuarioActual.id}`) Hola, #{usuarioActual.nombreVisible}
         form(action='/cerrar-sesion', method='post')
           button.comp-btn.comp-btn--cancelar(type='submit') Cerrar sesion
       else

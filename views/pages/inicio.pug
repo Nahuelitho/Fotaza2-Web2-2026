@@ -3,26 +3,33 @@ extends ../layouts/main
 block content
   - var publicacionesSeguras = publicaciones || []
   .ini-lienzo.ly-cont
-    .ini-grilla
+    .ini-grilla(class=usuarioActual && usuarioActual.rol === 'validador' ? 'ini-grilla--sin-lateral' : '')
       include ../partials/inicio-barra-lateral
 
       section.ini-feed
         include ../partials/inicio-hero
 
-        section.comp-tarjeta
+        if !usuarioActual || usuarioActual.rol !== 'validador'
+          section.comp-tarjeta
+            if mensajeEstado
+              p.comp-msg.comp-msg--ok= mensajeEstado
+            if mensajeError
+              p.comp-msg.comp-msg--error= mensajeError
+            .ini-agregar
+              if usuarioActual
+                button.ini-agregar__btn.comp-btn--contorno(type='button', data-abrir-modal-publicacion='true', aria-haspopup='dialog')
+                  span.ini-agregar__ico +
+                  span Agregar publicacion
+              else
+                button.ini-agregar__btn.comp-btn--contorno(type='button', data-abrir-modal-autenticacion='true', aria-haspopup='dialog')
+                  span.ini-agregar__ico +
+                  span Agregar publicacion
+
+        if usuarioActual && usuarioActual.rol === 'validador'
           if mensajeEstado
             p.comp-msg.comp-msg--ok= mensajeEstado
           if mensajeError
             p.comp-msg.comp-msg--error= mensajeError
-          .ini-agregar
-            if usuarioActual && usuarioActual.rol !== 'validador'
-              button.ini-agregar__btn.comp-btn--contorno(type='button', data-abrir-modal-publicacion='true', aria-haspopup='dialog')
-                span.ini-agregar__ico +
-                span Agregar publicacion
-            else if !usuarioActual
-              button.ini-agregar__btn.comp-btn--contorno(type='button', data-abrir-modal-autenticacion='true', aria-haspopup='dialog')
-                span.ini-agregar__ico +
-                span Agregar publicacion
 
 
         section.comp-tarjeta

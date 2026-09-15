@@ -13,11 +13,11 @@ function requerirInvitado(req, res, next) {
 
   return res.redirect('/');
 }
-function impedirPublicacionValidador(req, res, next) {
+function impedirInteraccionValidador(req, res, next) {
   if (req.session.usuario?.rol === "validador") {
     return res.redirect(
       `/validador/denuncias?error=${encodeURIComponent(
-        "El perfil validador no puede crear publicaciones.",
+        "El perfil validador solo puede revisar publicaciones.",
       )}`,
     );
   }
@@ -27,5 +27,5 @@ function impedirPublicacionValidador(req, res, next) {
 module.exports = {
   requerirAutenticacion,
   requerirInvitado,
-  impedirPublicacionValidador,
+  impedirInteraccionValidador,
 };

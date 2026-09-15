@@ -32,14 +32,15 @@ block content
       if esPerfilPropio
         .perfil__acciones
           span.comp-tag.comp-tag--suave Es tu perfil
-          a.comp-btn.comp-btn--fantasma(href=`/usuarios/${usuarioPerfil.id}/editar`) Editar perfil
+          a.comp-btn.comp-btn--contorno(href=`/usuarios/${usuarioPerfil.id}/editar`) Editar perfil
       else if usuarioActual
-        if estaSiguiendo
-          form(action=`/usuarios/${usuarioPerfil.id}/seguir?_method=DELETE`, method='post')
-            button.comp-btn.comp-btn--fantasma(type='submit') Dejar de seguir
-        else
-          form(action=`/usuarios/${usuarioPerfil.id}/seguir`, method='post')
-            button.comp-btn(type='submit') Seguir
+        if usuarioActual.rol !== 'validador'
+          if estaSiguiendo
+            form(action=`/usuarios/${usuarioPerfil.id}/seguir?_method=DELETE`, method='post')
+              button.comp-btn.comp-btn--fantasma(type='submit') Dejar de seguir
+          else
+            form(action=`/usuarios/${usuarioPerfil.id}/seguir`, method='post')
+              button.comp-btn(type='submit') Seguir
       else
         a.comp-btn.comp-btn--fantasma(href='/iniciar-sesion') Iniciar sesion para seguir
 

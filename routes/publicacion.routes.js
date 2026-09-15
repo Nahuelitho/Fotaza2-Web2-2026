@@ -2,7 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const {
   requerirAutenticacion,
-  impedirPublicacionValidador,
+  impedirInteraccionValidador,
 } = require('../middlewares/autenticacionMiddleware');
 const {
   crearPublicacion,
@@ -82,13 +82,14 @@ router.get('/publicaciones/:id', mostrarDetallePublicacion);
 router.delete(
   '/publicaciones/:id',
   requerirAutenticacion,
+  impedirInteraccionValidador,
   eliminarPublicacion
 );
 
 router.post(
   '/publicaciones',
   requerirAutenticacion,
-  impedirPublicacionValidador,
+  impedirInteraccionValidador,
   manejarErrorUpload,
   crearPublicacion
 );
@@ -96,24 +97,28 @@ router.post(
 router.post(
   '/publicaciones/:id/comentarios',
   requerirAutenticacion,
+  impedirInteraccionValidador,
   crearComentario
 );
 
 router.post(
   '/publicaciones/:id/valoraciones',
   requerirAutenticacion,
+  impedirInteraccionValidador,
   valorarPublicacion
 );
 
 router.post(
   '/publicaciones/:id/denuncias',
   requerirAutenticacion,
+  impedirInteraccionValidador,
   denunciarPublicacion
 );
 
 router.delete(
   '/publicaciones/:id/comentarios/:comentarioId',
   requerirAutenticacion,
+  impedirInteraccionValidador,
   eliminarComentario
 );
 

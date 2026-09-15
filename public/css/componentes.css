@@ -82,6 +82,22 @@
   box-shadow: 0 12px 24px rgba(192, 64, 48, 0.18);
 }
 
+.favorito-control {
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--acento-borde);
+  border-radius: 50%;
+  background: var(--acento-superficie);
+  box-shadow: 0 8px 18px rgba(110, 53, 30, 0.16);
+  cursor: pointer;
+}
+
+.favorito-control img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
 .comp-btn--cancelar {
   background: var(--peligro);
   color: #fff;

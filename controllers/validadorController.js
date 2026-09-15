@@ -11,17 +11,17 @@ const vistasPermitidas = {
   pendientes: {
     estadoDenuncia: "pendiente",
     estadoPublicacion: "en_revision",
-    titulo: "Publicaciones pendientes",
+    titulo: "Denuncias pendientes",
   },
   desestimadas: {
     estadoDenuncia: "desestimada",
     estadoPublicacion: null,
-    titulo: "Publicaciones desestimadas",
+    titulo: "Denuncias desestimadas",
   },
   bajas: {
     estadoDenuncia: "aceptada",
     estadoPublicacion: "eliminada",
-    titulo: "Publicaciones dadas de baja",
+    titulo: "Denuncias dadas de baja",
   },
 };
 

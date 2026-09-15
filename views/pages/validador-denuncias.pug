@@ -17,17 +17,17 @@ block content
 
       nav.validador__filtros(aria-label='Estados de moderacion')
         a.comp-btn(
-          class=vistaActual === 'pendientes' ? '' : 'comp-btn--fantasma'
+          class=vistaActual === 'pendientes' ? '' : 'comp-btn--contorno'
           href='/validador/denuncias?vista=pendientes'
         ) Pendientes
 
         a.comp-btn(
-          class=vistaActual === 'desestimadas' ? '' : 'comp-btn--fantasma'
+          class=vistaActual === 'desestimadas' ? '' : 'comp-btn--contorno'
           href='/validador/denuncias?vista=desestimadas'
         ) Desestimadas
 
         a.comp-btn(
-          class=vistaActual === 'bajas' ? '' : 'comp-btn--fantasma'
+          class=vistaActual === 'bajas' ? '' : 'comp-btn--contorno'
           href='/validador/denuncias?vista=bajas'
         ) Dadas de baja
 

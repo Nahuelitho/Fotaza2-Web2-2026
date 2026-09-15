@@ -8,6 +8,8 @@ const {
   Comentario,
   ValoracionImagen,
   Seguimiento,
+  Favorito,
+  Coleccion,
 } = require("../models/sequelize");
 
 const TIPOS_MIME_PERMITIDOS = ["image/jpeg", "image/png", "image/webp"];
@@ -301,8 +303,10 @@ async function mostrarDetallePublicacion(req, res) {
     usuarioActual && Number(usuarioActual.id) === Number(publicacion.idUsuario);
 
   let yaSigueAutor = false;
+  let esFavorita = false;
+  let coleccionesUsuario = [];
 
-  if (usuarioActual && !esAutor) {
+  if (usuarioActual && usuarioActual.rol !== "validador" && !esAutor) {
     const seguimientoAutor = await Seguimiento.findOne({
       where: {
         idSeguidor: Number(usuarioActual.id),
@@ -311,6 +315,25 @@ async function mostrarDetallePublicacion(req, res) {
     });
 
     yaSigueAutor = Boolean(seguimientoAutor);
+
+    const favorito = await Favorito.findOne({
+      where: {
+        idUsuario: Number(usuarioActual.id),
+        idPublicacion: Number(publicacion.id),
+      },
+    });
+
+    esFavorita = Boolean(favorito);
+  }
+
+  if (usuarioActual && usuarioActual.rol !== "validador") {
+    coleccionesUsuario = await Coleccion.findAll({
+      where: {
+        idUsuario: Number(usuarioActual.id),
+      },
+      attributes: ["id", "nombre"],
+      order: [["nombre", "ASC"]],
+    });
   }
   return res.render("pages/publicacion-detalle", {
     title: `${publicacion.titulo} | Fotaza 2`,
@@ -324,6 +347,8 @@ async function mostrarDetallePublicacion(req, res) {
       cantidadSeguidos: cantidadSeguidosAutor,
     },
     yaSigueAutor,
+    esFavorita,
+    coleccionesUsuario,
     publicacion,
   });
 }
@@ -488,7 +513,11 @@ async function valorarPublicacion(req, res) {
     });
   }
 
-  return res.redirect(`/publicaciones/${publicacion.id}`);
+  return res.redirect(
+    `/publicaciones/${publicacion.id}?exito=${encodeURIComponent(
+      "Valoracion guardada correctamente.",
+    )}`,
+  );
 }
 
 module.exports = {

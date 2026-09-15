@@ -16,6 +16,8 @@ const authRouter = require('./routes/autenticacion.routes');
 const postRouter = require('./routes/publicacion.routes');
 const usuarioRouter = require('./routes/usuario.routes');
 const validadorRouter = require('./routes/validador.routes');
+const favoritoRouter = require('./routes/favorito.routes');
+const coleccionRouter = require('./routes/coleccion.routes');
 
 const app = express();
 const port = Number(process.env.PORT || 3000);
@@ -143,6 +145,8 @@ app.use('/', authRouter);
 app.use('/', postRouter);
 app.use('/', usuarioRouter);
 app.use('/', validadorRouter);
+app.use('/', favoritoRouter);
+app.use('/', coleccionRouter);
 app.use((req, res) => {
   res.status(404).render('pages/inicio', {
     title: 'Pagina no encontrada',
