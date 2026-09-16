@@ -8,6 +8,8 @@ const {
   Comentario,
   ValoracionImagen,
   Seguimiento,
+  Favorito,
+  Coleccion,
 } = require("../models/sequelize");
 
 const TIPOS_MIME_PERMITIDOS = ["image/jpeg", "image/png", "image/webp"];
@@ -301,8 +303,10 @@ async function mostrarDetallePublicacion(req, res) {
     usuarioActual && Number(usuarioActual.id) === Number(publicacion.idUsuario);
 
   let yaSigueAutor = false;
+  let esFavorita = false;
+  let coleccionesUsuario = [];
 
-  if (usuarioActual && !esAutor) {
+  if (usuarioActual && usuarioActual.rol !== "validador" && !esAutor) {
     const seguimientoAutor = await Seguimiento.findOne({
       where: {
         idSeguidor: Number(usuarioActual.id),
@@ -311,6 +315,25 @@ async function mostrarDetallePublicacion(req, res) {
     });
 
     yaSigueAutor = Boolean(seguimientoAutor);
+
+    const favorito = await Favorito.findOne({
+      where: {
+        idUsuario: Number(usuarioActual.id),
+        idPublicacion: Number(publicacion.id),
+      },
+    });
+
+    esFavorita = Boolean(favorito);
+  }
+
+  if (usuarioActual && usuarioActual.rol !== "validador") {
+    coleccionesUsuario = await Coleccion.findAll({
+      where: {
+        idUsuario: Number(usuarioActual.id),
+      },
+      attributes: ["id", "nombre"],
+      order: [["nombre", "ASC"]],
+    });
   }
   return res.render("pages/publicacion-detalle", {
     title: `${publicacion.titulo} | Fotaza 2`,
@@ -324,6 +347,8 @@ async function mostrarDetallePublicacion(req, res) {
       cantidadSeguidos: cantidadSeguidosAutor,
     },
     yaSigueAutor,
+    esFavorita,
+    coleccionesUsuario,
     publicacion,
   });
 }
@@ -427,6 +452,42 @@ async function eliminarComentario(req, res) {
 
   return res.redirect(`/publicaciones/${publicacion.id}`);
 }
+
+async function cambiarEstadoComentarios(req, res) {
+  const usuarioActual = req.session.usuario;
+  const publicacion = await Publicacion.findOne({
+    where: {
+      id: req.params.id,
+      visibilidad: "publica",
+      estado: "activa",
+    },
+  });
+
+  if (!publicacion) {
+    return res.redirect(
+      "/?error=La publicacion no existe o ya no esta disponible.",
+    );
+  }
+
+  if (Number(publicacion.idUsuario) !== Number(usuarioActual.id)) {
+    return res.redirect(
+      `/publicaciones/${publicacion.id}?error=Solo el autor puede abrir o cerrar los comentarios.`,
+    );
+  }
+
+  await publicacion.update({
+    comentariosHabilitados: !publicacion.comentariosHabilitados,
+  });
+
+  const mensaje = publicacion.comentariosHabilitados
+    ? "Comentarios habilitados correctamente."
+    : "Comentarios cerrados correctamente.";
+
+  return res.redirect(
+    `/publicaciones/${publicacion.id}?exito=${encodeURIComponent(mensaje)}`,
+  );
+}
+
 async function valorarPublicacion(req, res) {
   const usuarioActual = req.session.usuario;
   const puntaje = Number(req.body.puntaje);
@@ -479,16 +540,24 @@ async function valorarPublicacion(req, res) {
   });
 
   if (valoracionExistente) {
-    await valoracionExistente.update({ puntaje });
-  } else {
-    await ValoracionImagen.create({
-      idImagen: imagen.id,
-      idUsuario: usuarioActual.id,
-      puntaje,
-    });
+    return res.redirect(
+      `/publicaciones/${publicacion.id}?error=${encodeURIComponent(
+        "Ya valoraste esta imagen. Solo se permite una valoracion por usuario.",
+      )}`,
+    );
   }
 
-  return res.redirect(`/publicaciones/${publicacion.id}`);
+  await ValoracionImagen.create({
+    idImagen: imagen.id,
+    idUsuario: usuarioActual.id,
+    puntaje,
+  });
+
+  return res.redirect(
+    `/publicaciones/${publicacion.id}?exito=${encodeURIComponent(
+      "Valoracion guardada correctamente.",
+    )}`,
+  );
 }
 
 module.exports = {
@@ -497,5 +566,6 @@ module.exports = {
   eliminarPublicacion,
   crearComentario,
   eliminarComentario,
+  cambiarEstadoComentarios,
   valorarPublicacion,
 };

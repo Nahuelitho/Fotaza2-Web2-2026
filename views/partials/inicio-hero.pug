@@ -1,10 +1,12 @@
 section.ini-hero
   .ini-hero__caja.comp-tarjeta
-    h1.ini-titulo Fotaza 2
+    h1.ini-titulo.marca-tipografia Fotaza 2
 
     if usuarioActual
       if usuarioActual.rol === 'validador'
         p.ini-bienvenida Bienvenido, #{usuarioActual.nombreVisible}. Accede al panel para revisar publicaciones denunciadas.
+      else if usuarioActual.rol === 'admin'
+        p.ini-bienvenida Bienvenido, #{usuarioActual.nombreVisible}. Accede al panel para administrar la plataforma.
       else
         p.ini-bienvenida Bienvenido, #{usuarioActual.nombreVisible}. Ya podes crear y compartir tus publicaciones.
     else

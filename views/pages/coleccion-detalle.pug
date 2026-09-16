@@ -1,0 +1,29 @@
+extends ../layouts/main
+
+block content
+  - var publicaciones = coleccion.publicaciones || []
+
+  .colecciones.ly-cont
+    a.comp-btn.comp-btn--contorno(href='/colecciones') Volver a colecciones
+
+    section.comp-tarjeta.colecciones__cabecera
+      h1= coleccion.nombre
+      p.comp-nota Coleccion privada · #{publicaciones.length} publicaciones
+
+      if mensajeError
+        p.comp-msg.comp-msg--error= mensajeError
+      if mensajeExito
+        p.comp-msg.comp-msg--ok= mensajeExito
+
+    if publicaciones.length === 0
+      section.comp-tarjeta
+        p.comp-nota Esta coleccion todavia no tiene publicaciones.
+    else
+      section.ini-posts
+        each publicacion in publicaciones
+          .colecciones__publicacion
+            - var mostrarAutor = true
+            include ../partials/publicacion-card
+
+            form(action=`/colecciones/${coleccion.id}/publicaciones/${publicacion.id}?_method=DELETE`, method='post')
+              button.comp-btn.comp-btn--contorno(type='submit') Quitar de la coleccion

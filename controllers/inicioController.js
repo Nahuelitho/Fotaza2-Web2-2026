@@ -11,12 +11,10 @@ const {
 function armarUrlPagina(pagina, filtros) {
   const params = new URLSearchParams();
 
-  if (filtros.buscar) {
-    params.set("buscar", filtros.buscar);
-  }
-
-  if (filtros.etiqueta) {
-    params.set("etiqueta", filtros.etiqueta);
+  for (const [nombre, valor] of Object.entries(filtros)) {
+    if (valor) {
+      params.set(nombre, valor);
+    }
   }
 
   params.set("pagina", pagina);
@@ -29,11 +27,40 @@ async function renderizarInicio(req, res) {
   const error = req.query.error || "";
   const buscar = req.query.buscar?.trim() || "";
   const etiqueta = req.query.etiqueta?.trim() || "";
+  const licencia = ["con_copyright", "creative_commons"].includes(
+    req.query.licencia,
+  )
+    ? req.query.licencia
+    : "";
+  const autor = req.query.autor?.trim() || "";
+  const fechaDesde = /^\d{4}-\d{2}-\d{2}$/.test(req.query.fechaDesde || "")
+    ? req.query.fechaDesde
+    : "";
+  const fechaHasta = /^\d{4}-\d{2}-\d{2}$/.test(req.query.fechaHasta || "")
+    ? req.query.fechaHasta
+    : "";
+  const valoracionMinima = ["1", "2", "3", "4", "5"].includes(
+    req.query.valoracionMinima,
+  )
+    ? req.query.valoracionMinima
+    : "";
+  const orden = req.query.orden === "mejor_valoradas"
+    ? "mejor_valoradas"
+    : "recientes";
   const publicacionesPorPagina = 6;
   const paginaPedida = Number(req.query.pagina) || 1;
   const paginaActual = Math.max(paginaPedida, 1);
   const offset = (paginaActual - 1) * publicacionesPorPagina;
-  const filtrosBusqueda = { buscar, etiqueta };
+  const filtrosBusqueda = {
+    buscar,
+    etiqueta,
+    licencia,
+    autor,
+    fechaDesde,
+    fechaHasta,
+    valoracionMinima,
+    orden,
+  };
   const mensajesEstado = {
     creada: "La publicacion se creo correctamente.",
     eliminada: "La publicacion fue eliminada.",
@@ -90,7 +117,53 @@ async function renderizarInicio(req, res) {
     replacements.buscar = `%${buscar}%`;
   }
 
+  if (licencia) {
+    condicionesSql.push(`EXISTS (
+      SELECT 1 FROM imagenes_publicacion ip_licencia
+      WHERE ip_licencia.id_publicacion = p.id
+        AND ip_licencia.tipo_licencia = :licencia
+    )`);
+    replacements.licencia = licencia;
+  }
+
+  if (autor) {
+    condicionesSql.push(`EXISTS (
+      SELECT 1 FROM usuarios u
+      WHERE u.id = p.id_usuario
+        AND (u.nombre_usuario ILIKE :autor OR u.nombre_visible ILIKE :autor)
+    )`);
+    replacements.autor = `%${autor}%`;
+  }
+
+  if (fechaDesde) {
+    condicionesSql.push("p.created_at >= :fechaDesde");
+    replacements.fechaDesde = `${fechaDesde} 00:00:00`;
+  }
+
+  if (fechaHasta) {
+    condicionesSql.push("p.created_at < CAST(:fechaHasta AS date) + INTERVAL '1 day'");
+    replacements.fechaHasta = fechaHasta;
+  }
+
+  if (valoracionMinima) {
+    condicionesSql.push(`COALESCE((
+      SELECT AVG(vi.puntaje)
+      FROM imagenes_publicacion ip_valoracion
+      INNER JOIN valoraciones_imagen vi ON vi.id_imagen = ip_valoracion.id
+      WHERE ip_valoracion.id_publicacion = p.id
+    ), 0) >= :valoracionMinima`);
+    replacements.valoracionMinima = Number(valoracionMinima);
+  }
+
   const whereSql = condicionesSql.join(" AND ");
+  const ordenSql = orden === "mejor_valoradas"
+    ? `COALESCE((
+        SELECT AVG(vi_orden.puntaje)
+        FROM imagenes_publicacion ip_orden
+        INNER JOIN valoraciones_imagen vi_orden ON vi_orden.id_imagen = ip_orden.id
+        WHERE ip_orden.id_publicacion = p.id
+      ), 0) DESC, p.created_at DESC, p.id DESC`
+    : "p.created_at DESC, p.id DESC";
   const [{ total }] = await sequelize.query(
     `SELECT COUNT(*)::int AS total FROM publicaciones p WHERE ${whereSql}`,
     {
@@ -102,7 +175,7 @@ async function renderizarInicio(req, res) {
     `SELECT p.id
      FROM publicaciones p
      WHERE ${whereSql}
-     ORDER BY p.created_at DESC, p.id DESC
+     ORDER BY ${ordenSql}
      LIMIT :limit OFFSET :offset`,
     {
       replacements,
@@ -162,6 +235,7 @@ async function renderizarInicio(req, res) {
   });
 }
 
+<<<<<<< HEAD
 async function renderizarSeguidos(req, res) {
   const usuarioActual = req.session.usuario;
   const seguimientos = await Seguimiento.findAll({
@@ -183,10 +257,57 @@ async function renderizarSeguidos(req, res) {
   res.render("pages/seguidos", {
     title: "Seguidos | Fotaza 2",
     usuariosSeguidos,
+=======
+async function renderizarPublicacionesSeguidas(req, res) {
+  const seguimientos = await Seguimiento.findAll({
+    where: {
+      idSeguidor: Number(req.session.usuario.id),
+    },
+    attributes: ["idSeguido"],
+    raw: true,
+  });
+  const idsSeguidos = seguimientos.map((seguimiento) => seguimiento.idSeguido);
+
+  const publicaciones = idsSeguidos.length
+    ? await Publicacion.findAll({
+        where: {
+          idUsuario: { [Op.in]: idsSeguidos },
+          visibilidad: "publica",
+          estado: "activa",
+        },
+        include: [
+          {
+            model: ImagenPublicacion,
+            as: "imagenes",
+          },
+          {
+            model: Etiqueta,
+            as: "etiquetas",
+            through: { attributes: [] },
+          },
+          {
+            model: Usuario,
+            as: "usuario",
+            attributes: ["id", "nombreVisible", "nombreUsuario"],
+          },
+        ],
+        order: [["created_at", "DESC"]],
+      })
+    : [];
+
+  return res.render("pages/publicaciones-seguidas", {
+    title: "Publicaciones de usuarios seguidos | Fotaza 2",
+    publicaciones,
+    filtrosBusqueda,
+>>>>>>> devNahu
   });
 }
 
 module.exports = {
   renderizarInicio,
+<<<<<<< HEAD
   renderizarSeguidos,
+=======
+  renderizarPublicacionesSeguidas,
+>>>>>>> devNahu
 };

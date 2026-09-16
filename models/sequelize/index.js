@@ -9,6 +9,9 @@ const definirValoracionImagen = require('./ValoracionImagen');
 const definirSeguimiento = require('./Seguimiento');
 const definirPublicacionEtiqueta = require('./PublicacionEtiqueta');
 const definirDenunciaPublicacion = require('./DenunciaPublicacion');
+const definirFavorito = require('./Favorito');
+const definirColeccion = require('./Coleccion');
+const definirColeccionPublicacion = require('./ColeccionPublicacion');
 const Rol = definirRol(sequelize);
 const Usuario = definirUsuario(sequelize);
 const Etiqueta = definirEtiqueta(sequelize);
@@ -19,6 +22,9 @@ const ValoracionImagen = definirValoracionImagen(sequelize);
 const Seguimiento = definirSeguimiento(sequelize);
 const PublicacionEtiqueta = definirPublicacionEtiqueta(sequelize);
 const DenunciaPublicacion = definirDenunciaPublicacion(sequelize);
+const Favorito = definirFavorito(sequelize);
+const Coleccion = definirColeccion(sequelize);
+const ColeccionPublicacion = definirColeccionPublicacion(sequelize);
 
 Rol.hasMany(Usuario, { as: 'usuarios', foreignKey: 'idRol', onDelete: 'RESTRICT' });
 Usuario.belongsTo(Rol, { as: 'rol', foreignKey: 'idRol', onDelete: 'RESTRICT' });
@@ -67,6 +73,37 @@ Usuario.belongsToMany(Usuario, {
   otherKey: 'idSeguido',
 });
 
+Usuario.belongsToMany(Publicacion, {
+  as: 'publicacionesFavoritas',
+  through: Favorito,
+  foreignKey: 'idUsuario',
+  otherKey: 'idPublicacion',
+});
+
+Publicacion.belongsToMany(Usuario, {
+  as: 'usuariosQueMarcaronFavorito',
+  through: Favorito,
+  foreignKey: 'idPublicacion',
+  otherKey: 'idUsuario',
+});
+
+Usuario.hasMany(Coleccion, { as: 'colecciones', foreignKey: 'idUsuario', onDelete: 'CASCADE' });
+Coleccion.belongsTo(Usuario, { as: 'usuario', foreignKey: 'idUsuario', onDelete: 'CASCADE' });
+
+Coleccion.belongsToMany(Publicacion, {
+  as: 'publicaciones',
+  through: ColeccionPublicacion,
+  foreignKey: 'idColeccion',
+  otherKey: 'idPublicacion',
+});
+
+Publicacion.belongsToMany(Coleccion, {
+  as: 'colecciones',
+  through: ColeccionPublicacion,
+  foreignKey: 'idPublicacion',
+  otherKey: 'idColeccion',
+});
+
 Usuario.belongsToMany(Usuario, {
   as: 'seguidores',
   through: Seguimiento,
@@ -86,4 +123,7 @@ module.exports = {
   ValoracionImagen,
   Seguimiento,
   DenunciaPublicacion,
+  Favorito,
+  Coleccion,
+  ColeccionPublicacion,
 };

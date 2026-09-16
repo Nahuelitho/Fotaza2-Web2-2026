@@ -1,0 +1,30 @@
+extends ../layouts/main
+
+block content
+  - var coleccionesSeguras = colecciones || []
+
+  .colecciones.ly-cont
+    section.comp-tarjeta
+      .comp-cabecera
+        h1 Mis colecciones
+        p.comp-nota Organiza publicaciones en colecciones privadas.
+
+      if mensajeError
+        p.comp-msg.comp-msg--error= mensajeError
+      if mensajeExito
+        p.comp-msg.comp-msg--ok= mensajeExito
+
+      form.colecciones__form(action='/colecciones', method='post')
+        label.u-solo-lect(for='nombre-coleccion') Nombre de la coleccion
+        input#nombre-coleccion(type='text', name='nombre', maxlength='80', placeholder='Ej: Paisajes', required)
+        button.comp-btn.comp-btn--contorno(type='submit') Crear coleccion
+
+    section.colecciones__listado
+      if coleccionesSeguras.length === 0
+        .comp-tarjeta
+          p.comp-nota Todavia no creaste colecciones.
+      else
+        each coleccion in coleccionesSeguras
+          a.comp-tarjeta.colecciones__item(href=`/colecciones/${coleccion.id}`)
+            h2= coleccion.nombre
+            p.comp-nota #{coleccion.publicaciones.length} publicaciones

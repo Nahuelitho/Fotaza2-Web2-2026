@@ -16,6 +16,9 @@ const authRouter = require('./routes/autenticacion.routes');
 const postRouter = require('./routes/publicacion.routes');
 const usuarioRouter = require('./routes/usuario.routes');
 const validadorRouter = require('./routes/validador.routes');
+const favoritoRouter = require('./routes/favorito.routes');
+const coleccionRouter = require('./routes/coleccion.routes');
+const adminRouter = require('./routes/admin.routes');
 
 const app = express();
 const port = Number(process.env.PORT || 3000);
@@ -68,14 +71,6 @@ async function inicializarBaseDatos() {
     }
   }
 
-  const etiquetas = ['paisaje', 'retrato', 'urbano', 'naturaleza', 'viajes'];
-
-  for (const nombreEtiqueta of etiquetas) {
-    await Etiqueta.findOrCreate({
-      where: { name: nombreEtiqueta },
-      defaults: { name: nombreEtiqueta },
-    });
-  }
 }
 
 const baseDatosLista = inicializarBaseDatos();
@@ -128,6 +123,12 @@ app.use(async (req, res, next) => {
     res.locals.filtrosBusqueda = {
       buscar: req.query.buscar?.trim() || '',
       etiqueta: req.query.etiqueta?.trim() || '',
+      licencia: req.query.licencia || '',
+      autor: req.query.autor?.trim() || '',
+      fechaDesde: req.query.fechaDesde || '',
+      fechaHasta: req.query.fechaHasta || '',
+      valoracionMinima: req.query.valoracionMinima || '',
+      orden: req.query.orden || 'recientes',
     };
     res.locals.etiquetasDisponibles = await Etiqueta.findAll({
       order: [['name', 'ASC']],
@@ -144,6 +145,9 @@ app.use('/', authRouter);
 app.use('/', postRouter);
 app.use('/', usuarioRouter);
 app.use('/', validadorRouter);
+app.use('/', favoritoRouter);
+app.use('/', coleccionRouter);
+app.use('/', adminRouter);
 app.use((req, res) => {
   res.status(404).render('pages/inicio', {
     title: 'Pagina no encontrada',
@@ -164,6 +168,9 @@ app.use((error, req, res, next) => {
     title: 'Error interno',
     publicaciones: [],
     mensajeError: 'Ocurrio un error interno. Intentalo nuevamente.',
+    filtrosBusqueda: {},
+    etiquetasDisponibles: [],
+    usuarioActual: null,
   });
 });
 

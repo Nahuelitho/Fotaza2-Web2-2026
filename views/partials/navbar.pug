@@ -3,7 +3,7 @@ header.nav-barra
   - var filtrosNav = filtrosBusqueda || {}
   .nav-conten.ly-cont
     .nav-marca
-      a.nav-logo(href='/') Fotaza 2
+      a.nav-logo.marca-tipografia(href='/') Fotaza 2
 
     form.nav-busc(action='/', method='get')
       label.u-solo-lect(for='site-search') Buscar contenido
@@ -13,17 +13,32 @@ header.nav-barra
         option(value='') Todas las etiquetas
         each etiqueta in etiquetasNav
           option(value=etiqueta.name, selected=filtrosNav.etiqueta === etiqueta.name)= etiqueta.name
-      button.comp-btn.comp-btn--fantasma(type='submit') Buscar
+      button.comp-btn.comp-btn--contorno(type='submit') Buscar
 
     nav.nav-menu(aria-label='Navegacion principal')
+<<<<<<< HEAD
       a.nav-link(class=rutaActual === '/' ? 'nav-link--act' : '', href='/') Inicio
       a.nav-link(class=rutaActual === '/seguidos' ? 'nav-link--act' : '', href='/seguidos') Seguidos
+=======
+      a.nav-link.comp-btn--contorno(href='/') Inicio
+      if usuarioActual
+        if usuarioActual.rol === 'usuario'
+          span.nav-campana(title='Notificaciones proximamente')
+            img(src='/img/campana.png', alt='Notificaciones')
+>>>>>>> devNahu
 
     .nav-acciones
       if usuarioActual
         if usuarioActual.rol === 'validador'
-          a.nav-link(href='/validador/denuncias') Panel validador
-        a.nav-usuario(href=`/usuarios/${usuarioActual.id}`) Hola, #{usuarioActual.nombreVisible}
+          a.nav-link.comp-btn--contorno(href='/validador/denuncias') Panel validador
+        else if usuarioActual.rol === 'admin'
+          a.nav-link.comp-btn--contorno(href='/admin/etiquetas') Panel admin
+        if usuarioActual.rol === 'validador'
+          a.nav-usuario(href='/validador/denuncias') Hola, #{usuarioActual.nombreVisible}
+        else if usuarioActual.rol === 'admin'
+          a.nav-usuario(href='/admin/etiquetas') Hola, #{usuarioActual.nombreVisible}
+        else
+          a.nav-usuario(href=`/usuarios/${usuarioActual.id}`) Hola, #{usuarioActual.nombreVisible}
         form(action='/cerrar-sesion', method='post')
           button.comp-btn.comp-btn--cancelar(type='submit') Cerrar sesion
     else

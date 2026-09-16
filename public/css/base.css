@@ -6,6 +6,9 @@
   --texto-suave: #77655b;
   --acento: #e29c72;
   --acento-fuerte: #d88356;
+  --acento-texto: #b85f35;
+  --acento-superficie: #fff7f0;
+  --acento-borde: rgba(192, 64, 48, 0.35);
   --peligro: #ff4d4d;
   --peligro-sombra: rgba(255, 77, 77, 0.2);
   --peligro-sombra-fuerte: rgba(255, 77, 77, 0.32);
@@ -34,10 +37,28 @@ a {
   text-decoration: none;
 }
 
+.marca-tipografia {
+  font-family: 'Caveat', cursive;
+  font-weight: 700;
+}
+
 button,
 input,
 select {
   font: inherit;
+}
+
+select {
+  appearance: none;
+  padding-right: 2.7rem !important;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--acento-texto) 50%),
+    linear-gradient(135deg, var(--acento-texto) 50%, transparent 50%) !important;
+  background-position:
+    calc(100% - 1.15rem) 50%,
+    calc(100% - 0.85rem) 50% !important;
+  background-repeat: no-repeat !important;
+  background-size: 0.35rem 0.35rem !important;
 }
 
 .ly-cont {

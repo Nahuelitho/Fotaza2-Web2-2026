@@ -225,8 +225,11 @@ async function iniciarSesionUsuario(req, res) {
         });
       }
 
-      const destino =
-        req.session.usuario.rol === "validador" ? "/validador/denuncias" : "/";
+      const destinosPorRol = {
+        validador: "/validador/denuncias",
+        admin: "/admin/etiquetas",
+      };
+      const destino = destinosPorRol[req.session.usuario.rol] || "/";
 
       return res.redirect(destino);
     });

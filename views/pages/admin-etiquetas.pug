@@ -1,0 +1,34 @@
+extends ../layouts/main
+
+block content
+  - var etiquetasSeguras = etiquetas || []
+  .validador.ly-cont
+    section.comp-tarjeta
+      .comp-cabecera
+        div
+          h1 Panel administrador
+          p.comp-nota Gestiona las etiquetas disponibles en Fotaza 2.
+      if mensajeError
+        p.comp-msg.comp-msg--error= mensajeError
+      if mensajeExito
+        p.comp-msg.comp-msg--ok= mensajeExito
+    br
+    section.comp-tarjeta
+      .comp-cabecera
+        h2 Etiquetas
+        span.comp-tag.comp-tag--suave #{etiquetasSeguras.length} en total
+
+      if etiquetasSeguras.length === 0
+        p.comp-nota No hay etiquetas creadas.
+      else
+        .admin-etiquetas
+          each etiqueta in etiquetasSeguras
+            article.admin-etiqueta
+              div
+                strong= etiqueta.name
+                p.comp-nota Usada en #{etiqueta.get('cantidadPublicaciones')} publicaciones
+              form(action=`/admin/etiquetas/${etiqueta.id}?_method=DELETE`, method='post')
+                button.comp-btn.comp-btn--cancelar(
+                  type='submit'
+                  onclick='return confirm("¿Eliminar esta etiqueta? Las publicaciones no se eliminaran.")'
+                ) Eliminar

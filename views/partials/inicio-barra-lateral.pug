@@ -1,6 +1,9 @@
-aside.ini-lateral
-  section.comp-tarjeta.ini-perfil
-    .ini-perfil__av NV
-    .ini-perfil__cont
-      h2 Fotaza 2
-      p.ini-perfil__txt Plataforma en desarrollo.
+if !usuarioActual || usuarioActual.rol === 'usuario'
+  aside.ini-lateral
+    section.comp-tarjeta.ini-perfil
+      .ini-perfil__cont
+        h2.ini-perfil__titulo.marca-tipografia Fotaza 2
+        if usuarioActual
+          a.comp-btn.comp-btn--contorno.ini-perfil__feed(href='/siguiendo') Publicaciones de usuarios seguidos
+          a.comp-btn.comp-btn--contorno.ini-perfil__feed(href='/favoritos') Mis favoritos
+          a.comp-btn.comp-btn--contorno.ini-perfil__feed(href='/colecciones') Mis colecciones
