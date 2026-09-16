@@ -14,10 +14,13 @@ function requerirInvitado(req, res, next) {
   return res.redirect('/');
 }
 function impedirInteraccionValidador(req, res, next) {
-  if (req.session.usuario?.rol === "validador") {
+  const rol = req.session.usuario?.rol;
+
+  if (rol === "validador" || rol === "admin") {
+    const destino = rol === "admin" ? "/admin/etiquetas" : "/validador/denuncias";
     return res.redirect(
-      `/validador/denuncias?error=${encodeURIComponent(
-        "El perfil validador solo puede revisar publicaciones.",
+      `${destino}?error=${encodeURIComponent(
+        "Este perfil de gestion no puede interactuar con publicaciones.",
       )}`,
     );
   }

@@ -34,7 +34,7 @@ block content
           span.comp-tag.comp-tag--suave Es tu perfil
           a.comp-btn.comp-btn--contorno(href=`/usuarios/${usuarioPerfil.id}/editar`) Editar perfil
       else if usuarioActual
-        if usuarioActual.rol !== 'validador'
+        if usuarioActual.rol === 'usuario'
           if estaSiguiendo
             form(action=`/usuarios/${usuarioPerfil.id}/seguir?_method=DELETE`, method='post')
               button.comp-btn.comp-btn--fantasma(type='submit') Dejar de seguir
