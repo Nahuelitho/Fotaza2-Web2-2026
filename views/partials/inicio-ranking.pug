@@ -1,0 +1,29 @@
+- var rankingPublicas = publicacionesMasVistasPublicas || []
+- var rankingCopyright = publicacionesMasVistasCopyright || []
+
+aside.ini-ranking.comp-tarjeta
+  h3 Más vistas
+
+  if rankingPublicas.length > 0
+    h4 Públicas
+    ol.ini-ranking__lista
+      each publicacion, index in rankingPublicas
+        li.ini-ranking__item
+          a.ini-ranking__link(href=`/publicaciones/${publicacion.id}`)
+            span.ini-ranking__posicion ##{index + 1}
+            .ini-ranking__info
+              strong= publicacion.titulo
+              span #{publicacion.vistas || 0} vistas
+  else
+    p.comp-nota No hay publicaciones públicas vistas.
+
+  if usuarioActual && rankingCopyright.length > 0
+    h4 Con copyright
+    ol.ini-ranking__lista
+      each publicacion, index in rankingCopyright
+        li.ini-ranking__item
+          a.ini-ranking__link(href=`/publicaciones/${publicacion.id}`)
+            span.ini-ranking__posicion ##{index + 1}
+            .ini-ranking__info
+              strong= publicacion.titulo
+              span #{publicacion.vistas || 0} vistas

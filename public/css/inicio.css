@@ -4,7 +4,7 @@
 
 .ini-grilla {
   display: grid;
-  grid-template-columns: 250px minmax(0, 1fr);
+  grid-template-columns: 250px minmax(0, 1fr) 260px;
   gap: 1.15rem;
   align-items: start;
 }
@@ -13,6 +13,46 @@
 .ini-feed {
   display: grid;
   gap: 1rem;
+}
+
+.ini-ranking {
+  position: sticky;
+  top: 90px;
+  width: 100%;
+}
+
+.ini-ranking__lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ini-ranking__item + .ini-ranking__item {
+  border-top: 1px solid #eee;
+}
+
+.ini-ranking__link {
+  display: flex;
+  gap: 12px;
+  padding: 12px 4px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.ini-ranking__posicion {
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.ini-ranking__info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.ini-ranking__info span {
+  font-size: 13px;
+  opacity: 0.65;
 }
 
 .ini-perfil {
@@ -326,6 +366,16 @@
   margin: 0.7rem 0 0;
   color: var(--texto-suave);
   max-width: 34rem;
+}
+
+@media (max-width: 1200px) {
+  .ini-grilla {
+    grid-template-columns: 220px minmax(0, 1fr);
+  }
+
+  .ini-ranking {
+    display: none;
+  }
 }
 
 @media (max-width: 980px) {

@@ -252,7 +252,6 @@ async function mostrarDetallePublicacion(req, res) {
     ],
     order: [[{ model: Comentario, as: "comentarios" }, "created_at", "ASC"]],
   });
-
   if (!publicacion) {
     return res.status(404).render("pages/inicio", {
       title: "Publicacion no encontrada",
@@ -260,6 +259,9 @@ async function mostrarDetallePublicacion(req, res) {
       mensajeError: "La publicacion no existe o ya no esta disponible.",
     });
   }
+
+  await publicacion.increment("vistas");
+  await publicacion.reload();
 
   const imagen = publicacion.imagenes && publicacion.imagenes[0];
   let valoracionResumen = {
