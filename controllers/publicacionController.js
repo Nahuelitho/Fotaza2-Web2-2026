@@ -6,6 +6,7 @@ const {
   PublicacionEtiqueta,
   Usuario,
   Comentario,
+  DenunciaComentario,
   ValoracionImagen,
   Seguimiento,
   Favorito,
@@ -431,7 +432,55 @@ async function crearComentario(req, res) {
 
   return res.redirect(`/publicaciones/${publicacion.id}`);
 }
+async function denunciarComentario(req, res) {
+  const idComentario = Number(req.params.id);
+  const idUsuario = Number(req.session.usuario.id);
+  const motivo = req.body.motivo?.trim();
 
+  if (!Number.isInteger(idComentario)) {
+    return res.redirect("/?error=Comentario invalido.");
+  }
+
+  if (!motivo) {
+    return res.redirect("/?error=Debes indicar un motivo.");
+  }
+
+  const comentario = await Comentario.findByPk(idComentario);
+
+  if (!comentario) {
+    return res.redirect("/?error=El comentario no existe.");
+  }
+
+  if (Number(comentario.idUsuario) === idUsuario) {
+    return res.redirect(
+      `/publicaciones/${comentario.idPublicacion}?error=No podes denunciar tu propio comentario.`,
+    );
+  }
+
+  const denunciaExistente = await DenunciaComentario.findOne({
+    where: {
+      idComentario,
+      idUsuario,
+    },
+  });
+
+  if (denunciaExistente) {
+    return res.redirect(
+      `/publicaciones/${comentario.idPublicacion}?error=Ya denunciaste este comentario.`,
+    );
+  }
+
+  await DenunciaComentario.create({
+    idComentario,
+    idUsuario,
+    motivo,
+    estado: "pendiente",
+  });
+
+  return res.redirect(
+    `/publicaciones/${comentario.idPublicacion}?exito=Comentario denunciado correctamente.`,
+  );
+}
 async function eliminarComentario(req, res) {
   const usuarioActual = req.session.usuario;
   const { id, comentarioId } = req.params;
@@ -600,4 +649,5 @@ module.exports = {
   eliminarComentario,
   cambiarEstadoComentarios,
   valorarPublicacion,
+  denunciarComentario,
 };

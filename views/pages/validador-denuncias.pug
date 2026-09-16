@@ -2,12 +2,13 @@ extends ../layouts/main
 
 block content
   - var publicacionesSeguras = publicaciones || []
+  - var denunciasComentariosSeguras = denunciasComentarios || []
 
   .validador.ly-cont
     section.comp-tarjeta
       .comp-cabecera
         h1 Panel validador
-        p.comp-nota Administra las publicaciones denunciadas.
+        p.comp-nota Administra las publicaciones y comentarios denunciados.
 
       if mensajeError
         p.comp-msg.comp-msg--error= mensajeError
@@ -32,7 +33,7 @@ block content
         ) Dadas de baja
 
     section.validador__listado
-      h2= tituloListado
+      h2 Publicaciones denunciadas
 
       if publicacionesSeguras.length === 0
         .comp-tarjeta.validador__vacio
@@ -45,4 +46,59 @@ block content
             - var textoDenuncias = vistaActual === 'pendientes' ? 'denuncias pendientes' : vistaActual === 'desestimadas' ? 'denuncias desestimadas' : 'denuncias aceptadas'
             - var textoDetalle = vistaActual === 'pendientes' ? 'Revisar publicacion' : 'Ver resultado'
             - var urlDetalle = `/validador/publicaciones/${publicacion.id}?vista=${vistaActual}`
+
             include ../partials/publicacion-card
+
+    section.validador__listado
+      h2 Comentarios denunciados
+
+      if denunciasComentariosSeguras.length === 0
+        .comp-tarjeta.validador__vacio
+          p.comp-nota No hay comentarios denunciados.
+      else
+        .validador__grilla
+          each denuncia in denunciasComentariosSeguras
+            article.comp-tarjeta.validador__comentario
+              if denuncia.comentario
+                if denuncia.comentario.usuario
+                  p.comp-nota
+                    | Comentario de @#{denuncia.comentario.usuario.nombreUsuario}
+
+                p
+                  strong Comentario:
+                  |  #{denuncia.comentario.contenido}
+
+              p
+                strong Motivo:
+                |  #{denuncia.motivo}
+
+              if denuncia.usuario
+                p.comp-nota
+                  | Denunciado por @#{denuncia.usuario.nombreUsuario}
+
+              p.comp-nota
+                | Estado: #{denuncia.estado}
+
+              .validador__acciones-comentario
+                if denuncia.comentario
+                  a.comp-btn.comp-btn--contorno(
+                    href=`/publicaciones/${denuncia.comentario.idPublicacion}`
+                  ) Ver publicacion
+
+                if vistaActual === 'pendientes'
+                  form(
+                    action=`/validador/comentarios/denuncias/${denuncia.id}/desestimar`
+                    method='post'
+                  )
+                    button.comp-btn.comp-btn--contorno(type='submit')
+                      | Desestimar
+
+                  form(
+                    action=`/validador/comentarios/denuncias/${denuncia.id}/aceptar`
+                    method='post'
+                  )
+                    button.comp-btn.comp-btn--cancelar(
+                      type='submit'
+                      onclick='return confirm("¿Eliminar este comentario?")'
+                    )
+                      | Eliminar comentario

@@ -1,6 +1,8 @@
 const {
   sequelize,
   DenunciaPublicacion,
+  DenunciaComentario,
+  Comentario,
   Publicacion,
   Usuario,
   ImagenPublicacion,
@@ -83,10 +85,37 @@ async function mostrarPanelDenuncias(req, res) {
     order: [["updated_at", "DESC"]],
   });
 
+  const denunciasComentarios = await DenunciaComentario.findAll({
+    where: {
+      estado: configuracion.estadoDenuncia,
+    },
+    include: [
+      {
+        model: Usuario,
+        as: "usuario",
+        attributes: ["id", "nombreUsuario", "nombreVisible"],
+      },
+      {
+        model: Comentario,
+        as: "comentario",
+        required: true,
+        include: [
+          {
+            model: Usuario,
+            as: "usuario",
+            attributes: ["id", "nombreUsuario", "nombreVisible"],
+          },
+        ],
+      },
+    ],
+    order: [["created_at", "DESC"]],
+  });
+
   return res.render("pages/validador-denuncias", {
     title: "Panel validador | Fotaza 2",
     extraCss: ["/css/validador.css"],
     publicaciones,
+    denunciasComentarios,
     vistaActual,
     tituloListado: configuracion.titulo,
     mensajeError: req.query.error || "",
@@ -349,8 +378,80 @@ async function darDeBajaPublicacion(req, res) {
     );
   }
 }
+async function desestimarDenunciaComentario(req, res) {
+  const idDenuncia = Number(req.params.id);
 
+  if (!Number.isInteger(idDenuncia)) {
+    return redirigirPanelConError(res, "La denuncia indicada no es valida.");
+  }
+
+  const denuncia = await DenunciaComentario.findByPk(idDenuncia);
+
+  if (!denuncia || denuncia.estado !== "pendiente") {
+    return redirigirPanelConError(
+      res,
+      "La denuncia no existe o ya fue revisada.",
+    );
+  }
+
+  await denuncia.update({
+    estado: "desestimada",
+  });
+
+  return res.redirect(
+    `/validador/denuncias?vista=desestimadas&exito=${encodeURIComponent(
+      "La denuncia del comentario fue desestimada.",
+    )}`,
+  );
+}
+
+async function aceptarDenunciaComentario(req, res) {
+  const idDenuncia = Number(req.params.id);
+
+  if (!Number.isInteger(idDenuncia)) {
+    return redirigirPanelConError(res, "La denuncia indicada no es valida.");
+  }
+
+  const denuncia = await DenunciaComentario.findByPk(idDenuncia);
+
+  if (!denuncia || denuncia.estado !== "pendiente") {
+    return redirigirPanelConError(
+      res,
+      "La denuncia no existe o ya fue revisada.",
+    );
+  }
+
+  await sequelize.transaction(async (transaction) => {
+    await DenunciaComentario.update(
+      {
+        estado: "aceptada",
+      },
+      {
+        where: {
+          idComentario: denuncia.idComentario,
+          estado: "pendiente",
+        },
+        transaction,
+      },
+    );
+
+    await Comentario.destroy({
+      where: {
+        id: denuncia.idComentario,
+      },
+      transaction,
+    });
+  });
+
+  return res.redirect(
+    `/validador/denuncias?vista=bajas&exito=${encodeURIComponent(
+      "La denuncia fue aceptada y el comentario fue eliminado.",
+    )}`,
+  );
+}
 module.exports = {
+  desestimarDenunciaComentario,
+  aceptarDenunciaComentario,
   mostrarPanelDenuncias,
   mostrarDetalleModeracion,
   desestimarDenuncias,

@@ -10,9 +10,11 @@ block content
   - var cantidadValoraciones = valoracionResumen ? valoracionResumen.cantidad : 0
   - var valoracionUsuario = valoracionResumen ? valoracionResumen.valoracionUsuario : null
   - var estaSiguiendoAutor = typeof yaSigueAutor !== 'undefined' ? yaSigueAutor : false
+
   .pub-detalle.ly-cont
     if mensajeError
       p.comp-msg.comp-msg--error= mensajeError
+
     if mensajeExito
       p.comp-msg.comp-msg--ok= mensajeExito
 
@@ -20,13 +22,16 @@ block content
       section.pub-detalle__autor-card.comp-tarjeta
         .pub-autor__info
           span.pub-autor__avatar= publicacion.usuario.nombreUsuario.slice(0, 2).toUpperCase()
+
           div
             h2= publicacion.usuario.nombreVisible || publicacion.usuario.nombreUsuario
             p.pub-detalle__meta= '@' + publicacion.usuario.nombreUsuario
             p.comp-nota Seguidores: #{cantidadSeguidoresAutor} · Seguidos: #{cantidadSeguidosAutor}
+
         .pub-autor__acciones
           if !usuarioActual || usuarioActual.rol === 'usuario'
             a.comp-btn.comp-btn--contorno(href=`/usuarios/${publicacion.usuario.id}`) Ver perfil
+
           if usuarioActual && !esAutor && usuarioActual.rol === 'usuario'
             if estaSiguiendoAutor
               form(action=`/usuarios/${publicacion.usuario.id}/seguir?_method=DELETE`, method='post')
@@ -34,16 +39,20 @@ block content
             else
               form(action=`/usuarios/${publicacion.usuario.id}/seguir`, method='post')
                 button.comp-btn(type='submit') Seguir
+
           else if esAutor && usuarioActual.rol === 'usuario'
             span.comp-tag.comp-tag--suave Es tu publicacion
 
     br
+
     article.comp-tarjeta
       .pub-detalle__cab
         div
           h1= publicacion.titulo
+
           if publicacion.usuario
             p.pub-detalle__autor= '@' + publicacion.usuario.nombreUsuario
+
         span.comp-tag.comp-tag--suave= publicacion.visibilidad
 
       if publicacion.descripcion
@@ -51,20 +60,41 @@ block content
 
       if imagen
         .pub-detalle__imagen-caja
-          img.pub-detalle__img(src=`data:${imagen.tipoMime};base64,${imagen.imagenBase64}`, alt=publicacion.titulo)
+          img.pub-detalle__img(
+            src=`data:${imagen.tipoMime};base64,${imagen.imagenBase64}`,
+            alt=publicacion.titulo
+          )
+
           if imagen.textoMarcaAgua
             span.pub-detalle__marca-agua= imagen.textoMarcaAgua
+
           if usuarioActual && !esAutor && usuarioActual.rol === 'usuario'
             if esFavorita
-              form.favorito-form(action=`/publicaciones/${publicacion.id}/favorito?_method=DELETE`, method='post')
-                button.favorito-control.favorito-btn(type='submit', title='Quitar de favoritos', aria-label='Quitar de favoritos')
+              form.favorito-form(
+                action=`/publicaciones/${publicacion.id}/favorito?_method=DELETE`,
+                method='post'
+              )
+                button.favorito-control.favorito-btn(
+                  type='submit',
+                  title='Quitar de favoritos',
+                  aria-label='Quitar de favoritos'
+                )
                   img(src='/img/favoritoRojo.png', alt='')
             else
-              form.favorito-form(action=`/publicaciones/${publicacion.id}/favorito`, method='post')
-                button.favorito-control.favorito-btn(type='submit', title='Agregar a favoritos', aria-label='Agregar a favoritos')
+              form.favorito-form(
+                action=`/publicaciones/${publicacion.id}/favorito`,
+                method='post'
+              )
+                button.favorito-control.favorito-btn(
+                  type='submit',
+                  title='Agregar a favoritos',
+                  aria-label='Agregar a favoritos'
+                )
                   img(src='/img/favorito.png', alt='')
+
         p.pub-detalle__meta
           | Licencia: #{imagen.tipoLicencia === 'creative_commons' ? 'Sin copyright (Creative Commons)' : 'Con copyright'}
+
           if imagen.textoMarcaAgua
             |  · Marca de agua: #{imagen.textoMarcaAgua}
 
@@ -77,18 +107,26 @@ block content
         .pub-detalle__acciones
           form(action=`/publicaciones/${publicacion.id}?_method=DELETE`, method='post')
             button.comp-btn.comp-btn--cancelar(type='submit') Eliminar publicacion
+
     br
+
     if usuarioActual && usuarioActual.rol === 'usuario'
       section.pub-detalle__colecciones.comp-tarjeta
         h2 Agregar a una coleccion
 
         if coleccionesUsuario && coleccionesUsuario.length > 0
-          form.pub-coleccion__form(action=`/colecciones/publicaciones/${publicacion.id}`, method='post')
+          form.pub-coleccion__form(
+            action=`/colecciones/publicaciones/${publicacion.id}`,
+            method='post'
+          )
             label.u-solo-lect(for='coleccion') Coleccion
+
             select#coleccion(name='idColeccion', required)
               option(value='') Seleccionar coleccion
+
               each coleccion in coleccionesUsuario
                 option(value=coleccion.id)= coleccion.nombre
+
             button.comp-btn.comp-btn--contorno(type='submit') Agregar
         else
           p.comp-nota Primero necesitas crear una coleccion.
@@ -96,6 +134,7 @@ block content
 
     section.pub-detalle__valoracion.comp-tarjeta
       h2 Valoracion de la imagen
+
       if cantidadValoraciones > 0
         p.comp-nota Promedio: #{promedioValoracion}/5 · #{cantidadValoraciones} valoraciones
       else
@@ -106,25 +145,41 @@ block content
           p.pub-detalle__meta Tu valoracion: #{valoracionUsuario.puntaje}/5. Cada imagen se puede valorar una sola vez.
         else
           p.pub-detalle__meta Todavia no valoraste esta imagen.
+
           form(action=`/publicaciones/${publicacion.id}/valoraciones`, method='post')
             .pub-valoracion__opciones(aria-label='Seleccionar puntaje')
               each puntaje in [1, 2, 3, 4, 5]
                 label.pub-valoracion__opcion
-                  input(type='radio', name='puntaje', value=puntaje, required)
+                  input(
+                    type='radio',
+                    name='puntaje',
+                    value=puntaje,
+                    required
+                  )
                   span= puntaje
+
             button.comp-btn(type='submit') Guardar valoracion
+
       else if esAutor
         p.comp-nota No podes valorar tu propia publicacion.
+
       else if !usuarioActual
         p.comp-nota Inicia sesion para valorar esta imagen.
+
     if usuarioActual && usuarioActual.rol === 'usuario' && !esAutor
       details.pub-detalle__denuncia.comp-tarjeta
         summary.comp-btn.pub-denuncia__boton DENUNCIAR PUBLICACION
+
         p.comp-nota Si esta publicacion incumple las reglas, podes enviarla a revision.
 
         form(action=`/publicaciones/${publicacion.id}/denuncias`, method='post')
           label.pub-denuncia__label(for='motivo') Motivo
-          select.pub-denuncia__campo(id='motivo', name='motivo', required)
+
+          select.pub-denuncia__campo(
+            id='motivo',
+            name='motivo',
+            required
+          )
             option(value='') Selecciona un motivo
             option(value='Contenido inapropiado') Contenido inapropiado
             option(value='Copyright o autoria dudosa') Copyright o autoria dudosa
@@ -132,6 +187,7 @@ block content
             option(value='Otro') Otro
 
           label.pub-denuncia__label(for='descripcion') Descripcion
+
           textarea.pub-denuncia__campo(
             id='descripcion'
             name='descripcion'
@@ -142,36 +198,87 @@ block content
           )
 
           button.comp-btn.comp-btn--cancelar(type='submit') ENVIAR DENUNCIA
+
     section.pub-detalle__comentarios.comp-tarjeta
       h2 Comentarios
 
       if esAutor && usuarioActual.rol === 'usuario'
-        form(action=`/publicaciones/${publicacion.id}/comentarios?_method=PATCH`, method='post')
+        form(
+          action=`/publicaciones/${publicacion.id}/comentarios?_method=PATCH`,
+          method='post'
+        )
           if publicacion.comentariosHabilitados
             button.comp-btn.comp-btn--contorno(type='submit') Cerrar comentarios
           else
             button.comp-btn(type='submit') Reabrir comentarios
+
       br
+
       if !publicacion.comentariosHabilitados
         p.comp-nota Los comentarios estan cerrados. Los comentarios anteriores siguen visibles.
 
       if publicacion.comentarios && publicacion.comentarios.length > 0
         each comentario in publicacion.comentarios
+          - var esAutorComentario = usuarioActual && Number(usuarioActual.id) === Number(comentario.idUsuario)
+
           article.pub-comentario
             .pub-comentario__cabecera
               if comentario.usuario
                 strong= '@' + comentario.usuario.nombreUsuario
 
               if esAutor && usuarioActual.rol === 'usuario'
-                form(action=`/publicaciones/${publicacion.id}/comentarios/${comentario.id}?_method=DELETE`, method='post')
-                  button.pub-comentario__eliminar(type='submit' onclick='return confirm("¿Eliminar este comentario?")') Eliminar
+                form(
+                  action=`/publicaciones/${publicacion.id}/comentarios/${comentario.id}?_method=DELETE`,
+                  method='post'
+                )
+                  button.pub-comentario__eliminar(
+                    type='submit',
+                    onclick='return confirm("¿Eliminar este comentario?")'
+                  ) Eliminar
+
             p= comentario.contenido
+            br
+            if usuarioActual && usuarioActual.rol === 'usuario' && !esAutorComentario
+              details.pub-comentario__denuncia
+                summary.pub-comentario__denunciar Denunciar
+
+                form(
+                  action=`/comentarios/${comentario.id}/denunciar`,
+                  method='post'
+                )
+                  label.pub-denuncia__label(
+                    for=`motivo-comentario-${comentario.id}`
+                  ) Motivo
+
+                  select.pub-denuncia__campo(
+                    id=`motivo-comentario-${comentario.id}`,
+                    name='motivo',
+                    required
+                  )
+                    option(value='') Selecciona un motivo
+                    option(value='Contenido inapropiado') Contenido inapropiado
+                    option(value='Insultos o acoso') Insultos o acoso
+                    option(value='Spam') Spam
+                    option(value='Otro') Otro
+
+                  button.comp-btn.comp-btn--cancelar(type='submit')
+                    | Enviar denuncia
+
       else
         p.comp-nota Todavia no hay comentarios en esta publicacion.
 
       if usuarioActual && usuarioActual.rol === 'usuario' && publicacion.comentariosHabilitados
-        form(action=`/publicaciones/${publicacion.id}/comentarios`, method='post')
-          textarea.pub-detalle__comentario-input(name='contenido', placeholder='Escribi un comentario...', required)
+        form(
+          action=`/publicaciones/${publicacion.id}/comentarios`,
+          method='post'
+        )
+          textarea.pub-detalle__comentario-input(
+            name='contenido',
+            placeholder='Escribi un comentario...',
+            required
+          )
+
           button.comp-btn(type='submit') Comentar
+
       else if !usuarioActual
         p.comp-nota Inicia sesion para comentar esta publicacion.

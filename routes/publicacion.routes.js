@@ -1,39 +1,48 @@
-const express = require('express');
-const multer = require('multer');
+const express = require("express");
+const multer = require("multer");
+
 const {
   requerirAutenticacion,
   impedirInteraccionValidador,
-} = require('../middlewares/autenticacionMiddleware');
+} = require("../middlewares/autenticacionMiddleware");
+
 const {
   crearPublicacion,
   mostrarDetallePublicacion,
   eliminarPublicacion,
   crearComentario,
+  denunciarComentario,
   eliminarComentario,
   cambiarEstadoComentarios,
   valorarPublicacion,
-} = require('../controllers/publicacionController');
+} = require("../controllers/publicacionController");
 
-const { denunciarPublicacion } = require('../controllers/denunciaController');
+const {
+  denunciarPublicacion,
+} = require("../controllers/denunciaController");
 
 const router = express.Router();
 
-const TIPOS_MIME_PERMITIDOS = ['image/jpeg', 'image/png', 'image/webp'];
+const TIPOS_MIME_PERMITIDOS = [
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+];
 
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: {
-    fileSize: 2 * 1024 * 1024, // 2 MB
+    fileSize: 2 * 1024 * 1024,
   },
   fileFilter: (req, file, cb) => {
-    console.log('Archivo detectado por multer:', {
+    console.log("Archivo detectado por multer:", {
       originalname: file.originalname,
       mimetype: file.mimetype,
       size: file.size,
     });
 
     if (!TIPOS_MIME_PERMITIDOS.includes(file.mimetype)) {
-      return cb(new Error('TIPO_ARCHIVO_INVALIDO'));
+      return cb(new Error("TIPO_ARCHIVO_INVALIDO"));
     }
 
     cb(null, true);
@@ -41,32 +50,38 @@ const upload = multer({
 });
 
 function manejarErrorUpload(req, res, next) {
-  upload.single('imagen')(req, res, (error) => {
+  upload.single("imagen")(req, res, (error) => {
     if (error) {
-      console.error('Error de multer al subir imagen:', {
+      console.error("Error de multer al subir imagen:", {
         message: error.message,
         code: error.code,
         name: error.name,
       });
 
-      if (error.code === 'LIMIT_FILE_SIZE') {
+      if (error.code === "LIMIT_FILE_SIZE") {
         return res.redirect(
-          `/?error=${encodeURIComponent('La imagen supera el tamaño máximo permitido de 2MB.')}`
+          `/?error=${encodeURIComponent(
+            "La imagen supera el tamaño máximo permitido de 2MB.",
+          )}`,
         );
       }
 
-      if (error.message === 'TIPO_ARCHIVO_INVALIDO') {
+      if (error.message === "TIPO_ARCHIVO_INVALIDO") {
         return res.redirect(
-          `/?error=${encodeURIComponent('La imagen debe ser JPG, PNG o WEBP.')}`
+          `/?error=${encodeURIComponent(
+            "La imagen debe ser JPG, PNG o WEBP.",
+          )}`,
         );
       }
 
       return res.redirect(
-        `/?error=${encodeURIComponent('No se pudo procesar la imagen.')}`
+        `/?error=${encodeURIComponent(
+          "No se pudo procesar la imagen.",
+        )}`,
       );
     }
 
-    console.log('Resultado final de multer:', {
+    console.log("Resultado final de multer:", {
       existeArchivo: !!req.file,
       originalname: req.file?.originalname,
       mimetype: req.file?.mimetype,
@@ -78,56 +93,66 @@ function manejarErrorUpload(req, res, next) {
   });
 }
 
-router.get('/publicaciones/:id', mostrarDetallePublicacion);
+router.get(
+  "/publicaciones/:id",
+  mostrarDetallePublicacion,
+);
 
 router.delete(
-  '/publicaciones/:id',
+  "/publicaciones/:id",
   requerirAutenticacion,
   impedirInteraccionValidador,
-  eliminarPublicacion
+  eliminarPublicacion,
 );
 
 router.post(
-  '/publicaciones',
+  "/publicaciones",
   requerirAutenticacion,
   impedirInteraccionValidador,
   manejarErrorUpload,
-  crearPublicacion
+  crearPublicacion,
 );
 
 router.post(
-  '/publicaciones/:id/comentarios',
+  "/publicaciones/:id/comentarios",
   requerirAutenticacion,
   impedirInteraccionValidador,
-  crearComentario
+  crearComentario,
+);
+
+router.post(
+  "/comentarios/:id/denunciar",
+  requerirAutenticacion,
+  impedirInteraccionValidador,
+  denunciarComentario,
 );
 
 router.patch(
-  '/publicaciones/:id/comentarios',
+  "/publicaciones/:id/comentarios",
   requerirAutenticacion,
   impedirInteraccionValidador,
-  cambiarEstadoComentarios
+  cambiarEstadoComentarios,
 );
 
 router.post(
-  '/publicaciones/:id/valoraciones',
+  "/publicaciones/:id/valoraciones",
   requerirAutenticacion,
   impedirInteraccionValidador,
-  valorarPublicacion
+  valorarPublicacion,
 );
 
 router.post(
-  '/publicaciones/:id/denuncias',
+  "/publicaciones/:id/denuncias",
   requerirAutenticacion,
   impedirInteraccionValidador,
-  denunciarPublicacion
+  denunciarPublicacion,
 );
 
 router.delete(
-  '/publicaciones/:id/comentarios/:comentarioId',
+  "/publicaciones/:id/comentarios/:comentarioId",
   requerirAutenticacion,
   impedirInteraccionValidador,
-  eliminarComentario
+  eliminarComentario,
 );
 
 module.exports = router;

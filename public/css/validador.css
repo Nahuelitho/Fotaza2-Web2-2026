@@ -168,6 +168,18 @@ details[open] > .validador__resumen::after {
   margin: 0.25rem 0 0;
 }
 
+.validador__acciones-comentario {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.validador__acciones-comentario form {
+  margin: 0;
+}
+
 @media (max-width: 560px) {
   .admin-etiqueta {
     align-items: stretch;
