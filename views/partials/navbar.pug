@@ -16,16 +16,11 @@ header.nav-barra
       button.comp-btn.comp-btn--contorno(type='submit') Buscar
 
     nav.nav-menu(aria-label='Navegacion principal')
-<<<<<<< HEAD
-      a.nav-link(class=rutaActual === '/' ? 'nav-link--act' : '', href='/') Inicio
-      a.nav-link(class=rutaActual === '/seguidos' ? 'nav-link--act' : '', href='/seguidos') Seguidos
-=======
       a.nav-link.comp-btn--contorno(href='/') Inicio
       if usuarioActual
         if usuarioActual.rol === 'usuario'
           span.nav-campana(title='Notificaciones proximamente')
             img(src='/img/campana.png', alt='Notificaciones')
->>>>>>> devNahu
 
     .nav-acciones
       if usuarioActual
@@ -41,7 +36,6 @@ header.nav-barra
           a.nav-usuario(href=`/usuarios/${usuarioActual.id}`) Hola, #{usuarioActual.nombreVisible}
         form(action='/cerrar-sesion', method='post')
           button.comp-btn.comp-btn--cancelar(type='submit') Cerrar sesion
-    else
-      .nav-acciones.nav-acciones--auth
+      else
         a.comp-btn(href='/registro') Crear cuenta
         a.comp-btn.comp-btn--suave(href='/iniciar-sesion') Iniciar sesion

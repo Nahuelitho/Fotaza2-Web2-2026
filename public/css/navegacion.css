@@ -53,9 +53,6 @@
 
 .nav-menu {
   display: flex;
-<<<<<<< HEAD
-  gap: 0.45rem;
-=======
   align-items: center;
   gap: 0.35rem;
 }
@@ -76,7 +73,6 @@
   width: 1.35rem;
   height: 1.35rem;
   object-fit: contain;
->>>>>>> devNahu
 }
 
 /* Botón Inicio */
@@ -192,8 +188,6 @@
     position: static;
     padding: 0.65rem 0;
   }
-<<<<<<< HEAD
-
   .nav-conten {
     align-items: center;
     gap: 0.65rem;
@@ -241,6 +235,4 @@
     padding: 0.65rem 0.8rem;
     font-size: 0.9rem;
   }
-=======
->>>>>>> devNahu
 }

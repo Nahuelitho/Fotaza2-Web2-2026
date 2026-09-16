@@ -235,29 +235,6 @@ async function renderizarInicio(req, res) {
   });
 }
 
-<<<<<<< HEAD
-async function renderizarSeguidos(req, res) {
-  const usuarioActual = req.session.usuario;
-  const seguimientos = await Seguimiento.findAll({
-    where: { idSeguidor: usuarioActual.id },
-    order: [["created_at", "DESC"]],
-  });
-  const idsSeguidos = seguimientos.map((seguimiento) => seguimiento.idSeguido);
-  const usuariosSeguidos = idsSeguidos.length
-    ? await Usuario.findAll({
-        where: {
-          id: { [Op.in]: idsSeguidos },
-          estaActivo: true,
-        },
-        attributes: ["id", "nombreUsuario", "nombreVisible", "biografia"],
-        order: [["nombreVisible", "ASC"]],
-      })
-    : [];
-
-  res.render("pages/seguidos", {
-    title: "Seguidos | Fotaza 2",
-    usuariosSeguidos,
-=======
 async function renderizarPublicacionesSeguidas(req, res) {
   const seguimientos = await Seguimiento.findAll({
     where: {
@@ -298,16 +275,10 @@ async function renderizarPublicacionesSeguidas(req, res) {
   return res.render("pages/publicaciones-seguidas", {
     title: "Publicaciones de usuarios seguidos | Fotaza 2",
     publicaciones,
-    filtrosBusqueda,
->>>>>>> devNahu
   });
 }
 
 module.exports = {
   renderizarInicio,
-<<<<<<< HEAD
-  renderizarSeguidos,
-=======
   renderizarPublicacionesSeguidas,
->>>>>>> devNahu
 };
