@@ -10,6 +10,7 @@ const {
   Seguimiento,
   Favorito,
   Coleccion,
+  Notificacion,
 } = require("../models/sequelize");
 
 const TIPOS_MIME_PERMITIDOS = ["image/jpeg", "image/png", "image/webp"];
@@ -405,14 +406,32 @@ async function crearComentario(req, res) {
     );
   }
 
+  const idUsuarioActual = Number(req.session.usuario.id);
+
   await Comentario.create({
     idPublicacion: publicacion.id,
-    idUsuario: req.session.usuario.id,
+    idUsuario: idUsuarioActual,
     contenido,
   });
 
+  // No notificar si comenta su propia publicacion
+  if (Number(publicacion.idUsuario) !== idUsuarioActual) {
+    await Notificacion.create({
+      idUsuario: Number(publicacion.idUsuario),
+      idActor: idUsuarioActual,
+      idPublicacion: publicacion.id,
+      tipo: "comentario",
+      mensaje: `${
+        req.session.usuario.nombreVisible ||
+        req.session.usuario.nombreUsuario
+      } comentó tu publicación.`,
+      leida: false,
+    });
+  }
+
   return res.redirect(`/publicaciones/${publicacion.id}`);
 }
+
 async function eliminarComentario(req, res) {
   const usuarioActual = req.session.usuario;
   const { id, comentarioId } = req.params;
@@ -520,7 +539,7 @@ async function valorarPublicacion(req, res) {
     );
   }
 
-  if (publicacion.idUsuario === usuarioActual.id) {
+  if (Number(publicacion.idUsuario) === Number(usuarioActual.id)) {
     return res.redirect(
       `/publicaciones/${publicacion.id}?error=No podes valorar tu propia publicacion.`,
     );
@@ -553,6 +572,17 @@ async function valorarPublicacion(req, res) {
     idImagen: imagen.id,
     idUsuario: usuarioActual.id,
     puntaje,
+  });
+
+  await Notificacion.create({
+    idUsuario: Number(publicacion.idUsuario),
+    idActor: Number(usuarioActual.id),
+    idPublicacion: publicacion.id,
+    tipo: "valoracion",
+    mensaje: `${
+      usuarioActual.nombreVisible || usuarioActual.nombreUsuario
+    } valoró tu publicación.`,
+    leida: false,
   });
 
   return res.redirect(

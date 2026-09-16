@@ -196,3 +196,43 @@ button:not(:disabled),
 .comp-modal[hidden] {
   display: none;
 }
+
+.notificaciones-lista {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.notificacion {
+  padding: 1rem;
+  border: 1px solid var(--linea);
+  border-radius: 1rem;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.notificacion--nueva {
+  border-color: var(--acento);
+  background: #fff7f1;
+}
+
+.notificacion__contenido {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.notificacion__contenido strong {
+  display: block;
+}
+
+.notificacion__contenido p,
+.notificacion__contenido small {
+  margin: 0;
+}
+
+.notificacion__contenido a {
+  width: fit-content;
+  color: var(--acento-fuerte);
+  font-weight: 600;
+  text-decoration: none;
+}

@@ -12,6 +12,7 @@ const definirDenunciaPublicacion = require('./DenunciaPublicacion');
 const definirFavorito = require('./Favorito');
 const definirColeccion = require('./Coleccion');
 const definirColeccionPublicacion = require('./ColeccionPublicacion');
+const definirNotificacion = require("./Notificacion");
 const Rol = definirRol(sequelize);
 const Usuario = definirUsuario(sequelize);
 const Etiqueta = definirEtiqueta(sequelize);
@@ -25,6 +26,7 @@ const DenunciaPublicacion = definirDenunciaPublicacion(sequelize);
 const Favorito = definirFavorito(sequelize);
 const Coleccion = definirColeccion(sequelize);
 const ColeccionPublicacion = definirColeccionPublicacion(sequelize);
+const Notificacion = definirNotificacion(sequelize);
 
 Rol.hasMany(Usuario, { as: 'usuarios', foreignKey: 'idRol', onDelete: 'RESTRICT' });
 Usuario.belongsTo(Rol, { as: 'rol', foreignKey: 'idRol', onDelete: 'RESTRICT' });
@@ -40,6 +42,36 @@ DenunciaPublicacion.belongsTo(Usuario, { as: 'usuario', foreignKey: 'idUsuario',
 
 Publicacion.hasMany(ImagenPublicacion, { as: 'imagenes', foreignKey: 'idPublicacion', onDelete: 'CASCADE' });
 ImagenPublicacion.belongsTo(Publicacion, { as: 'publicacion', foreignKey: 'idPublicacion', onDelete: 'CASCADE' });
+
+Usuario.hasMany(Notificacion, {
+  foreignKey: "idUsuario",
+  as: "notificaciones",
+});
+
+Notificacion.belongsTo(Usuario, {
+  foreignKey: "idUsuario",
+  as: "usuario",
+});
+
+Usuario.hasMany(Notificacion, {
+  foreignKey: "idActor",
+  as: "notificacionesGeneradas",
+});
+
+Notificacion.belongsTo(Usuario, {
+  foreignKey: "idActor",
+  as: "actor",
+});
+
+Publicacion.hasMany(Notificacion, {
+  foreignKey: "idPublicacion",
+  as: "notificaciones",
+});
+
+Notificacion.belongsTo(Publicacion, {
+  foreignKey: "idPublicacion",
+  as: "publicacion",
+});
 
 Publicacion.belongsToMany(Etiqueta, {
   as: 'etiquetas',
@@ -126,4 +158,5 @@ module.exports = {
   Favorito,
   Coleccion,
   ColeccionPublicacion,
+  Notificacion,
 };

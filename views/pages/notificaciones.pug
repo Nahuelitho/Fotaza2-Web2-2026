@@ -1,0 +1,30 @@
+extends ../layouts/main
+
+block content
+  .ly-cont
+    br
+    section.comp-tarjeta
+      .comp-cabecera
+        h2 Notificaciones
+        br
+        if notificaciones.length > 0
+          form(action='/notificaciones/marcar-todas-leidas', method='post')
+            button.comp-btn.comp-btn--fantasma(type='submit')
+              | Marcar todas como leídas
+
+      if notificaciones.length === 0
+        p.comp-nota No tenés notificaciones todavía.
+      else
+        .notificaciones-lista
+          each notificacion in notificaciones
+            article.notificacion(class=!notificacion.leida ? 'notificacion--nueva' : '')
+              .notificacion__contenido
+                strong= notificacion.mensaje
+
+                if notificacion.actor
+                  p Por #{notificacion.actor.nombreVisible || notificacion.actor.nombreUsuario}
+
+                if notificacion.publicacion
+                  a(href=`/publicaciones/${notificacion.publicacion.id}`) Ver publicación
+
+                small #{new Date(notificacion.createdAt || notificacion.created_at).toLocaleDateString('es-AR')}

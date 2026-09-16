@@ -5,6 +5,7 @@ const {
   ImagenPublicacion,
   Etiqueta,
   Seguimiento,
+  Notificacion,
 } = require("../models/sequelize");
 function redirigirPerfilConError(idUsuario, mensaje) {
   return `/usuarios/${idUsuario}?error=${encodeURIComponent(mensaje)}`;
@@ -105,7 +106,7 @@ async function seguirUsuario(req, res) {
     return res.redirect("/?error=El usuario no existe.");
   }
 
-  await Seguimiento.findOrCreate({
+  const [seguimiento, creado] = await Seguimiento.findOrCreate({
     where: {
       idSeguidor: Number(usuarioActual.id),
       idSeguido,
@@ -115,6 +116,16 @@ async function seguirUsuario(req, res) {
       idSeguido,
     },
   });
+
+  if (creado) {
+    await Notificacion.create({
+      idUsuario: idSeguido,
+      idActor: Number(usuarioActual.id),
+      tipo: "seguimiento",
+      mensaje: `${usuarioActual.nombreVisible || usuarioActual.nombreUsuario} comenzó a seguirte.`,
+      leida: false,
+    });
+  }
 
   return res.redirect(`/usuarios/${idSeguido}`);
 }
