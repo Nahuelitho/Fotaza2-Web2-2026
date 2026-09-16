@@ -219,11 +219,53 @@ async function renderizarInicio(req, res) {
   const count = total;
   const totalPaginas = Math.max(Math.ceil(count / publicacionesPorPagina), 1);
 
+const publicacionesMasVistasPublicas = await Publicacion.findAll({
+  where: {
+    visibilidad: "publica",
+    estado: "activa",
+  },
+  include: [
+    {
+      model: ImagenPublicacion,
+      as: "imagenes",
+      where: {
+        tipoLicencia: "creative_commons",
+      },
+      required: true,
+    },
+  ],
+  order: [["vistas", "DESC"]],
+  limit: 3,
+});
+
+const publicacionesMasVistasCopyright = usuarioActual
+  ? await Publicacion.findAll({
+      where: {
+        visibilidad: "publica",
+        estado: "activa",
+      },
+      include: [
+        {
+          model: ImagenPublicacion,
+          as: "imagenes",
+          where: {
+            tipoLicencia: "con_copyright",
+          },
+          required: true,
+        },
+      ],
+      order: [["vistas", "DESC"]],
+      limit: 3,
+    })
+  : [];
   res.render("pages/inicio", {
     title: "Fotaza 2",
     mensajeEstado: mensajesEstado[estado] || "",
     mensajeError: error || "",
     publicaciones,
+    filtrosBusqueda,
+    publicacionesMasVistasPublicas,
+    publicacionesMasVistasCopyright,
     paginacion: {
       paginaActual,
       totalPaginas,

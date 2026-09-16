@@ -1,50 +1,67 @@
-const { DataTypes } = require('sequelize');
+const { DataTypes } = require("sequelize");
 
 function definePost(sequelize) {
   return sequelize.define(
-    'Publicacion',
+    "Publicacion",
     {
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
       },
+
       idUsuario: {
         type: DataTypes.INTEGER,
-        field: 'id_usuario',
+        field: "id_usuario",
         allowNull: false,
       },
+
       titulo: {
         type: DataTypes.STRING(150),
         allowNull: false,
       },
+
       descripcion: {
         type: DataTypes.TEXT,
         allowNull: true,
       },
+
       comentariosHabilitados: {
         type: DataTypes.BOOLEAN,
-        field: 'comentarios_habilitados',
+        field: "comentarios_habilitados",
         allowNull: false,
         defaultValue: true,
       },
-      visibilidad: {
-        type: DataTypes.ENUM('publica', 'privada'),
+
+      vistas: {
+        type: DataTypes.INTEGER,
         allowNull: false,
-        defaultValue: 'publica',
+        defaultValue: 0,
       },
-      estado: {
-        type: DataTypes.ENUM('activa', 'reportada', 'en_revision', 'eliminada'),
+
+      visibilidad: {
+        type: DataTypes.ENUM("publica", "privada"),
         allowNull: false,
-        defaultValue: 'activa',
+        defaultValue: "publica",
+      },
+
+      estado: {
+        type: DataTypes.ENUM(
+          "activa",
+          "reportada",
+          "en_revision",
+          "eliminada"
+        ),
+        allowNull: false,
+        defaultValue: "activa",
       },
     },
     {
-      tableName: 'publicaciones',
+      tableName: "publicaciones",
       underscored: true,
       timestamps: true,
-      createdAt: 'created_at',
-      updatedAt: 'updated_at',
+      createdAt: "created_at",
+      updatedAt: "updated_at",
     }
   );
 }

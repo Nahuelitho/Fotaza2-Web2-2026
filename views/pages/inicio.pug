@@ -2,8 +2,10 @@ extends ../layouts/main
 
 block content
   - var publicacionesSeguras = publicaciones || []
+
   .ini-lienzo.ly-cont
     .ini-grilla(class=usuarioActual && usuarioActual.rol !== 'usuario' ? 'ini-grilla--sin-lateral' : '')
+
       include ../partials/inicio-barra-lateral
 
       section.ini-feed
@@ -13,69 +15,127 @@ block content
           section.comp-tarjeta
             if mensajeEstado
               p.comp-msg.comp-msg--ok= mensajeEstado
+
             if mensajeError
               p.comp-msg.comp-msg--error= mensajeError
+
             .ini-agregar
               if usuarioActual
-                button.ini-agregar__btn.comp-btn--contorno(type='button', data-abrir-modal-publicacion='true', aria-haspopup='dialog')
+                button.ini-agregar__btn.comp-btn--contorno(
+                  type='button',
+                  data-abrir-modal-publicacion='true',
+                  aria-haspopup='dialog'
+                )
                   span.ini-agregar__ico +
                   span Agregar publicacion
               else
-                button.ini-agregar__btn.comp-btn--contorno(type='button', data-abrir-modal-autenticacion='true', aria-haspopup='dialog')
+                button.ini-agregar__btn.comp-btn--contorno(
+                  type='button',
+                  data-abrir-modal-autenticacion='true',
+                  aria-haspopup='dialog'
+                )
                   span.ini-agregar__ico +
                   span Agregar publicacion
 
         if usuarioActual && usuarioActual.rol !== 'usuario'
           if mensajeEstado
             p.comp-msg.comp-msg--ok= mensajeEstado
+
           if mensajeError
             p.comp-msg.comp-msg--error= mensajeError
-
 
         details.ini-busqueda-avanzada.comp-tarjeta
           summary.ini-busqueda-avanzada__cabecera
             h3 Busqueda avanzada
             span.ini-busqueda-avanzada__indicador(aria-hidden='true')
+
           form.aut-form(action='/', method='get')
             .aut-form__fila
               label.aut-campo
                 span Texto
-                input(type='search', name='buscar', value=filtrosBusqueda.buscar || '', placeholder='Titulo, descripcion o etiqueta')
+                input(
+                  type='search',
+                  name='buscar',
+                  value=filtrosBusqueda.buscar || '',
+                  placeholder='Titulo, descripcion o etiqueta'
+                )
+
               label.aut-campo
                 span Autor
-                input(type='search', name='autor', value=filtrosBusqueda.autor || '', placeholder='Nombre o usuario')
+                input(
+                  type='search',
+                  name='autor',
+                  value=filtrosBusqueda.autor || '',
+                  placeholder='Nombre o usuario'
+                )
+
             .aut-form__fila
               label.aut-campo
                 span Etiqueta
                 select(name='etiqueta')
                   option(value='') Todas
                   each etiqueta in etiquetasDisponibles
-                    option(value=etiqueta.name, selected=filtrosBusqueda.etiqueta === etiqueta.name)= etiqueta.name
+                    option(
+                      value=etiqueta.name,
+                      selected=filtrosBusqueda.etiqueta === etiqueta.name
+                    )= etiqueta.name
+
               label.aut-campo
                 span Licencia
                 select(name='licencia')
                   option(value='') Todas
-                  option(value='creative_commons', selected=filtrosBusqueda.licencia === 'creative_commons') Creative Commons
-                  option(value='con_copyright', selected=filtrosBusqueda.licencia === 'con_copyright') Con copyright
+                  option(
+                    value='creative_commons',
+                    selected=filtrosBusqueda.licencia === 'creative_commons'
+                  ) Creative Commons
+
+                  option(
+                    value='con_copyright',
+                    selected=filtrosBusqueda.licencia === 'con_copyright'
+                  ) Con copyright
+
             .aut-form__fila
               label.aut-campo
                 span Desde
-                input(type='date', name='fechaDesde', value=filtrosBusqueda.fechaDesde || '')
+                input(
+                  type='date',
+                  name='fechaDesde',
+                  value=filtrosBusqueda.fechaDesde || ''
+                )
+
               label.aut-campo
                 span Hasta
-                input(type='date', name='fechaHasta', value=filtrosBusqueda.fechaHasta || '')
+                input(
+                  type='date',
+                  name='fechaHasta',
+                  value=filtrosBusqueda.fechaHasta || ''
+                )
+
             .aut-form__fila
               label.aut-campo
                 span Valoracion minima
                 select(name='valoracionMinima')
                   option(value='') Cualquiera
+
                   each puntaje in [1, 2, 3, 4, 5]
-                    option(value=puntaje, selected=String(filtrosBusqueda.valoracionMinima) === String(puntaje)) #{puntaje} o mas
+                    option(
+                      value=puntaje,
+                      selected=String(filtrosBusqueda.valoracionMinima) === String(puntaje)
+                    ) #{puntaje} o mas
+
               label.aut-campo
                 span Orden
                 select(name='orden')
-                  option(value='recientes', selected=filtrosBusqueda.orden === 'recientes') Mas recientes
-                  option(value='mejor_valoradas', selected=filtrosBusqueda.orden === 'mejor_valoradas') Mejor valoradas
+                  option(
+                    value='recientes',
+                    selected=filtrosBusqueda.orden === 'recientes'
+                  ) Mas recientes
+
+                  option(
+                    value='mejor_valoradas',
+                    selected=filtrosBusqueda.orden === 'mejor_valoradas'
+                  ) Mejor valoradas
+
             .aut-form__acciones
               button.comp-btn(type='submit') Aplicar filtros
               a.comp-btn.comp-btn--fantasma(href='/') Limpiar
@@ -83,70 +143,139 @@ block content
         section.comp-tarjeta
           .comp-cabecera
             h3 Publicaciones
+
           if publicacionesSeguras.length === 0
             p.comp-nota Todavia no hay publicaciones para mostrar.
+
           else
             .ini-posts
               each publicacion in publicacionesSeguras
                 - var mostrarAutor = true
                 include ../partials/publicacion-card
 
-              if paginacion && paginacion.totalPaginas > 1
-                nav.ini-paginacion(aria-label='Paginacion de publicaciones')
-                  if paginacion.tieneAnterior
-                    a.comp-btn.comp-btn--fantasma(href=paginacion.urlAnterior) Anterior
-                  span.ini-paginacion__estado Pagina #{paginacion.paginaActual} de #{paginacion.totalPaginas}
-                  if paginacion.tieneSiguiente
-                    a.comp-btn.comp-btn--fantasma(href=paginacion.urlSiguiente) Siguiente
+            if paginacion && paginacion.totalPaginas > 1
+              nav.ini-paginacion(aria-label='Paginacion de publicaciones')
+                if paginacion.tieneAnterior
+                  a.comp-btn.comp-btn--fantasma(
+                    href=paginacion.urlAnterior
+                  ) Anterior
+
+                span.ini-paginacion__estado
+                  | Pagina #{paginacion.paginaActual} de #{paginacion.totalPaginas}
+
+                if paginacion.tieneSiguiente
+                  a.comp-btn.comp-btn--fantasma(
+                    href=paginacion.urlSiguiente
+                  ) Siguiente
+
+      if !usuarioActual || usuarioActual.rol === 'usuario'
+        include ../partials/inicio-ranking
+
 
   if usuarioActual && usuarioActual.rol === 'usuario'
     .comp-modal#post-modal(hidden=true)
-      .comp-modal__caja.comp-tarjeta(role='dialog', aria-modal='true', aria-labelledby='post-modal-title')
+      .comp-modal__caja.comp-tarjeta(
+        role='dialog',
+        aria-modal='true',
+        aria-labelledby='post-modal-title'
+      )
+
         .comp-cabecera
           h3#post-modal-title Nueva publicacion
-          button.comp-modal__cerrar(type='button', data-cerrar-modal-publicacion='true', aria-label='Cerrar') x
 
-        form.aut-form(action='/publicaciones', method='post', enctype='multipart/form-data')
+          button.comp-modal__cerrar(
+            type='button',
+            data-cerrar-modal-publicacion='true',
+            aria-label='Cerrar'
+          ) x
+
+        form.aut-form(
+          action='/publicaciones',
+          method='post',
+          enctype='multipart/form-data'
+        )
+
           label.aut-campo
             span Titulo
-            input(type='text', name='titulo', required, maxlength='150')
+            input(
+              type='text',
+              name='titulo',
+              required,
+              maxlength='150'
+            )
 
           label.aut-campo
             span Descripcion (opcional)
-            input(type='text', name='descripcion', maxlength='500')
+            input(
+              type='text',
+              name='descripcion',
+              maxlength='500'
+            )
 
           label.aut-campo
             span Imagen
-            input(type='file', name='imagen', accept='image/jpeg,image/png,image/webp', required)
+            input(
+              type='file',
+              name='imagen',
+              accept='image/jpeg,image/png,image/webp',
+              required
+            )
 
           .aut-form__fila
             label.aut-campo
               span Licencia
-              select(name='tipoLicencia', required, data-tipo-licencia='true')
+
+              select(
+                name='tipoLicencia',
+                required,
+                data-tipo-licencia='true'
+              )
                 option(value='') Seleccionar
                 option(value='con_copyright') Con copyright
                 option(value='creative_commons') Sin copyright (Creative Commons)
 
             label.aut-campo
               span Marca de agua
-              input(type='text', name='textoMarcaAgua', maxlength='100', data-marca-agua='true')
+
+              input(
+                type='text',
+                name='textoMarcaAgua',
+                maxlength='100',
+                data-marca-agua='true'
+              )
 
           p.comp-nota Imagen maxima: 2MB. Formatos: JPG, PNG o WEBP.
 
           fieldset.aut-campo.ini-tags-campo
             span Tags (elegi entre 1 y 3)
+
             .ini-tags-selector
               select(data-select-etiqueta='true')
                 option(value='') Seleccionar tag
+
                 each etiqueta in etiquetasDisponibles
                   option(value=etiqueta.name)= etiqueta.name
-              button.comp-btn.comp-btn--fantasma(type='button', data-agregar-etiqueta-existente='true') Agregar
+
+              button.comp-btn.comp-btn--fantasma(
+                type='button',
+                data-agregar-etiqueta-existente='true'
+              ) Agregar
 
           .aut-campo
             span Agregar tag nuevo (opcional)
+
             .ini-tags-selector
-              input(type='text', maxlength='50', placeholder='Ej: deportes', data-etiqueta-nueva='true')
-              button.comp-btn.comp-btn--fantasma(type='button', data-crear-etiqueta-nueva='true') Crear
+              input(
+                type='text',
+                maxlength='50',
+                placeholder='Ej: deportes',
+                data-etiqueta-nueva='true'
+              )
+
+              button.comp-btn.comp-btn--fantasma(
+                type='button',
+                data-crear-etiqueta-nueva='true'
+              ) Crear
 
           .ini-tags-elegidos(data-etiquetas-elegidas='true')
 
@@ -154,19 +283,38 @@ block content
 
           .aut-form__acciones
             button.comp-btn(type='submit') Publicar
-            button.comp-btn.comp-btn--cancelar(type='button', data-cerrar-modal-publicacion='true') Cancelar
+
+            button.comp-btn.comp-btn--cancelar(
+              type='button',
+              data-cerrar-modal-publicacion='true'
+            ) Cancelar
+
   else if !usuarioActual
     .comp-modal#auth-required-modal(hidden=true)
-      .comp-modal__caja.comp-tarjeta(role='dialog', aria-modal='true', aria-labelledby='auth-required-title')
+      .comp-modal__caja.comp-tarjeta(
+        role='dialog',
+        aria-modal='true',
+        aria-labelledby='auth-required-title'
+      )
+
         .comp-cabecera
           h3#auth-required-title Necesitas una cuenta
-          button.comp-modal__cerrar(type='button', data-cerrar-modal-autenticacion='true', aria-label='Cerrar') x
+
+          button.comp-modal__cerrar(
+            type='button',
+            data-cerrar-modal-autenticacion='true',
+            aria-label='Cerrar'
+          ) x
 
         p.comp-nota Para crear una publicacion tenes que iniciar sesion o crear una cuenta.
 
         .aut-form__acciones
           a.comp-btn(href='/registro') Crear cuenta
           a.comp-btn.comp-btn--suave(href='/iniciar-sesion') Iniciar sesion
-          button.comp-btn.comp-btn--cancelar(type='button', data-cerrar-modal-autenticacion='true') Cancelar
+
+          button.comp-btn.comp-btn--cancelar(
+            type='button',
+            data-cerrar-modal-autenticacion='true'
+          ) Cancelar
 
   script(src='/js/inicio.js')
