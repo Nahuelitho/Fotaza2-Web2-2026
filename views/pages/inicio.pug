@@ -32,6 +32,54 @@ block content
             p.comp-msg.comp-msg--error= mensajeError
 
 
+        details.ini-busqueda-avanzada.comp-tarjeta
+          summary.ini-busqueda-avanzada__cabecera
+            h3 Busqueda avanzada
+            span.ini-busqueda-avanzada__indicador(aria-hidden='true')
+          form.aut-form(action='/', method='get')
+            .aut-form__fila
+              label.aut-campo
+                span Texto
+                input(type='search', name='buscar', value=filtrosBusqueda.buscar || '', placeholder='Titulo, descripcion o etiqueta')
+              label.aut-campo
+                span Autor
+                input(type='search', name='autor', value=filtrosBusqueda.autor || '', placeholder='Nombre o usuario')
+            .aut-form__fila
+              label.aut-campo
+                span Etiqueta
+                select(name='etiqueta')
+                  option(value='') Todas
+                  each etiqueta in etiquetasDisponibles
+                    option(value=etiqueta.name, selected=filtrosBusqueda.etiqueta === etiqueta.name)= etiqueta.name
+              label.aut-campo
+                span Licencia
+                select(name='licencia')
+                  option(value='') Todas
+                  option(value='creative_commons', selected=filtrosBusqueda.licencia === 'creative_commons') Creative Commons
+                  option(value='con_copyright', selected=filtrosBusqueda.licencia === 'con_copyright') Con copyright
+            .aut-form__fila
+              label.aut-campo
+                span Desde
+                input(type='date', name='fechaDesde', value=filtrosBusqueda.fechaDesde || '')
+              label.aut-campo
+                span Hasta
+                input(type='date', name='fechaHasta', value=filtrosBusqueda.fechaHasta || '')
+            .aut-form__fila
+              label.aut-campo
+                span Valoracion minima
+                select(name='valoracionMinima')
+                  option(value='') Cualquiera
+                  each puntaje in [1, 2, 3, 4, 5]
+                    option(value=puntaje, selected=String(filtrosBusqueda.valoracionMinima) === String(puntaje)) #{puntaje} o mas
+              label.aut-campo
+                span Orden
+                select(name='orden')
+                  option(value='recientes', selected=filtrosBusqueda.orden === 'recientes') Mas recientes
+                  option(value='mejor_valoradas', selected=filtrosBusqueda.orden === 'mejor_valoradas') Mejor valoradas
+            .aut-form__acciones
+              button.comp-btn(type='submit') Aplicar filtros
+              a.comp-btn.comp-btn--fantasma(href='/') Limpiar
+
         section.comp-tarjeta
           .comp-cabecera
             h3 Publicaciones

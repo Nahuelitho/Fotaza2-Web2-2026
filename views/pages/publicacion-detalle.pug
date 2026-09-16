@@ -103,16 +103,16 @@ block content
 
       if usuarioActual && usuarioActual.rol !== 'validador' && !esAutor
         if valoracionUsuario
-          p.pub-detalle__meta Tu valoracion actual: #{valoracionUsuario.puntaje}/5. Podes cambiarla.
+          p.pub-detalle__meta Tu valoracion: #{valoracionUsuario.puntaje}/5. Cada imagen se puede valorar una sola vez.
         else
           p.pub-detalle__meta Todavia no valoraste esta imagen.
-        form(action=`/publicaciones/${publicacion.id}/valoraciones`, method='post')
-          .pub-valoracion__opciones(aria-label='Seleccionar puntaje')
-            each puntaje in [1, 2, 3, 4, 5]
-              label.pub-valoracion__opcion
-                input(type='radio', name='puntaje', value=puntaje, checked=valoracionUsuario && valoracionUsuario.puntaje === puntaje)
-                span= puntaje
-          button.comp-btn(type='submit') Guardar valoracion
+          form(action=`/publicaciones/${publicacion.id}/valoraciones`, method='post')
+            .pub-valoracion__opciones(aria-label='Seleccionar puntaje')
+              each puntaje in [1, 2, 3, 4, 5]
+                label.pub-valoracion__opcion
+                  input(type='radio', name='puntaje', value=puntaje, required)
+                  span= puntaje
+            button.comp-btn(type='submit') Guardar valoracion
       else if esAutor
         p.comp-nota No podes valorar tu propia publicacion.
       else if !usuarioActual
@@ -145,6 +145,16 @@ block content
     section.pub-detalle__comentarios.comp-tarjeta
       h2 Comentarios
 
+      if esAutor && usuarioActual.rol !== 'validador'
+        form(action=`/publicaciones/${publicacion.id}/comentarios?_method=PATCH`, method='post')
+          if publicacion.comentariosHabilitados
+            button.comp-btn.comp-btn--contorno(type='submit') Cerrar comentarios
+          else
+            button.comp-btn(type='submit') Reabrir comentarios
+
+      if !publicacion.comentariosHabilitados
+        p.comp-nota Los comentarios estan cerrados. Los comentarios anteriores siguen visibles.
+
       if publicacion.comentarios && publicacion.comentarios.length > 0
         each comentario in publicacion.comentarios
           article.pub-comentario
@@ -159,7 +169,7 @@ block content
       else
         p.comp-nota Todavia no hay comentarios en esta publicacion.
 
-      if usuarioActual && usuarioActual.rol !== 'validador'
+      if usuarioActual && usuarioActual.rol !== 'validador' && publicacion.comentariosHabilitados
         form(action=`/publicaciones/${publicacion.id}/comentarios`, method='post')
           textarea.pub-detalle__comentario-input(name='contenido', placeholder='Escribi un comentario...', required)
           button.comp-btn(type='submit') Comentar

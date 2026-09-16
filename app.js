@@ -129,6 +129,12 @@ app.use(async (req, res, next) => {
     res.locals.filtrosBusqueda = {
       buscar: req.query.buscar?.trim() || '',
       etiqueta: req.query.etiqueta?.trim() || '',
+      licencia: req.query.licencia || '',
+      autor: req.query.autor?.trim() || '',
+      fechaDesde: req.query.fechaDesde || '',
+      fechaHasta: req.query.fechaHasta || '',
+      valoracionMinima: req.query.valoracionMinima || '',
+      orden: req.query.orden || 'recientes',
     };
     res.locals.etiquetasDisponibles = await Etiqueta.findAll({
       order: [['name', 'ASC']],

@@ -10,6 +10,7 @@ const {
   eliminarPublicacion,
   crearComentario,
   eliminarComentario,
+  cambiarEstadoComentarios,
   valorarPublicacion,
 } = require('../controllers/publicacionController');
 
@@ -99,6 +100,13 @@ router.post(
   requerirAutenticacion,
   impedirInteraccionValidador,
   crearComentario
+);
+
+router.patch(
+  '/publicaciones/:id/comentarios',
+  requerirAutenticacion,
+  impedirInteraccionValidador,
+  cambiarEstadoComentarios
 );
 
 router.post(

@@ -125,6 +125,44 @@
   font-size: 1.3rem;
 }
 
+.ini-busqueda-avanzada__cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  cursor: pointer;
+  list-style: none;
+}
+
+.ini-busqueda-avanzada__cabecera::-webkit-details-marker {
+  display: none;
+}
+
+.ini-busqueda-avanzada__cabecera h3 {
+  margin: 0;
+}
+
+.ini-busqueda-avanzada__indicador::before {
+  content: "+";
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--borde);
+  border-radius: 50%;
+  color: var(--acento-fuerte);
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.ini-busqueda-avanzada[open] .ini-busqueda-avanzada__indicador::before {
+  content: "−";
+}
+
+.ini-busqueda-avanzada[open] .aut-form {
+  margin-top: 1rem;
+}
+
 .ini-tags-campo {
   border: 0;
   padding: 0;
